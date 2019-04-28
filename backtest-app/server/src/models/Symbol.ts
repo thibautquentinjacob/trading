@@ -1,10 +1,10 @@
 /*
- * File: WebsocketCommand.ts
+ * File: Symbol.ts
  * Project: server
- * File Created: Monday, 15th April 2019 1:43:59 am
+ * File Created: Sunday, 28th April 2019 3:51:16 pm
  * Author: Licoffe (p1lgr11m@gmail.com)
  * -----
- * Last Modified: Sunday, 28th April 2019 3:58:19 pm
+ * Last Modified: Sunday, 28th April 2019 3:56:40 pm
  * Modified By: Licoffe (p1lgr11m@gmail.com>)
  * -----
  * License:
@@ -33,9 +33,24 @@
 
 
 
-export enum WebsocketCommand {
+import { Adapter } from './Adapter';
 
-    GET_QUOTE   = 'GET_QUOTE',
-    GET_SYMBOLS = 'GET_SYMBOLS'
+export interface Symbol {
+
+    name:   string;
+    symbol: string;
+
+}
+
+// Build Symbol object out of API data
+export class SymbolAdapter implements Adapter<Symbol> {
+
+    public adapt( symbolData: any ): Symbol {
+
+        return {
+            symbol: symbolData.symbol,
+            name:   symbolData.name
+        };
+    }
 
 }

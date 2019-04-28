@@ -4,7 +4,7 @@
  * File Created: Sunday, 14th April 2019 12:27:23 pm
  * Author: Licoffe (p1lgr11m@gmail.com)
  * -----
- * Last Modified: Sunday, 28th April 2019 3:52:43 pm
+ * Last Modified: Sunday, 28th April 2019 3:59:12 pm
  * Modified By: Licoffe (p1lgr11m@gmail.com>)
  * -----
  * License:
@@ -36,38 +36,35 @@
 import { get } from 'request-promise-native';
 
 import { Constants } from '../constants';
-import { Quote, QuoteAdapter } from '../models/Quote';
 import { v4 } from 'uuid';
 
 import { Helper } from '../Helper';
 import { OperationState } from '../models/OperationState';
+import { Symbol, SymbolAdapter } from '../models/Symbol';
 
-export class QuoteController {
+export class SymbolController {
 
     /**
-     * Get 1 day quotes with 1 min precision for input symbol
+     * Get all supported symbols
      * 
      * @public
-     * @param {string} symbol - Quote symbol to fetch
-     * @returns {Promise<Quote[]>} Quote[] Object
+     * @returns {Promise<Symbol[]>} Symbol[]
      */
-    public static get( symbol: string ): Promise<Quote[]> {
+    public static get(): Promise<Symbol[]> {
         return new Promise( async ( resolve, reject ) => {
-            const msg:   string = `Fetching quote data for ${symbol}`;
+            const msg:   string = `Fetching all symbols`;
             const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
-            const route: string = `stock/${symbol}/chart/1d`;
+            const route: string = `ref-data/symbols`;
             console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
             get( `${Constants.API_URL}/${Constants.API_VERSION}/${route}` ).then(( data: any ) => {
-                const response:     any          = JSON.parse( data );
-                const output:       Quote[]      = [];
-                const quoteAdapter: QuoteAdapter = new QuoteAdapter();
+                const response:      any            = JSON.parse( data );
+                const output:        Symbol[]       = [];
+                const symbolAdapter: SymbolAdapter  = new SymbolAdapter();
 
                 for ( let i = 0 ; i < response.length; i++ ) {
-                    const quoteData: any = response[i];
-                    const quote: Quote   = quoteAdapter.adapt( quoteData );
-                    if ( quote.open && quote.high && quote.low && quote.close ) {
-                        output.push( quote );
-                    }
+                    const symbolData: any    = response[i];
+                    const symbol:     Symbol = symbolAdapter.adapt( symbolData );
+                    output.push( symbol );
                 }
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
 

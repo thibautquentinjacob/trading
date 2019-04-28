@@ -5,11 +5,24 @@
 
     <mat-icon
         svgIcon="coin"
-        class="logo"></mat-icon>
+        class="logo">
+    </mat-icon>
+    <div
+        class="current-symbol"
+        matTooltip="{{ _currentSymbol.symbol }}"
+        [matTooltipClass]="{'tooltip': true}">
+        <span class="arrow">
+            #
+        </span>
+        <span>
+            {{ _currentSymbol.name }}
+        </span>
+    </div>
+
     <div
         fxLayout="row"
         fxLayoutAlign="start center"
-        fxLayoutGap="10px">
+        fxLayoutGap="20px">
 
         <app-top-metric
             *ngFor="let metric of _metrics"
@@ -18,4 +31,13 @@
             [_increment]="metric.increment">
         </app-top-metric>
     </div>
+
+    <!-- <mat-form-field>
+        <mat-select placeholder="Symbol" [(ngModel)]="_currentSymbol" name="symbol">
+            <mat-option *ngFor="let symbol of _symbols" [value]="symbol.symbol">
+                {{ symbol.symbol }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field> -->
+
 </div>

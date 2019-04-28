@@ -1,8 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { CurrencyPipe } from '@angular/common';
 import { TopMetric } from 'src/app/models/TopMetric';
 import { PortfolioService } from 'src/app/services/portfolio.service';
-import { Stock } from 'src/app/models/Stock';
+import { Symbol } from 'src/app/models/Symbol';
 
 @Component({
     selector: 'app-top-metric-bar',
@@ -11,8 +10,10 @@ import { Stock } from 'src/app/models/Stock';
 })
 export class TopMetricBarComponent implements OnInit {
 
-    public total:        number;
-    public initialTotal: number;
+    public    total:         number;
+    public    initialTotal:  number;
+    @Input() _currentSymbol: string;
+    @Input() _symbols:       Symbol[];
 
     public _metrics: {
         current:   TopMetric,
@@ -82,5 +83,6 @@ export class TopMetricBarComponent implements OnInit {
     }
 
     ngOnInit() {
+        console.log( this._symbols );
     }
 }

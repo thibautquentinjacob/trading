@@ -39,6 +39,11 @@ export class PortfolioService {
         this.stocks.next( this._portfolio.stocks );
     }
 
+    public resetPortfolio(): void {
+        this._portfolio = new Portfolio( 5000 );
+        this._updateObservables();
+    }
+
     public buy ( stock: Stock, price: number ) {
         this._portfolio.buy( stock, price );
         this._updateObservables();

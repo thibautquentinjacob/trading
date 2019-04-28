@@ -1,0 +1,29 @@
+:host {
+
+    color: #30ffaf;
+
+    mat-icon {
+        color: #0e9862;
+        position: relative;
+        top: 8px;
+        margin-right: 10px;
+    }
+
+    .mat-input-element {
+        caret-color: #0e9862;
+    }
+
+    ::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
+        color: #0e9862!important;
+    }
+
+    ::ng-deep .mat-form-field.mat-focused .mat-form-field-ripple {
+        background-color: #0e9862!important;
+    }
+
+    ::ng-deep .menu {
+        background-color: rgba( 0, 0, 0, 0.5 );
+        color: #30ffaf!important;
+    }
+
+}

@@ -4,7 +4,7 @@
  * File Created: Sunday, 14th April 2019 12:19:02 pm
  * Author: Licoffe (p1lgr11m@gmail.com)
  * -----
- * Last Modified: Wednesday, 24th April 2019 12:57:05 am
+ * Last Modified: Sunday, 28th April 2019 4:00:26 pm
  * Modified By: Licoffe (p1lgr11m@gmail.com>)
  * -----
  * License:
@@ -42,6 +42,8 @@ import { Helper } from './Helper';
 import { OperationState } from './models/OperationState';
 import { IncomingMessage } from 'http';
 import { WebsocketCommand } from './models/WebsocketCommand';
+import { SymbolController } from './controllers/SymbolController';
+import { Symbol } from './models/Symbol';
 
 // Create new websocket server
 const webSocketServer: WebSocket.Server = new WebSocket.Server({
@@ -88,6 +90,12 @@ webSocketServer.on( 'connection', ( ws: WebSocket, req: IncomingMessage ) => {
                             'macd':  'open'
                         });
                     ws.send( JSON.stringify( quoteCollection ));
+                }).catch(( err: any ) => {
+                    console.log( err );
+                });
+            } else if ( parsedMessage.command === WebsocketCommand.GET_SYMBOLS ) {
+                SymbolController.get().then(( symbols: Symbol[]) => {
+                    ws.send( JSON.stringify( symbols ));
                 }).catch(( err: any ) => {
                     console.log( err );
                 });

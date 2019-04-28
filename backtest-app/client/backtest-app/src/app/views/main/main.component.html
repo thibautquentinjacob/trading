@@ -1,0 +1,25 @@
+<!-- <div
+    fxLayout="column"
+    fxLayoutAlign="start center"> -->
+    <div
+        fxLayout="row"
+        fxLayoutAlign="space-between center">
+        <app-top-metric-bar
+            [_currentSymbol]="_currentStockSymbol"
+            [_symbols]="">
+        </app-top-metric-bar>
+
+        <app-symbol-selector
+            [_symbols]="_symbols"
+            [_currentSymbol]="_currentStockSymbol"
+            (symbolSelected)="_symbolSelected( $event )">
+        </app-symbol-selector>
+    </div>
+
+    <div echarts
+        [options]="chartOption"
+        [loading]="true"
+        [autoResize]="true"
+        class="demo-chart">
+    </div>
+<!-- </div> -->

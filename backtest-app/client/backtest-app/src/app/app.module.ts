@@ -1,25 +1,33 @@
 import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { MatIconRegistry, MatIconModule } from '@angular/material';
+import { MatIconRegistry } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { NgxEchartsModule } from 'ngx-echarts';
-import { TopMetricBarModule } from './components/top-metric-bar/top-metric-bar.module';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { MainComponent } from './views/main/main.component';
+import { MainModule } from './views/main/main.module';
 
 @NgModule({
     declarations: [
         AppComponent,
     ],
     imports: [
+        RouterModule.forRoot([
+            {
+                path: ':symbol',
+                component: MainComponent
+            }
+        ]),
         BrowserModule,
-        MatIconModule,
+        FormsModule,
         HttpClientModule,
         AppRoutingModule,
-        NgxEchartsModule,
-        TopMetricBarModule
+        MainModule
     ],
     providers: [],
     bootstrap: [
