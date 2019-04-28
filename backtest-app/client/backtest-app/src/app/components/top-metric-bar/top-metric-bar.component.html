@@ -1,0 +1,21 @@
+<div
+    fxLayout="row"
+    fxLayoutAlign="start center"
+    fxLayoutGap="20px">
+
+    <mat-icon
+        svgIcon="coin"
+        class="logo"></mat-icon>
+    <div
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        fxLayoutGap="10px">
+
+        <app-top-metric
+            *ngFor="let metric of _metrics"
+            [_currentTopMetric]="metric.current"
+            [_previousTopMetric]="metric.previous"
+            [_increment]="metric.increment">
+        </app-top-metric>
+    </div>
+</div>
