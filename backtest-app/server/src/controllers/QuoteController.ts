@@ -4,7 +4,7 @@
  * File Created: Sunday, 14th April 2019 12:27:23 pm
  * Author: Licoffe (p1lgr11m@gmail.com)
  * -----
- * Last Modified: Sunday, 28th April 2019 3:52:43 pm
+ * Last Modified: Thursday, 23rd May 2019 1:00:27 am
  * Modified By: Licoffe (p1lgr11m@gmail.com>)
  * -----
  * License:
@@ -57,7 +57,7 @@ export class QuoteController {
             const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
             const route: string = `stock/${symbol}/chart/1d`;
             console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
-            get( `${Constants.API_URL}/${Constants.API_VERSION}/${route}` ).then(( data: any ) => {
+            get( `${Constants.ALPACA_API_URL}/${Constants.API_VERSION}/${route}` ).then(( data: any ) => {
                 const response:     any          = JSON.parse( data );
                 const output:       Quote[]      = [];
                 const quoteAdapter: QuoteAdapter = new QuoteAdapter();

@@ -4,7 +4,7 @@
  * File Created: Monday, 25th March 2019 12:44:48 am
  * Author: Licoffe (p1lgr11m@gmail.com)
  * -----
- * Last Modified: Sunday, 14th April 2019 12:18:04 pm
+ * Last Modified: Thursday, 23rd May 2019 1:01:52 am
  * Modified By: Licoffe (p1lgr11m@gmail.com>)
  * -----
  * License:
@@ -33,42 +33,91 @@
 
 
 
-import * as WebSocket from 'ws';
+// import * as WebSocket from 'ws';
 import { Constants } from '../constants';
-import { BehaviorSubject } from 'rxjs';
+// import { BehaviorSubject } from 'rxjs';
+// import { v4 } from 'uuid';
+import { post } from 'request-promise-native';
+
+// import { Helper } from '../Helper';
+// import { OperationState } from './OperationState';
 
 
 export class Streaming {
 
-    private static _socket:  WebSocket               = new WebSocket( Constants.DATA_URL );
-    public static _data:     BehaviorSubject<any>    = new BehaviorSubject<any>( null );
-    public static _messages: BehaviorSubject<string> = new BehaviorSubject<string>( '' );
-
-    private static _authenticate(): void {
-        const authMsg = {
-            action: 'authenticate',
-            data: {
-              key_id:     Constants.KEY_ID,
-              secret_key: Constants.KEY_SECRET
+    public static connect() {
+        const url: string = `${Constants.IEX_CLOUD_DATA_URL}/${Constants.IEX_CLOUD_VERSION}/${Constants.IEX_CLOUD_STREAM_PRECISION}?symbols=AAPL&token=${Constants.IEX_CLOUD_PRIVATE_TOKEN}`;
+        console.log( url );
+        post( `${Constants.IEX_CLOUD_DATA_URL}/${Constants.IEX_CLOUD_VERSION}/${Constants.IEX_CLOUD_STREAM_PRECISION}?symbols=AAPL&token=${Constants.IEX_CLOUD_PRIVATE_TOKEN}`, {
+            headers: {
+                'Content-Type': 'text/event-stream'
             }
-        }
-        Streaming._socket.send( JSON.stringify( authMsg ));
+        }).then(( data: any ) => {
+            console.log( data );
+        });
     }
 
-    public static setup(): void {
+    // private static _socket:        WebSocket               = new WebSocket( Constants.DATA_URL );
+    // private static _authenticated: boolean                 = false;
+    // public  static data:           BehaviorSubject<any>    = new BehaviorSubject<any>( null );
+    // public  static messages:       BehaviorSubject<string> = new BehaviorSubject<string>( '' );
+
+    // /**
+    //  * Authenticate the user on the channel
+    //  * 
+    //  * @param {uuid} string - Operation UUID 
+    //  */
+    // private static _authenticate( uuid: string ): void {
+    //     const uuid2: string = v4().replace( /^([^\-]*)\-.*/, '$1' );
+    //     console.log( Helper.formatLog( 'WebSocket', 'Authenticating', uuid2, OperationState.PENDING ));
+    //     const authMsg = {
+    //         action: 'authenticate',
+    //         data: {
+    //           key_id:     Constants.KEY_ID,
+    //           secret_key: Constants.KEY_SECRET
+    //         }
+    //     }
+    //     Streaming._socket.send( JSON.stringify( authMsg ));
+    //     console.log( Helper.formatLog( 'WebSocket', 'Opening channel', uuid, OperationState.SUCCESS ));
+    // }
+
+    // public static setup(): void {
         
-        Streaming._socket.on( 'message', ( data: any ) => {
-            this._messages.next( data.toString());
-        });
+    //     Streaming._socket.on( 'message', ( data: any ) => {
+    //         const parsedMessage: any = JSON.parse( data.toString());
+    //         console.log( parsedMessage );
+    //         switch ( parsedMessage.stream ) {
+    //             case 'authorization':
+    //                 Streaming._authenticated = ( parsedMessage.data.status === 'authorized' );
+    //                 // If authentication was successful, subscribe to trade updates and
+    //                 // account updates.
+    //                 if ( Streaming._authenticated ) {
+    //                     console.log( Helper.formatLog( 'WebSocket', 'Authenticated', '', OperationState.SUCCESS ));
+    //                     Streaming._socket.send(JSON.stringify({
+    //                         action: 'listen',
+    //                         data: {
+    //                             streams: ['trade_updates']
+    //                         }
+    //                     }));
+    //                 } else {
+    //                     console.log( Helper.formatLog( 'WebSocket', 'Could not authenticate', '', OperationState.FAILURE ));
+    //                 }
+    //                 break;
+    //             default:
+    //                 console.log( Helper.formatLog( 'WebSocket', JSON.stringify( parsedMessage ), '', OperationState.SUCCESS ));
+    //                 this.messages.next( data.toString());
+    //         }
+    //     });
         
-        Streaming._socket.on( 'error', ( err:any ) => {
-            console.log( err );
-        });
+    //     Streaming._socket.on( 'error', ( err:any ) => {
+    //         console.log( err );
+    //     });
         
-        Streaming._socket.on( 'open', () => {
-            console.log( 'Opened channel' );
-            Streaming._authenticate();
-        });
-    }
+    //     Streaming._socket.on( 'open', () => {
+    //         const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
+    //         console.log( Helper.formatLog( 'WebSocket', 'Opening channel', uuid, OperationState.PENDING ));
+    //         Streaming._authenticate( uuid );
+    //     });
+    // }
 
 }

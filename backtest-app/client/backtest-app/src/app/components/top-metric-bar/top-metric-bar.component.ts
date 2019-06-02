@@ -1,7 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
+
 import { TopMetric } from 'src/app/models/TopMetric';
-import { PortfolioService } from 'src/app/services/portfolio.service';
 import { Symbol } from 'src/app/models/Symbol';
+import { TopMetricType } from 'src/app/models/TopMetricType';
+
+import { PortfolioService } from 'src/app/services/portfolio.service';
 
 @Component({
     selector: 'app-top-metric-bar',
@@ -18,7 +21,8 @@ export class TopMetricBarComponent implements OnInit {
     public _metrics: {
         current:   TopMetric,
         previous:  TopMetric,
-        increment: number
+        increment: number,
+        type:      TopMetricType
     }[] = [
         {
             current: {
@@ -29,7 +33,8 @@ export class TopMetricBarComponent implements OnInit {
                 title: 'Total',
                 value: 5000
             },
-            increment: 0
+            increment: 0,
+            type:      TopMetricType.CURRENCY
         },
         {
             current: {
@@ -40,7 +45,8 @@ export class TopMetricBarComponent implements OnInit {
                 title: 'Cash',
                 value: 5000
             },
-            increment: 0
+            increment: 0,
+            type:      TopMetricType.CURRENCY
         },
         {
             current: {
@@ -51,7 +57,20 @@ export class TopMetricBarComponent implements OnInit {
                 title: 'Stocks',
                 value: 0
             },
-            increment: 0
+            increment: 0,
+            type:      TopMetricType.CURRENCY
+        },
+        {
+            current: {
+                title: 'Success Rate',
+                value: 0
+            },
+            previous: {
+                title: 'Success Rate',
+                value: 0
+            },
+            increment: 0,
+            type:      TopMetricType.PERCENTAGE
         }
     ];
 
@@ -79,6 +98,11 @@ export class TopMetricBarComponent implements OnInit {
         this._portfolioService.initialStockValue.subscribe(( initialStockValue: number ) => {
             this._metrics[2].previous.value = initialStockValue;
             this._metrics[2].increment = ( this._metrics[2].current.value / this._metrics[2].previous.value ) - 1;
+        });
+        this._portfolioService.successRate.subscribe(( successRate: number ) => {
+            console.log( successRate );
+            this._metrics[3].current.value = successRate;
+            this._metrics[3].increment = 0;
         });
     }
 

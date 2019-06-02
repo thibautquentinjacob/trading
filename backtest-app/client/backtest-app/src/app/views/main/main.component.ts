@@ -1,17 +1,21 @@
 import { Component } from '@angular/core';
 import { WebSocketSubject } from 'rxjs/observable/dom/WebSocketSubject';
 import { webSocket } from 'rxjs/webSocket';
-
 import { EChartOption, graphic } from 'echarts';
+import { ActivatedRoute, Params } from '@angular/router';
+
 import { PortfolioService } from '../../services/portfolio.service';
 import { Strategy } from '../../models/Strategy';
 import { RSIStrategy } from '../../models/strategies/RSIStrategy';
 import { StrategicDecision } from '../../models/StragegicDecision';
 import { Stock } from '../../models/Stock';
 import { Marker } from '../../models/Marker';
-import { SymbolsService } from '../../services/symbols.service';
 import { Symbol } from '../../models/Symbol';
-import { ActivatedRoute, Params } from '@angular/router';
+import { RSIWithSMAStrategy } from 'src/app/models/strategies/RSIWithSMAStrategy';
+
+import { SymbolsService } from '../../services/symbols.service';
+import { StrategiesService } from 'src/app/services/strategies.service';
+import { RSIStrategy_33_66 } from 'src/app/models/strategies/RSIStrategy_33_66';
 
 @Component({
     selector: 'app-main',
@@ -27,11 +31,14 @@ export class MainComponent {
     private _stocks:             {[key: string]: Stock };
     public  _currentStockSymbol: Symbol;
     public  _symbols:            Symbol[];
+    public  _currentStrategy:    string;
+    public  _strategies:         string[];
 
     constructor (
-        private _portfolioService: PortfolioService,
-        private _symbolsService:   SymbolsService,
-        private _activatedRoute:   ActivatedRoute
+        private _portfolioService:  PortfolioService,
+        private _symbolsService:    SymbolsService,
+        private _strategiesService: StrategiesService,
+        private _activatedRoute:    ActivatedRoute
     ) {
 
         this._activatedRoute.params.subscribe(( params: Params ) => {
@@ -53,6 +60,14 @@ export class MainComponent {
                     quote: this._currentStockSymbol.symbol
                 }
             });
+        });
+
+        this._strategiesService.currentStrategy.subscribe(( strategy: string ) => {
+            this._currentStrategy = strategy;
+        });
+
+        this._strategiesService.strategies.subscribe(( strategies: string[] ) => {
+            this._strategies = strategies;
         });
 
         this._symbolsService.symbols.subscribe(( symbols: Symbol[] ) => {
@@ -119,10 +134,25 @@ export class MainComponent {
 
                     // Try strategies
                     const data: {[key: string]: number } = {
-                        rsi: element.rsi_14_0
+                        rsi:   element.rsi_14_0,
+                        sma12: element.sma_12_0,
+                        sma26: element.sma_26_0,
+                        macd:  element.macd_2_5_9_1
                     };
-                    const buyDecision:  StrategicDecision = RSIStrategy.shouldBuy( data );
-                    const sellDecision: StrategicDecision = RSIStrategy.shouldSell( data );
+
+                    let buyDecision:  StrategicDecision = null;
+                    let sellDecision: StrategicDecision = null;
+
+                    if ( this._currentStrategy === 'RSI' ) {
+                        buyDecision  = RSIStrategy.shouldBuy( data );
+                        sellDecision = RSIStrategy.shouldSell( data );
+                    } else if ( this._currentStrategy === 'RSI 33/66' ) {
+                        buyDecision  = RSIStrategy_33_66.shouldBuy( data );
+                        sellDecision = RSIStrategy_33_66.shouldSell( data );
+                    } else if ( this._currentStrategy === 'RSI + SMA' ) {
+                        buyDecision  = RSIWithSMAStrategy.shouldBuy( data );
+                        sellDecision = RSIWithSMAStrategy.shouldSell( data );
+                    }
 
                     if ( buyDecision.decision && ( buyDecision.amount > 0 || buyDecision.amount === -1 )) {
                         const amount: number = Math.floor( this._cash / element.open );
@@ -135,7 +165,7 @@ export class MainComponent {
                                 xAxis: transformedDate
                             });
                         } else if ( buyDecision.amount !== -1 ) {
-                            this._portfolioService.buy( new Stock( this._currentStockSymbol.symbol, buyDecision.amount ), element.open );
+                            this._portfolioService.buy( new Stock( this._currentStockSymbol.symbol, buyDecision.amount ), element.close );
                             markers.push({
                                 name: `Buying ${buyDecision.amount} x ${this._currentStockSymbol.symbol} for ${element.open * buyDecision.amount} at ${transformedDate}`,
                                 type: 'buy',
@@ -719,5 +749,16 @@ export class MainComponent {
     private _symbolSelected( event ) {
         this._portfolioService.resetPortfolio();
         this._symbolsService.setCurrentSymbol( event );
+    }
+
+    private _strategySelected( event ) {
+        this._portfolioService.resetPortfolio();
+        this._strategiesService.setCurrentStrategy( event );
+        this.subject.next({
+            command: 'GET_QUOTE',
+            options: {
+                quote: this._currentStockSymbol.symbol
+            }
+        });
     }
 }

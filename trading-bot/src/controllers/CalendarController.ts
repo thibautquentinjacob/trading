@@ -4,7 +4,7 @@
  * File Created: Wednesday, 3rd April 2019 1:17:35 am
  * Author: Licoffe (p1lgr11m@gmail.com)
  * -----
- * Last Modified: Wednesday, 3rd April 2019 1:31:40 am
+ * Last Modified: Thursday, 23rd May 2019 1:00:27 am
  * Modified By: Licoffe (p1lgr11m@gmail.com>)
  * -----
  * License:
@@ -69,8 +69,8 @@ export class CalendarController {
             }
             
             console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
-            get( `${Constants.API_URL}/v1/${route}${queryString}`, {
-                headers: Constants.defaultHeaders
+            get( `${Constants.ALPACA_API_URL}/v1/${route}${queryString}`, {
+                headers: Constants.alpacaDefaultHeaders
             }).then(( data: any ) => {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
                 const response:        any             = JSON.parse( data );

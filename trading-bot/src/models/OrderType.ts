@@ -4,7 +4,7 @@
  * File Created: Monday, 25th March 2019 11:52:28 pm
  * Author: Licoffe (p1lgr11m@gmail.com)
  * -----
- * Last Modified: Tuesday, 26th March 2019 12:24:52 am
+ * Last Modified: Friday, 10th May 2019 11:27:50 pm
  * Modified By: Licoffe (p1lgr11m@gmail.com>)
  * -----
  * License:
@@ -35,9 +35,9 @@
 
 export enum OrderType {
 
-    MARKET     = 'MARKET',
-    LIMIT      = 'LIMIT',
-    STOP       = 'STOP',
-    STOP_LIMIT = 'STOP_LIMIT'
+    MARKET     = 'market',
+    LIMIT      = 'limit',
+    STOP       = 'stop',
+    STOP_LIMIT = 'stop_limit'
 
 }

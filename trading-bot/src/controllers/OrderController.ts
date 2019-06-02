@@ -4,7 +4,7 @@
  * File Created: Tuesday, 26th March 2019 12:31:58 am
  * Author: Licoffe (p1lgr11m@gmail.com)
  * -----
- * Last Modified: Tuesday, 2nd April 2019 12:24:19 am
+ * Last Modified: Thursday, 23rd May 2019 1:00:27 am
  * Modified By: Licoffe (p1lgr11m@gmail.com>)
  * -----
  * License:
@@ -33,7 +33,7 @@
 
 
 
-import { get, del } from 'request-promise-native';
+import { get, del, post } from 'request-promise-native';
 import { v4 } from 'uuid';
 
 import { Constants } from '../constants';
@@ -42,6 +42,9 @@ import { OrderStatus } from '../models/OrderStatus';
 import { Direction } from '../models/Direction';
 import { Helper } from '../Helper';
 import { OperationState } from '../models/OperationState';
+import { Side } from '../models/Side';
+import { OrderType } from '../models/OrderType';
+import { TimeInForce } from '../models/TimeInForce';
 
 export class OrderController {
 
@@ -52,8 +55,8 @@ export class OrderController {
      * @returns {Promise<Order[]>} Order[] Object
      */
     public static get(
-        after:     number,
-        until:     number,
+        after:     string,
+        until:     string,
         status:    OrderStatus = OrderStatus.NEW,
         limit:     number      = 50,
         direction: Direction   = Direction.DESC
@@ -64,19 +67,88 @@ export class OrderController {
         const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
         const route: string = `orders`;
         return new Promise( async ( resolve, reject ) => {
-            get( `${Constants.API_URL}/v1/${route}`, {
-                headers: Constants.defaultHeaders
+            // Max limit is 500
+            if ( limit > 500 ) {
+                limit = 500;
+            }
+            let params: string = `status=${status}&limit=${limit}&direction=${direction}`;
+            if ( after ) {
+                params += `&after=${after}`;
+            }
+            if ( until ) {
+                params += `&until=${until}`;
+            }
+            get( `${Constants.ALPACA_API_URL}/v1/${route}?${params}`, {
+                headers: Constants.alpacaDefaultHeaders
             }).then(( data: any ) => {
-                const response:     any          = JSON.parse( data );
+                // const response:     any          = JSON.parse( data );
                 const orderAdapter: OrderAdapter = new OrderAdapter();
                 const output:       Order[]      = [];
                 
-                for ( let i = 0 ; i < response.length; i++ ) {
-                    const orderData: any = response[i];
-                    output.push( orderAdapter.adapt( orderData ));
+                for ( let i = 0 ; i < data.length; i++ ) {
+                    const orderData: any = data[i];
+                    output.push( orderAdapter.adapt( JSON.stringify( orderData )));
                 }
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
                 resolve( output );
+            }).catch(( err: any ) => {
+                console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
+                reject( err );
+            });
+        });
+    }
+
+    /**
+     * Request a new order
+     * 
+     * @public
+     * @returns {Promise<Order>} Order Object
+     */
+    public static request(
+        symbol:         string,
+        quantity:       number,
+        side:           Side,
+        type:           OrderType,
+        timeInForce:    TimeInForce,
+        limitPrice?:    number,
+        stopPrice?:     number,
+        clientOrderId?: string
+    ): Promise<Order> {
+        const msg:   string = `
+            Requesting new order
+            ${side} ${symbol} x ${quantity} ${type}
+        `;
+        const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
+        const route: string = `orders`;
+        console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
+        return new Promise( async ( resolve, reject ) => {
+            // Reject order if type is LIMIT or STOP_LIMIT and missing limit price
+            if (( type === OrderType.LIMIT || type === OrderType.STOP_LIMIT ) && !limitPrice ) {
+                reject( null );
+            }
+
+            // Reject order if type is STOP or STOP_LIMIT and missing stop price
+            if (( type === OrderType.STOP || type === OrderType.STOP_LIMIT ) && !stopPrice ) {
+                reject( null );
+            }
+
+            post( `${Constants.ALPACA_API_URL}/v1/${route}`, {
+                headers: Constants.alpacaDefaultHeaders,
+                body: {
+                    symbol:           symbol,
+                    qty:              quantity,
+                    side:             side,
+                    type:             type,
+                    time_in_force:    timeInForce,
+                    limit_price:      limitPrice,
+                    stop_price:       stopPrice,
+                    client_order_id:  clientOrderId
+                },
+                json: true
+            }).then(( data: any ) => {
+                const orderAdapter: OrderAdapter = new OrderAdapter();
+                console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
+                resolve( orderAdapter.adapt( JSON.stringify( data )));
             }).catch(( err: any ) => {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
                 reject( err );
@@ -98,8 +170,8 @@ export class OrderController {
         const route: string = `orders/${orderId}`;
         console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
         return new Promise( async ( resolve, reject ) => {
-            get( `${Constants.API_URL}/v1/${route}`, {
-                headers: Constants.defaultHeaders
+            get( `${Constants.ALPACA_API_URL}/v1/${route}`, {
+                headers: Constants.alpacaDefaultHeaders
             }).then(( data: any ) => {
                 const response:     any          = JSON.parse( data );
                 const orderAdapter: OrderAdapter = new OrderAdapter();
@@ -126,8 +198,8 @@ export class OrderController {
             const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
             const route: string = `orders:${clientId}`;
             console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
-            get( `${Constants.API_URL}/v1/${route}`, {
-                headers: Constants.defaultHeaders
+            get( `${Constants.ALPACA_API_URL}/v1/${route}`, {
+                headers: Constants.alpacaDefaultHeaders
             }).then(( data: any ) => {
                 const response:     any          = JSON.parse( data );
                 const orderAdapter: OrderAdapter = new OrderAdapter();
@@ -154,8 +226,8 @@ export class OrderController {
             const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
             const route: string = `orders/${orderId}`;
             console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
-            del( `${Constants.API_URL}/v1/${route}`, {
-                headers: Constants.defaultHeaders
+            del( `${Constants.ALPACA_API_URL}/v1/${route}`, {
+                headers: Constants.alpacaDefaultHeaders
             }).then(() => {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
                 resolve();

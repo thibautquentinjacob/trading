@@ -6,11 +6,21 @@
         {{ _currentTopMetric.title }}
     </span>
     <span
+        *ngIf="_metricType === 'CURRENCY'"
         class="metric-value"
         [ngClass]="{
             'positive': _increment >= 0,
             'negative': _increment < 0
         }">
         {{ _currentTopMetric.value | currency }} ({{ _increment | percent:'0.2' }})
+    </span>
+    <span
+        *ngIf="_metricType === 'PERCENTAGE'"
+        class="metric-value"
+        [ngClass]="{
+            'positive': _currentTopMetric.value >= 0.5,
+            'negative': _currentTopMetric.value < 0.5
+        }">
+        {{ _currentTopMetric.value | percent:'0.2' }}
     </span>
 </div>

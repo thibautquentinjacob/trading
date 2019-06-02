@@ -1,13 +1,21 @@
-<!-- <div
-    fxLayout="column"
-    fxLayoutAlign="start center"> -->
+
+<div
+    fxLayout="row"
+    fxLayoutAlign="space-between center">
+
+    <app-top-metric-bar
+        [_currentSymbol]="_currentStockSymbol"
+        [_symbols]="">
+    </app-top-metric-bar>
+
     <div
         fxLayout="row"
         fxLayoutAlign="space-between center">
-        <app-top-metric-bar
-            [_currentSymbol]="_currentStockSymbol"
-            [_symbols]="">
-        </app-top-metric-bar>
+        <app-strategy-selector
+            [_strategies]="_strategies"
+            [_currentStrategy]="'RSI'"
+            (strategySelected)="_strategySelected( $event )">
+        </app-strategy-selector>
 
         <app-symbol-selector
             [_symbols]="_symbols"
@@ -15,11 +23,11 @@
             (symbolSelected)="_symbolSelected( $event )">
         </app-symbol-selector>
     </div>
+</div>
 
-    <div echarts
-        [options]="chartOption"
-        [loading]="true"
-        [autoResize]="true"
-        class="demo-chart">
-    </div>
-<!-- </div> -->
+<div echarts
+    [options]="chartOption"
+    [loading]="true"
+    [autoResize]="true"
+    class="demo-chart">
+</div>

@@ -4,7 +4,7 @@
  * File Created: Tuesday, 26th March 2019 12:34:55 am
  * Author: Licoffe (p1lgr11m@gmail.com)
  * -----
- * Last Modified: Monday, 8th April 2019 12:56:09 am
+ * Last Modified: Thursday, 23rd May 2019 1:00:32 am
  * Modified By: Licoffe (p1lgr11m@gmail.com>)
  * -----
  * License:
@@ -35,14 +35,25 @@
 
 export class Constants {
 
-    public static DATA_URL:   string = 'wss://data.alpaca.markets/stream';
-    public static API_URL:    string = 'https://paper-api.alpaca.markets';
-    public static KEY_ID:     string = 'PKZHLVTKOXLFX097CS6B';
-    public static KEY_SECRET: string = 'VNMwCnCytEk/51EjDgeiJgFjz2hIuDOZ/z0rV/8B';
+    // IEX Cloud API settings
+    public static IEX_CLOUD_DATA_URL:         string = 'https://cloud-sse.iexapis.com/';
+    public static IEX_CLOUD_VERSION:          string = 'stable';
+    public static IEX_CLOUD_STREAM_PRECISION: string = 'stocksUS1Minute';
+    public static IEX_CLOUD_PRIVATE_TOKEN:    string = 'sk_17df8f49db65407eb7aba757e1faeeae';
 
-    public static defaultHeaders: any = {
-        'APCA-API-KEY-ID':     Constants.KEY_ID,
-        'APCA-API-SECRET-KEY': Constants.KEY_SECRET
+    // Alpaca API settings
+    public static ALPACA_API_URL:             string = 'https://paper-api.alpaca.markets';
+    public static ALPACA_KEY_ID:              string = 'PKZHLVTKOXLFX097CS6B';
+    public static ALPACA_KEY_SECRET:          string = 'VNMwCnCytEk/51EjDgeiJgFjz2hIuDOZ/z0rV/8B';
+
+    public static IEXCloudAPIDefaultHeaders: any = {
+        'Accept': 'text/event-stream'
     };
+
+    public static alpacaDefaultHeaders: any = {
+        'APCA-API-KEY-ID':     Constants.ALPACA_KEY_ID,
+        'APCA-API-SECRET-KEY': Constants.ALPACA_KEY_SECRET
+    };
+
 
 }

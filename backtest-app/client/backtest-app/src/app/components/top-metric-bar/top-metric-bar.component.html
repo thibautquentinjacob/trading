@@ -26,6 +26,7 @@
 
         <app-top-metric
             *ngFor="let metric of _metrics"
+            [_metricType]="metric.type"
             [_currentTopMetric]="metric.current"
             [_previousTopMetric]="metric.previous"
             [_increment]="metric.increment">

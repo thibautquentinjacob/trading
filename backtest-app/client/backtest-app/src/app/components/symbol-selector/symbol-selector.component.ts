@@ -33,6 +33,9 @@ export class SymbolSelectorComponent implements OnInit, OnChanges {
         if ( changes._symbols ) {
             this._symbols = changes._symbols.currentValue;
         }
+        if ( changes._currentSymbol ) {
+            this._currentSymbol = changes._currentSymbol.currentValue;
+        }
     }
 
     private _optionSelected( event: MatAutocompleteSelectedEvent ) {

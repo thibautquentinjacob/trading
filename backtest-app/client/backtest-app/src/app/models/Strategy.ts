@@ -5,7 +5,15 @@ export class Strategy {
     private _name: string;
 
     constructor ( name: string ) {
+        this.name = name;
+    }
+
+    set name( name: string ) {
         this._name = name;
+    }
+
+    get name(): string {
+        return this._name;
     }
 
     // Provided market data, should we buy or not

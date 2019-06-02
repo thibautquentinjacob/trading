@@ -1,17 +1,16 @@
-// import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatIconModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule } from '@angular/material';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
-import { SymbolSelectorComponent } from './symbol-selector.component';
+import { StrategySelectorComponent } from './strategy-selector.component';
 
 
 
 @NgModule({
     declarations: [
-        SymbolSelectorComponent
+        StrategySelectorComponent
     ],
     imports: [
         FlexLayoutModule,
@@ -24,8 +23,8 @@ import { SymbolSelectorComponent } from './symbol-selector.component';
         MatAutocompleteModule
     ],
     exports: [
-        SymbolSelectorComponent
+        StrategySelectorComponent
     ],
     providers: []
 })
-export class SymbolSelectorModule {}
+export class StrategySelectorModule {}
