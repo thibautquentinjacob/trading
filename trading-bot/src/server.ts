@@ -4,7 +4,7 @@
  * File Created: Tuesday, 19th March 2019 12:21:16 am
  * Author: Licoffe (p1lgr11m@gmail.com)
  * -----
- * Last Modified: Thursday, 23rd May 2019 1:00:58 am
+ * Last Modified: Monday, 3rd June 2019 10:18:45 pm
  * Modified By: Licoffe (p1lgr11m@gmail.com>)
  * -----
  * License:
@@ -34,7 +34,7 @@
 
 import { AccountController } from './controllers/AccountController';
 import { Account } from './models/Account';
-import { OrderController } from "./controllers/OrderController";
+// import { OrderController } from "./controllers/OrderController";
 // import { Order } from "./models/Order";
 import { yellow } from 'colors';
 // import { PositionController } from "./controllers/PositionController";
@@ -43,14 +43,23 @@ import { yellow } from 'colors';
 import { ClockController } from "./controllers/ClockController";
 import { Clock } from "./models/Clock";
 // import { Constants } from "./constants";
-import { Streaming } from './models/Streaming';
 // import { Side } from './models/Side';
 // import { OrderType } from './models/OrderType';
 // import { TimeInForce } from './models/TimeInForce';
-import { Order } from './models/Order';
+// import { Order } from './models/Order';
+import { QuoteController } from './controllers/QuoteController';
+import { Quote } from './models/Quote';
+import { Constants } from './constants';
 // import { OrderStatus } from './models/OrderStatus';
-// import { onErrorResumeNext } from 'rxjs';
-// import { indicators } from 'tulind';
+import { indicators } from 'tulind';
+import { StrategicDecision } from './models/StragegicDecision';
+import { RSIWithMacDStrategy } from './models/strategies/RSIWithMacDStrategy';
+import { OrderController } from './controllers/OrderController';
+import { Side } from './models/Side';
+import { OrderType } from './models/OrderType';
+import { TimeInForce } from './models/TimeInForce';
+import { PositionController } from './controllers/PositionController';
+import { Position } from './models/Position';
 
 console.log( yellow( `
 .▄▄ · ▄▄▄▄▄      ▐▄• ▄ 
@@ -60,196 +69,201 @@ console.log( yellow( `
  ▀▀▀▀  ▀▀▀  ▀█▄▀▪•▀▀ ▀▀
 `));
 
-// // Create a screen object.
-// const app = screen({
-//     smartCSR: true,
-//     dockBorders: true
-// });
+let   marketOpened:      boolean                                   = false;
+const quotes:            Quote[]                                   = [];
+const indicatorsOptions: {[key: string]: {[key: string]: number }} = {
+    rsi: {
+        period: 14
+    },
+    macd: {
+        short_period:  2,
+        long_period:   5,
+        signal_period: 9
+    }
+};
 
-// app.title = 'my window title';
+function displayAccount ( account: Account ): void {
+    console.log(`
+    Cash:   $${account.cash}
+    Stocks: $${account.portfolioValue}
+    `);
+}
 
-// // Top box containing the KPIs
-// const kpisBox = box({
-//     left: 'left',
-//     width: '100%',
-//     shrink: true,
-//     align: 'center',
-//     content: `{bold}TOTAL:{/bold} {grey-fg}$5000 {${ColorTheme.emphasizedValue}-fg}(+23%){/}\
-//     {bold}ASSET:{/bold} {grey-fg}$5000 {${ColorTheme.emphasizedValue}-fg}(+23%){/}\
-//     {bold}CASH:{/bold} {grey-fg}$5000 {${ColorTheme.emphasizedValue}-fg}(+23%){/}\
-//     {bold}SUCCESS RATE:{/bold} {grey-fg}$5000 {${ColorTheme.emphasizedValue}-fg}(+23%){/}\
-//     {bold}STRATEGY:{/bold} {${ColorTheme.importantValue}-fg}SMA + MAC-D{/}`,
-//     tags: true,
-//     border: {
-//         type: 'line'
-//     },
-//     style: {
-//         fg: ColorTheme.title,
-//         border: {
-//             fg: ColorTheme.boxEdges
-//         },
-//         hover: {
-//             bg: 'green'
-//         }
-//     }
-// });
-  
-// // Append our box to the screen.
-// app.append( kpisBox );
+function shouldBuy ( data: {[key: string]: number }): StrategicDecision {
+    return RSIWithMacDStrategy.shouldBuy( data );
+}
 
-// // Top box containing the KPIs
-// const transactionLogsBox = box({
-//     top: 2,
-//     left: 'left',
-//     height: '40%',
-//     width: '100%',
-//     shrink: true,
-//     valign: 'top',
-//     align: 'center',
-//     content: `{bold}TRANSACTION LOGS{/bold}`,
-//     tags: true,
-//     border: {
-//         type: 'line'
-//     },
-//     style: {
-//         fg: ColorTheme.title,
-//         border: {
-//             fg: ColorTheme.boxEdges
-//         },
-//         hover: {
-//             bg: 'green'
-//         }
-//     }
-// });
+function shouldSell ( data: {[key: string]: number }): StrategicDecision {
+    return RSIWithMacDStrategy.shouldSell( data );
+}
 
-// // Top box containing the KPIs
-// const transactionLogsTable = table({
-//     top: 1,
-//     width: '99%',
-//     shrink: true,
-//     tags: true,
-//     border: {
-//         type: 'bg'
-//     },
-//     scrollable: true,
-//     scrollbar: {
-//         style: {
-//             bg: '#FF0000'
-//         }
-//     },
-//     // noCellBorders: true,
-//     // fillCellBorders: true,
-//     style: {
-//         fg: ColorTheme.title,
-//         border: {
-//             fg: '#333'
-//         },
-//         header: {
-//             bg: '#005544',
-//             border: {
-//                 fg: 'blue',
-//             },
-//             align: 'left'
-//         }
-//     }
-// });
+function buyLogic ( price: number, data: {[key: string]: number }): void {
+    const buyDecision: StrategicDecision = shouldBuy( data );
+    if ( buyDecision.decision && ( buyDecision.amount > 0 || buyDecision.amount === -1 )) {
+        // Get current cash amount
+        AccountController.get().then(( account: Account ) => {
+            const cash:   number = account.cash;
+            const amount: number = Math.floor( cash / price );
+            if ( buyDecision.amount === -1 && amount > 0 ) {
+                OrderController.request(
+                    Constants.TRADED_SYMBOL,
+                    amount,
+                    Side.BUY,
+                    OrderType.MARKET,
+                    TimeInForce.DAY,
+                );
+                console.log( `Buying ${amount} x ${Constants.TRADED_SYMBOL} for ${price * amount}` );
+            } else if ( buyDecision.amount !== -1 ) {
+                OrderController.request(
+                    Constants.TRADED_SYMBOL,
+                    buyDecision.amount,
+                    Side.BUY,
+                    OrderType.MARKET,
+                    TimeInForce.DAY,
+                );
+                console.log( `Buying ${buyDecision.amount} x ${Constants.TRADED_SYMBOL} for ${price * buyDecision.amount}` );
+            }
+        });
+    }
+}
 
-// transactionLogsTable.setData([
-//     [ '{bold}{#005544-bg}Date',  'Operation', 'Volume', 'Price', 'Order', 'Time in Force', 'Order add. options', 'Trigger', 'Status', 'Profit{/}' ],
-//     [ '2017-02-01 12:01:23', `{${ColorTheme.emphasizedValue}-fg}BUY{/}`, '12', `{${ColorTheme.negativeValue}-fg}-$242{/}`, 'STOP-LIMIT', 'DAY', 'LIMIT = $43', 'Open < SMA', 'FILLED', '...'  ],
-//     [ '2017-02-01 12:01:23', 'BUY', '12', '-$242', 'STOP-LIMIT', 'DAY', 'LIMIT = $43', 'Open < SMA', 'FILLED', '...'  ],
-//     [ '2017-02-01 12:01:23', 'BUY', '12', '-$242', 'STOP-LIMIT', 'DAY', 'LIMIT = $43', 'Open < SMA', 'FILLED', '...'  ],
-//     [ '2017-02-01 12:01:23', 'BUY', '12', '-$242', 'STOP-LIMIT', 'DAY', 'LIMIT = $43', 'Open < SMA', 'FILLED', '...'  ],
-//     [ '2017-02-01 12:01:23', 'BUY', '12', '-$242', 'STOP-LIMIT', 'DAY', 'LIMIT = $43', 'Open < SMA', 'FILLED', '...'  ],
-//     [ '2017-02-01 12:01:23', 'BUY', '12', '-$242', 'STOP-LIMIT', 'DAY', 'LIMIT = $43', 'Open < SMA', 'FILLED', '...'  ],
-//     [ '2017-02-01 12:01:23', 'BUY', '12', '-$242', 'STOP-LIMIT', 'DAY', 'LIMIT = $43', 'Open < SMA', 'FILLED', '...'  ],
-//     [ '2017-02-01 12:01:23', 'BUY', '12', '-$242', 'STOP-LIMIT', 'DAY', 'LIMIT = $43', 'Open < SMA', 'FILLED', '...'  ],
-//     [ '2017-02-01 12:01:23', 'BUY', '12', '-$242', 'STOP-LIMIT', 'DAY', 'LIMIT = $43', 'Open < SMA', 'FILLED', '...'  ],
-//     [ '2017-02-01 12:01:23', 'BUY', '12', '-$242', 'STOP-LIMIT', 'DAY', 'LIMIT = $43', 'Open < SMA', 'FILLED', '...'  ],
-//     [ '2017-02-01 12:01:23', 'BUY', '12', '-$242', 'STOP-LIMIT', 'DAY', 'LIMIT = $43', 'Open < SMA', 'FILLED', '...'  ],
-//     [ '2017-02-01 12:01:23', 'BUY', '12', '-$242', 'STOP-LIMIT', 'DAY', 'LIMIT = $43', 'Open < SMA', 'FILLED', '...'  ],
-//     [ '2017-02-01 12:01:23', 'BUY', '12', '-$242', 'STOP-LIMIT', 'DAY', 'LIMIT = $43', 'Open < SMA', 'FILLED', '...'  ],
-//   ]);
-  
-// // Append our box to the screen.
-// transactionLogsBox.append( transactionLogsTable );
-// app.append( transactionLogsBox );
+function sellLogic ( price: number, data: {[key: string]: number }): void {
+    const sellDecision: StrategicDecision = shouldSell( data );
+    if ( sellDecision.decision && ( sellDecision.amount > 0 || sellDecision.amount === -1 )) {
+        PositionController.getBySymbol( Constants.TRADED_SYMBOL ).then(( position: Position ) => {
+            const amount: number = position.qty;
+            if ( sellDecision.amount === -1 && amount > 0 ) {
+                OrderController.request(
+                    Constants.TRADED_SYMBOL,
+                    amount,
+                    Side.SELL,
+                    OrderType.MARKET,
+                    TimeInForce.DAY,
+                );
+                console.log( `Selling ${amount} x ${Constants.TRADED_SYMBOL} for ${price * amount}` );
+            } else if ( sellDecision.amount !== -1 ) {
+                OrderController.request(
+                    Constants.TRADED_SYMBOL,
+                    sellDecision.amount,
+                    Side.SELL,
+                    OrderType.MARKET,
+                    TimeInForce.DAY,
+                );
+                console.log( `Selling ${sellDecision.amount} x ${Constants.TRADED_SYMBOL} for ${price * sellDecision.amount}` );
+            }
+        })
+    }
+}
 
-// // Quit on Escape, q, or Control-C.
-// app.key(['escape', 'q', 'C-c'], function( ch: any, key: any ) {
-//     console.log( ch, key );
-//     return process.exit(0);
-// });
+function computeIndicators ( data: Quote[], options: {[key: string]: {[key: string]: number }}): {[key: string]: number[][] } {
+    const open:      number[]   = [];
+    let rsiMetrics:  number[][] = [];
+    let macdMetrics: number[][] = [];
+    for ( let i = 0, size = data.length ; i < size ; i++ ) {
+        open.push( data[i].open );
+    }
+    indicators.rsi.indicator( [open], [options['rsi']['period']], ( err: string, results: number[][] ) => {
+        rsiMetrics = results;
+        console.log( err );
+    });
 
-// // Render the screen.
-// app.render();
+    indicators.macd.indicator(
+        [open],
+        [
+            options['macd']['short_period'],
+            options['macd']['long_period'],
+            options['macd']['signal_period']
+        ], ( err: string, results: number[][] ) => {
+            console.log( results );
+            macdMetrics = results;
+        console.log( err );
+    });
 
-// OrderController.request( 'AAPL', 2, Side.BUY, OrderType.MARKET, TimeInForce.DAY ).then(( order: Order ) => {
-//     console.log( order );
-// }).catch(( err: any ) => {
-//     console.log( err );
-// });
-
-
-OrderController.get( '2019-05-10T15:00:00Z', '2019-05-10T23:00:00Z' ).then(( orders: Order[] ) => {
-    // console.log( orders[orders.length - 1] );
-}).catch(( err: any ) => {
-    console.log( err );
-});
-
-Streaming.connect();
-
-// indicators.sma.indicator( [[-1]], [3], ( err: string, results: number[] ) => {
-//     console.log( err );
-//     console.log( results );
-// });
-
-
-
-
-// indicators.sma.indicator([close], [3], function(err, results) {
-//     console.log("Result of sma is:");
-//     console.log(results[0]);
-//   });
-
-// OrderController.get( 1554157280000, 1554167280000 ).then(( orders: Order[] ) => {
-//     console.log( orders );
-// }).catch(( err: any ) => {
-//     console.log( err );
-// });
-
-// OrderController.cancel( '10' ).then(() => {
-// }).catch(( err: any ) => {});
-
-// OrderController.getByClientId( '10' ).then(() => {
-// }).catch(( err: any ) => {});
-
-// PositionController.getBySymbol( 'AAPL' ).then(() => {
-
-// }).catch(( err: any ) => {});
-
+    return {
+        rsi:  rsiMetrics,
+        macd: macdMetrics
+    };
+}
 
 // Use the clock controller to check for opening time
-// let marketOpened: boolean = false;
-
-// Check if the market is open or close
+// Check if the market is open or closed
 ClockController.get().then(( clock: Clock ) => {
-    // marketOpened = clock.isOpen
-    // console.log( marketOpened );
+    marketOpened               = clock.isOpen
+    const marketStatus: string = marketOpened ? 'opened': 'closed';
+    console.log( `Market is ${marketStatus}` );
 }).catch(( err: any ) => {
     console.log( err );
 });
 
-// Setup websocket communications
-// Streaming.setup();
-// Streaming.messages.subscribe(( message: string ) => {
-//     console.log( 'Got', message );
-// });
+// If no quotes have been fetched yet, get all quotes
+if ( marketOpened ) {
+    if ( quotes.length === 0 ) {
+        QuoteController.getQuotes( Constants.TRADED_SYMBOL ).then(( allQuotes: Quote[] ) => {
+            for ( let i = 0, size = allQuotes.length ; i < size ; i++ ) {
+                quotes.push( allQuotes[i] );
+            }
+            // Compute indicators
+            const metrics: {[key: string]: number[][]} = computeIndicators( quotes, indicatorsOptions );
+            const data:    {[key: string]: number}     = {
+                rsi:  metrics['rsi'][0][metrics['rsi'][0].length - 1],
+                macd: metrics['macd'][1][metrics['macd'][1].length - 1],
+            };
+            // Buy and Sell logic here
+            buyLogic( quotes[quotes.length - 1].open, data );
+            sellLogic( quotes[quotes.length - 1].open, data );
+        }).catch(( err: any ) => {
+            console.log( err );
+        });
+    }
+}
+
+// Fetch latest symbol quote every minutes
+setInterval(() => {
+    // If market is opened, fetch latest quotes
+    if ( marketOpened ) {
+        // If no quotes have been fetched yet, get all quotes
+        if ( quotes.length === 0 ) {
+            QuoteController.getQuotes( Constants.TRADED_SYMBOL ).then(( allQuotes: Quote[] ) => {
+                for ( let i = 0, size = allQuotes.length ; i < size ; i++ ) {
+                    quotes.push( allQuotes[i] );
+                }
+                // Compute indicators
+                const metrics: {[key: string]: number[][]} = computeIndicators( quotes, indicatorsOptions );
+                const data:    {[key: string]: number}     = {
+                    rsi:  metrics['rsi'][0][metrics['rsi'][0].length - 1],
+                    macd: metrics['macd'][1][metrics['macd'][1].length - 1],
+                };
+                // Buy and Sell logic here
+                buyLogic( quotes[quotes.length - 1].open, data );
+                sellLogic( quotes[quotes.length - 1].open, data );
+            }).catch(( err: any ) => {
+                console.log( err );
+            });
+        } else {
+            QuoteController.getLastQuote( Constants.TRADED_SYMBOL ).then(( quote: Quote ) => {
+                quotes.push( quote );
+                // Compute indicators
+                const metrics: {[key: string]: number[][]} = computeIndicators( quotes, indicatorsOptions );
+                const data:    {[key: string]: number}     = {
+                    rsi:  metrics['rsi'][0][metrics['rsi'][0].length - 1],
+                    macd: metrics['macd'][1][metrics['macd'][1].length - 1],
+                };
+                // Buy and Sell logic here
+                buyLogic( quotes[quotes.length - 1].open, data );
+                sellLogic( quotes[quotes.length - 1].open, data );
+            }).catch(( err: any ) => {
+                console.log( err );
+            });
+        }
+    }
+}, 60 * 1000 );
 
 // Refresh market status every minute
 setInterval(() => {
     ClockController.get().then(( clock: Clock ) => {
-        // marketOpened = clock.isOpen
+        marketOpened = clock.isOpen
+        const marketStatus: string = marketOpened ? 'opened': 'closed';
+        console.log( `Market is ${marketStatus}` );
     }).catch(( err: any ) => {
         console.log( err );
     });
@@ -257,7 +271,14 @@ setInterval(() => {
 
 // Refresh account state every minute
 AccountController.get().then(( account: Account ) => {
-    console.log( account );
+    displayAccount( account );
 }).catch(( err: any ) => {
     console.log( err );
 });
+setInterval(() => {
+    AccountController.get().then(( account: Account ) => {
+        displayAccount( account );
+    }).catch(( err: any ) => {
+        console.log( err );
+    });
+}, 60 * 1000 );

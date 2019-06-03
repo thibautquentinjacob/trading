@@ -1,10 +1,10 @@
 /*
- * File: constants.ts
+ * File: StragegicDecision.ts
  * Project: server
- * File Created: Tuesday, 26th March 2019 12:34:55 am
+ * File Created: Monday, 3rd June 2019 9:11:27 pm
  * Author: Licoffe (p1lgr11m@gmail.com)
  * -----
- * Last Modified: Monday, 3rd June 2019 12:02:03 am
+ * Last Modified: Monday, 3rd June 2019 9:11:38 pm
  * Modified By: Licoffe (p1lgr11m@gmail.com>)
  * -----
  * License:
@@ -33,28 +33,9 @@
 
 
 
-export class Constants {
+export interface StrategicDecision {
 
-    // IEX Cloud API settings
-    public static IEX_CLOUD_DATA_URL:         string = 'https://cloud-sse.iexapis.com/';
-    public static IEX_CLOUD_VERSION:          string = 'stable';
-    public static IEX_CLOUD_STREAM_PRECISION: string = 'stocksUS1Minute';
-    public static IEX_CLOUD_PRIVATE_TOKEN:    string = 'sk_17df8f49db65407eb7aba757e1faeeae';
-
-    // Alpaca API settings
-    public static ALPACA_API_URL:             string = 'https://paper-api.alpaca.markets';
-    public static ALPACA_KEY_ID:              string = 'PKZHLVTKOXLFX097CS6B';
-    public static ALPACA_KEY_SECRET:          string = 'VNMwCnCytEk/51EjDgeiJgFjz2hIuDOZ/z0rV/8B';
-
-    public static IEXCloudAPIDefaultHeaders: any = {
-        'Accept': 'text/event-stream'
-    };
-
-    public static alpacaDefaultHeaders: any = {
-        'APCA-API-KEY-ID':     Constants.ALPACA_KEY_ID,
-        'APCA-API-SECRET-KEY': Constants.ALPACA_KEY_SECRET
-    };
-
-    public static TRADED_SYMBOL:        string = 'AAPL';
+        amount:   number,
+        decision: boolean
 
 }
