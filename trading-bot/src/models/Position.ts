@@ -2,15 +2,15 @@
  * File: Position.ts
  * Project: server
  * File Created: Monday, 25th March 2019 12:44:18 am
- * Author: Licoffe (p1lgr11m@gmail.com)
+ * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 2nd April 2019 12:55:34 am
- * Modified By: Licoffe (p1lgr11m@gmail.com>)
+ * Last Modified: Tuesday, 4th June 2019 12:35:29 am
+ * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
  * MIT License
  * 
- * Copyright (c) 2019 Licoffe
+ * Copyright (c) 2019 Thibaut Jacob
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in

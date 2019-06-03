@@ -2,15 +2,15 @@
  * File: Adapter.ts
  * Project: server
  * File Created: Tuesday, 26th March 2019 12:45:14 am
- * Author: Licoffe (p1lgr11m@gmail.com)
+ * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 26th March 2019 12:50:47 am
- * Modified By: Licoffe (p1lgr11m@gmail.com>)
+ * Last Modified: Tuesday, 4th June 2019 12:35:29 am
+ * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
  * MIT License
  * 
- * Copyright (c) 2019 Licoffe
+ * Copyright (c) 2019 Thibaut Jacob
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in

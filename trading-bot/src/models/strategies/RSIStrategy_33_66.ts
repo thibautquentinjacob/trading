@@ -2,15 +2,15 @@
  * File: RSIStrategy.1.ts
  * Project: backtest-app
  * File Created: Tuesday, 30th April 2019 11:54:31 pm
- * Author: Licoffe (p1lgr11m@gmail.com)
+ * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Sunday, 5th May 2019 10:03:59 pm
- * Modified By: Licoffe (p1lgr11m@gmail.com>)
+ * Last Modified: Tuesday, 4th June 2019 12:35:29 am
+ * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
  * MIT License
  *
- * Copyright (c) 2019 Licoffe
+ * Copyright (c) 2019 Thibaut Jacob
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in

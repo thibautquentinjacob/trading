@@ -2,15 +2,15 @@
  * File: server.js
  * Project: server
  * File Created: Tuesday, 19th March 2019 12:21:16 am
- * Author: Licoffe (p1lgr11m@gmail.com)
+ * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Monday, 3rd June 2019 10:18:45 pm
- * Modified By: Licoffe (p1lgr11m@gmail.com>)
+ * Last Modified: Tuesday, 4th June 2019 12:35:29 am
+ * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
  * MIT License
  * 
- * Copyright (c) 2019 Licoffe
+ * Copyright (c) 2019 Thibaut Jacob
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
