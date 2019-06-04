@@ -4,7 +4,7 @@
  * File Created: Tuesday, 19th March 2019 12:21:16 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 4th June 2019 12:35:29 am
+ * Last Modified: Wednesday, 5th June 2019 12:27:42 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -89,15 +89,15 @@ function displayAccount ( account: Account ): void {
     `);
 }
 
-function shouldBuy ( data: {[key: string]: number }): StrategicDecision {
+function shouldBuy ( data: {[key: string]: number | Date }): StrategicDecision {
     return RSIWithMacDStrategy.shouldBuy( data );
 }
 
-function shouldSell ( data: {[key: string]: number }): StrategicDecision {
+function shouldSell ( data: {[key: string]: number | Date }): StrategicDecision {
     return RSIWithMacDStrategy.shouldSell( data );
 }
 
-function buyLogic ( price: number, data: {[key: string]: number }): void {
+function buyLogic ( price: number, data: {[key: string]: number | Date }): void {
     const buyDecision: StrategicDecision = shouldBuy( data );
     if ( buyDecision.decision && ( buyDecision.amount > 0 || buyDecision.amount === -1 )) {
         // Get current cash amount
@@ -127,7 +127,7 @@ function buyLogic ( price: number, data: {[key: string]: number }): void {
     }
 }
 
-function sellLogic ( price: number, data: {[key: string]: number }): void {
+function sellLogic ( price: number, data: {[key: string]: number | Date }): void {
     const sellDecision: StrategicDecision = shouldSell( data );
     if ( sellDecision.decision && ( sellDecision.amount > 0 || sellDecision.amount === -1 )) {
         PositionController.getBySymbol( Constants.TRADED_SYMBOL ).then(( position: Position ) => {
@@ -203,10 +203,11 @@ if ( marketOpened ) {
                 quotes.push( allQuotes[i] );
             }
             // Compute indicators
-            const metrics: {[key: string]: number[][]} = computeIndicators( quotes, indicatorsOptions );
-            const data:    {[key: string]: number}     = {
-                rsi:  metrics['rsi'][0][metrics['rsi'][0].length - 1],
-                macd: metrics['macd'][1][metrics['macd'][1].length - 1],
+            const metrics: {[key: string]: number[][]}     = computeIndicators( quotes, indicatorsOptions );
+            const data:    {[key: string]: number | Date } = {
+                rsi:   metrics['rsi'][0][metrics['rsi'][0].length - 1],
+                macd:  metrics['macd'][1][metrics['macd'][1].length - 1],
+                time:  new Date()
             };
             // Buy and Sell logic here
             buyLogic( quotes[quotes.length - 1].open, data );
@@ -228,10 +229,11 @@ setInterval(() => {
                     quotes.push( allQuotes[i] );
                 }
                 // Compute indicators
-                const metrics: {[key: string]: number[][]} = computeIndicators( quotes, indicatorsOptions );
-                const data:    {[key: string]: number}     = {
+                const metrics: {[key: string]: number[][]}     = computeIndicators( quotes, indicatorsOptions );
+                const data:    {[key: string]: number | Date } = {
                     rsi:  metrics['rsi'][0][metrics['rsi'][0].length - 1],
                     macd: metrics['macd'][1][metrics['macd'][1].length - 1],
+                    time: new Date()
                 };
                 // Buy and Sell logic here
                 buyLogic( quotes[quotes.length - 1].open, data );
