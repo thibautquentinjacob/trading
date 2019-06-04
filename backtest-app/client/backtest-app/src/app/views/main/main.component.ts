@@ -133,11 +133,12 @@ export class MainComponent {
                     macd.signal.push( element.macd_2_5_9_2 );
 
                     // Try strategies
-                    const data: {[key: string]: number } = {
+                    const data: {[key: string]: number | Date } = {
                         rsi:   element.rsi_14_0,
                         sma12: element.sma_12_0,
                         sma26: element.sma_26_0,
-                        macd:  element.macd_2_5_9_1
+                        macd:  element.macd_2_5_9_1,
+                        time:  parsedDate
                     };
 
                     let buyDecision:  StrategicDecision = null;

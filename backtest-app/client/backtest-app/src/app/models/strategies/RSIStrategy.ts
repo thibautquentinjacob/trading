@@ -15,7 +15,7 @@ export class RSIStrategy extends Strategy {
      * @param {[key: string]: number } data - Market data
      * @returns {StrategicDecision}
      */
-    public static shouldBuy( data: {[key: string]: number }): StrategicDecision {
+    public static shouldBuy( data: {[key: string]: number | Date }): StrategicDecision {
         if ( data.rsi > 50 ) {
             return {
                 amount:   -1,
@@ -36,7 +36,7 @@ export class RSIStrategy extends Strategy {
      * @param {[key: string]: number } data - Market data
      * @returns {StrategicDecision}
      */
-    public static shouldSell( data: {[key: string]: number }): StrategicDecision {
+    public static shouldSell( data: {[key: string]: number | Date }): StrategicDecision {
         if ( data.rsi <= 50 ) {
             return {
                 amount:   -1,
