@@ -4,7 +4,7 @@
  * File Created: Tuesday, 30th April 2019 11:54:31 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 4th June 2019 12:35:29 am
+ * Last Modified: Wednesday, 5th June 2019 12:23:11 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -47,10 +47,10 @@ export class RSIStrategy_33_66 extends Strategy {
      * Buy if RSI is superior to 66
      *
      * @override
-     * @param {[key: string]: number } data - Market data
+     * @param {[key: string]: number | Date } data - Market data
      * @returns {StrategicDecision}
      */
-    public static shouldBuy( data: {[key: string]: number }): StrategicDecision {
+    public static shouldBuy( data: {[key: string]: number | Date }): StrategicDecision {
         if ( data.rsi > 66 ) {
             return {
                 amount:   -1,
@@ -68,10 +68,10 @@ export class RSIStrategy_33_66 extends Strategy {
      * Sell if RSI is below 33
      *
      * @override
-     * @param {[key: string]: number } data - Market data
+     * @param {[key: string]: number | Date } data - Market data
      * @returns {StrategicDecision}
      */
-    public static shouldSell( data: {[key: string]: number }): StrategicDecision {
+    public static shouldSell( data: {[key: string]: number | Date }): StrategicDecision {
         if ( data.rsi <= 33 ) {
             return {
                 amount:   -1,

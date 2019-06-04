@@ -4,7 +4,7 @@
  * File Created: Sunday, 5th May 2019 8:54:48 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 4th June 2019 12:35:30 am
+ * Last Modified: Wednesday, 5th June 2019 12:22:06 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -40,18 +40,23 @@ export class RSIWithSMAStrategy extends Strategy {
 
     constructor ( name: string ) {
         super( name );
-        this.name = 'RSI + SMA';
+        this.name = 'RSI + Mac-D';
     }
 
     /**
-     * Buy if RSI is superior to 50
+     * Buy if RSI is superior to 50 and macd >= 0.01 and if we have at least
+     * 15 minutes before market close.
      *
      * @override
      * @param {[key: string]: number } data - Market data
      * @returns {StrategicDecision}
      */
-    public static shouldBuy( data: {[key: string]: number }): StrategicDecision {
-        if ( data.rsi > 50 && data.macd >= 0.01 ) {
+    public static shouldBuy( data: {[key: string]: number | Date }): StrategicDecision {
+        const currentDate:     Date   = data.time as Date;
+        const closingDate:     Date   = new Date( data.time );
+        closingDate.setHours( 16, 0, 0 );
+        const timeDiffMinutes: number = ( closingDate.getTime() - currentDate.getTime()) / ( 1000 * 60 );
+        if ( data.rsi > 50 && data.macd >= 0.01 && timeDiffMinutes > 15 ) {
             return {
                 amount:   -1,
                 decision: true
@@ -65,14 +70,19 @@ export class RSIWithSMAStrategy extends Strategy {
     }
 
     /**
-     * Sell if RSI is below 50
+     * Sell if (RSI is below 50 and macd below or equal to 0.01) or if market
+     * closes in less than 15 minutes.
      *
      * @override
      * @param {[key: string]: number } data - Market data
      * @returns {StrategicDecision}
      */
-    public static shouldSell( data: {[key: string]: number }): StrategicDecision {
-        if ( data.rsi <= 50 && data.macd <= -0.01  ) {
+    public static shouldSell( data: {[key: string]: number | Date }): StrategicDecision {
+        const currentDate:     Date   = data.time as Date;
+        const closingDate:     Date   = new Date( data.time );
+        closingDate.setHours( 16, 0, 0 );
+        const timeDiffMinutes: number = ( closingDate.getTime() - currentDate.getTime()) / ( 1000 * 60 );
+        if (( data.rsi <= 50 && data.macd <= -0.01 ) || timeDiffMinutes < 15 ) {
             return {
                 amount:   -1,
                 decision: true

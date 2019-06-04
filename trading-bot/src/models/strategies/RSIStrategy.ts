@@ -12,10 +12,10 @@ export class RSIStrategy extends Strategy {
      * Buy if RSI is superior to 50
      *
      * @override
-     * @param {[key: string]: number } data - Market data
+     * @param {[key: string]: number | Date } data - Market data
      * @returns {StrategicDecision}
      */
-    public static shouldBuy( data: {[key: string]: number }): StrategicDecision {
+    public static shouldBuy( data: {[key: string]: number | Date }): StrategicDecision {
         if ( data.rsi > 50 ) {
             return {
                 amount:   -1,
@@ -33,10 +33,10 @@ export class RSIStrategy extends Strategy {
      * Sell if RSI is below 50
      *
      * @override
-     * @param {[key: string]: number } data - Market data
+     * @param {[key: string]: number | Date } data - Market data
      * @returns {StrategicDecision}
      */
-    public static shouldSell( data: {[key: string]: number }): StrategicDecision {
+    public static shouldSell( data: {[key: string]: number | Date }): StrategicDecision {
         if ( data.rsi <= 50 ) {
             return {
                 amount:   -1,
