@@ -21,7 +21,7 @@ Proceed with the installation of all the dependencies by typing `npm install`.
 
 You will then be able to build the project using `npm run build`. You will find the generated code in the _dist_ folder.
 
-To run the project, change directory to the `dist` folder and type `node server.js`.
+To run the project, type `npm start`.
 
 ## Tests
 
