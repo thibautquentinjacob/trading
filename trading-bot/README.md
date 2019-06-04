@@ -19,7 +19,7 @@ The first step is to create a proper config. You will need to open `src/constant
 
 Proceed with the installation of all the dependencies by typing `npm install`.
 
-You will then be able to build the project using `npm run build`. You will find the generated code in the _dist_ folder.s
+You will then be able to build the project using `npm run build`. You will find the generated code in the _dist_ folder.
 
 To run the project, change directory to the `dist` folder and type `node server.js`.
 
