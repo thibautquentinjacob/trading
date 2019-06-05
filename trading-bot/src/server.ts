@@ -4,7 +4,7 @@
  * File Created: Tuesday, 19th March 2019 12:21:16 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Wednesday, 5th June 2019 12:27:42 am
+ * Last Modified: Wednesday, 5th June 2019 10:25:17 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -34,23 +34,12 @@
 
 import { AccountController } from './controllers/AccountController';
 import { Account } from './models/Account';
-// import { OrderController } from "./controllers/OrderController";
-// import { Order } from "./models/Order";
 import { yellow } from 'colors';
-// import { PositionController } from "./controllers/PositionController";
-// import { CalendarController } from "./controllers/CalendarController";
-// import { Calendar } from "./models/Calendar";
 import { ClockController } from "./controllers/ClockController";
 import { Clock } from "./models/Clock";
-// import { Constants } from "./constants";
-// import { Side } from './models/Side';
-// import { OrderType } from './models/OrderType';
-// import { TimeInForce } from './models/TimeInForce';
-// import { Order } from './models/Order';
 import { QuoteController } from './controllers/QuoteController';
 import { Quote } from './models/Quote';
 import { Constants } from './constants';
-// import { OrderStatus } from './models/OrderStatus';
 import { indicators } from 'tulind';
 import { StrategicDecision } from './models/StragegicDecision';
 import { RSIWithMacDStrategy } from './models/strategies/RSIWithMacDStrategy';
@@ -60,6 +49,7 @@ import { OrderType } from './models/OrderType';
 import { TimeInForce } from './models/TimeInForce';
 import { PositionController } from './controllers/PositionController';
 import { Position } from './models/Position';
+import { Logger } from './models/Logger';
 
 console.log( yellow( `
 .▄▄ · ▄▄▄▄▄      ▐▄• ▄ 
@@ -69,6 +59,7 @@ console.log( yellow( `
  ▀▀▀▀  ▀▀▀  ▀█▄▀▪•▀▀ ▀▀
 `));
 
+const logger:            Logger                                    = new Logger( 'log.txt' );
 let   marketOpened:      boolean                                   = false;
 const quotes:            Quote[]                                   = [];
 const indicatorsOptions: {[key: string]: {[key: string]: number }} = {
@@ -81,6 +72,8 @@ const indicatorsOptions: {[key: string]: {[key: string]: number }} = {
         signal_period: 9
     }
 };
+
+logger.log( 'Starting new trading session' );
 
 function displayAccount ( account: Account ): void {
     console.log(`
@@ -113,6 +106,7 @@ function buyLogic ( price: number, data: {[key: string]: number | Date }): void 
                     TimeInForce.DAY,
                 );
                 console.log( `Buying ${amount} x ${Constants.TRADED_SYMBOL} for ${price * amount}` );
+                logger.log( `Buying ${amount} x ${Constants.TRADED_SYMBOL} for ${price * amount}` );
             } else if ( buyDecision.amount !== -1 ) {
                 OrderController.request(
                     Constants.TRADED_SYMBOL,
@@ -122,6 +116,7 @@ function buyLogic ( price: number, data: {[key: string]: number | Date }): void 
                     TimeInForce.DAY,
                 );
                 console.log( `Buying ${buyDecision.amount} x ${Constants.TRADED_SYMBOL} for ${price * buyDecision.amount}` );
+                logger.log( `Buying ${buyDecision.amount} x ${Constants.TRADED_SYMBOL} for ${price * buyDecision.amount}` );
             }
         });
     }
@@ -141,6 +136,7 @@ function sellLogic ( price: number, data: {[key: string]: number | Date }): void
                     TimeInForce.DAY,
                 );
                 console.log( `Selling ${amount} x ${Constants.TRADED_SYMBOL} for ${price * amount}` );
+                logger.log( `Selling ${amount} x ${Constants.TRADED_SYMBOL} for ${price * amount}` );
             } else if ( sellDecision.amount !== -1 ) {
                 OrderController.request(
                     Constants.TRADED_SYMBOL,
@@ -150,6 +146,7 @@ function sellLogic ( price: number, data: {[key: string]: number | Date }): void
                     TimeInForce.DAY,
                 );
                 console.log( `Selling ${sellDecision.amount} x ${Constants.TRADED_SYMBOL} for ${price * sellDecision.amount}` );
+                logger.log( `Selling ${sellDecision.amount} x ${Constants.TRADED_SYMBOL} for ${price * sellDecision.amount}` );
             }
         })
     }
