@@ -4,7 +4,7 @@
  * File Created: Tuesday, 19th March 2019 12:21:16 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Wednesday, 5th June 2019 10:25:17 pm
+ * Last Modified: Thursday, 6th June 2019 12:25:08 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -106,7 +106,7 @@ function buyLogic ( price: number, data: {[key: string]: number | Date }): void 
                     TimeInForce.DAY,
                 );
                 console.log( `Buying ${amount} x ${Constants.TRADED_SYMBOL} for ${price * amount}` );
-                logger.log( `Buying ${amount} x ${Constants.TRADED_SYMBOL} for ${price * amount}` );
+                logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${amount} x ${price}\t${price * amount}` );
             } else if ( buyDecision.amount !== -1 ) {
                 OrderController.request(
                     Constants.TRADED_SYMBOL,
@@ -116,7 +116,7 @@ function buyLogic ( price: number, data: {[key: string]: number | Date }): void 
                     TimeInForce.DAY,
                 );
                 console.log( `Buying ${buyDecision.amount} x ${Constants.TRADED_SYMBOL} for ${price * buyDecision.amount}` );
-                logger.log( `Buying ${buyDecision.amount} x ${Constants.TRADED_SYMBOL} for ${price * buyDecision.amount}` );
+                logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${buyDecision.amount} x ${price}\t${price * buyDecision.amount}` );
             }
         });
     }
@@ -136,7 +136,7 @@ function sellLogic ( price: number, data: {[key: string]: number | Date }): void
                     TimeInForce.DAY,
                 );
                 console.log( `Selling ${amount} x ${Constants.TRADED_SYMBOL} for ${price * amount}` );
-                logger.log( `Selling ${amount} x ${Constants.TRADED_SYMBOL} for ${price * amount}` );
+                logger.log( `SELL\t${Constants.TRADED_SYMBOL}\t${amount} x ${price}\t${price * amount}` );
             } else if ( sellDecision.amount !== -1 ) {
                 OrderController.request(
                     Constants.TRADED_SYMBOL,
@@ -146,7 +146,7 @@ function sellLogic ( price: number, data: {[key: string]: number | Date }): void
                     TimeInForce.DAY,
                 );
                 console.log( `Selling ${sellDecision.amount} x ${Constants.TRADED_SYMBOL} for ${price * sellDecision.amount}` );
-                logger.log( `Selling ${sellDecision.amount} x ${Constants.TRADED_SYMBOL} for ${price * sellDecision.amount}` );
+                logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${sellDecision.amount} x ${price}\t${price * sellDecision.amount}` );
             }
         })
     }
