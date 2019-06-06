@@ -46,15 +46,20 @@ export class Constants {
     public static ALPACA_KEY_ID:              string = 'PKZHLVTKOXLFX097CS6B';
     public static ALPACA_KEY_SECRET:          string = 'VNMwCnCytEk/51EjDgeiJgFjz2hIuDOZ/z0rV/8B';
 
-    public static IEXCloudAPIDefaultHeaders: any = {
+    public static IEXCloudAPIDefaultHeaders: {[key: string]: string } = {
         'Accept': 'text/event-stream'
     };
 
-    public static alpacaDefaultHeaders: any = {
+    // Alpaca API headers
+    public static alpacaDefaultHeaders:      {[key: string]: string } = {
         'APCA-API-KEY-ID':     Constants.ALPACA_KEY_ID,
         'APCA-API-SECRET-KEY': Constants.ALPACA_KEY_SECRET
     };
 
-    public static TRADED_SYMBOL:        string = 'AAPL';
+    // The symbol to trade
+    public static TRADED_SYMBOL:             string = 'AAPL';
+
+    // SEC min day trade security amount
+    public static MIN_DAY_TRADE_CASH_AMOUNT: number = 25000;
 
 }
