@@ -4,7 +4,7 @@
  * File Created: Thursday, 4th April 2019 12:13:17 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 4th June 2019 12:35:29 am
+ * Last Modified: Thursday, 6th June 2019 11:56:18 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -56,9 +56,7 @@ export class QuoteController {
             const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
             const route: string = `quote`;
             console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
-            get( `${Constants.IEX_CLOUD_DATA_URL}/${Constants.IEX_CLOUD_VERSION}/stock/${symbol}/intraday-prices?token=${Constants.IEX_CLOUD_PRIVATE_TOKEN}`, {
-                headers: Constants.alpacaDefaultHeaders
-            }).then(( data: any ) => {
+            get( `${Constants.IEX_CLOUD_DATA_URL}/${Constants.IEX_CLOUD_VERSION}/stock/${symbol}/intraday-prices?token=${Constants.IEX_CLOUD_PRIVATE_TOKEN}`).then(( data: any ) => {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
                 const output:       Quote[]      = [];
                 const response:     any          = JSON.parse( data );
@@ -87,9 +85,7 @@ export class QuoteController {
             const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
             const route: string = `quote`;
             console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
-            get( `${Constants.IEX_CLOUD_DATA_URL}/${Constants.IEX_CLOUD_VERSION}/stock/${symbol}/intraday-prices?chartLast=1&token=${Constants.IEX_CLOUD_PRIVATE_TOKEN}`, {
-                headers: Constants.alpacaDefaultHeaders
-            }).then(( data: any ) => {
+            get( `${Constants.IEX_CLOUD_DATA_URL}/${Constants.IEX_CLOUD_VERSION}/stock/${symbol}/intraday-prices?chartLast=1&token=${Constants.IEX_CLOUD_PRIVATE_TOKEN}`).then(( data: any ) => {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
                 const response:     any          = JSON.parse( data );
                 const quoteAdapter: QuoteAdapter = new QuoteAdapter();
