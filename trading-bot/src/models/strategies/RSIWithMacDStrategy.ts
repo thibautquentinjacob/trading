@@ -35,6 +35,7 @@
 
 import { Strategy } from '../Strategy';
 import { StrategicDecision } from '../StragegicDecision';
+import { Logger } from '../Logger';
 
 export class RSIWithMacDStrategy extends Strategy {
 
@@ -49,14 +50,19 @@ export class RSIWithMacDStrategy extends Strategy {
      *
      * @override
      * @param {[key: string]: number | Date } data - Market data
+     * @param {Logger} logger - Logger to use
      * @returns {StrategicDecision}
      */
-    public static shouldBuy( data: {[key: string]: number | Date }): StrategicDecision {
+    public static shouldBuy(
+        data: {[key: string]: number | Date },
+        logger: Logger
+    ): StrategicDecision {
         const currentDate:     Date   = data.time as Date;
         const closingDate:     Date   = new Date( data.time );
-        closingDate.setHours( 16, 0, 0 );
+        closingDate.setHours( 22, 0, 0 );
         const timeDiffMinutes: number = ( closingDate.getTime() - currentDate.getTime()) / ( 1000 * 60 );
         if ( data.rsi > 50 && data.macd >= 0.01 && timeDiffMinutes > 15 ) {
+            logger.log( `Conditions met to send buy order : ${data.rsi} > 50 = ${data.rsi > 50}, ${data.macd} >= 0.01 = ${data.macd >= 0.01}, ${timeDiffMinutes} > 15 = ${timeDiffMinutes > 15}` );
             return {
                 amount:   -1,
                 decision: true
@@ -75,14 +81,19 @@ export class RSIWithMacDStrategy extends Strategy {
      *
      * @override
      * @param {[key: string]: number | Date } data - Market data
+     * @param {Logger} logger - Logger to use
      * @returns {StrategicDecision}
      */
-    public static shouldSell( data: {[key: string]: number | Date }): StrategicDecision {
+    public static shouldSell(
+        data:   {[key: string]: number | Date },
+        logger: Logger
+    ): StrategicDecision {
         const currentDate:     Date   = data.time as Date;
         const closingDate:     Date   = new Date( data.time );
-        closingDate.setHours( 16, 0, 0 );
+        closingDate.setHours( 22, 0, 0 );
         const timeDiffMinutes: number = ( closingDate.getTime() - currentDate.getTime()) / ( 1000 * 60 );
         if (( data.rsi <= 50 && data.macd <= -0.01 ) || timeDiffMinutes < 15 ) {
+            logger.log( `Conditions met to send sell order : ${data.rsi} <= 50 = ${data.rsi <= 50}, ${data.macd} <= -0.01 = ${data.macd <= -0.01}, ${timeDiffMinutes} < 15 = ${timeDiffMinutes < 15}` );
             return {
                 amount:   -1,
                 decision: true

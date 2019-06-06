@@ -1,4 +1,5 @@
 import { StrategicDecision } from './StragegicDecision';
+import { Logger } from './Logger';
 
 export class Strategy {
 
@@ -17,7 +18,7 @@ export class Strategy {
     }
 
     // Provided market data, should we buy or not
-    public static shouldBuy( data: {[key: string]: number }): StrategicDecision {
+    public static shouldBuy( data: {[key: string]: number }, logger?: Logger ): StrategicDecision {
         return {
             amount: 0,
             decision: false
@@ -25,7 +26,7 @@ export class Strategy {
     }
 
     // Provided market data, should we sell or not
-    public static shouldSell( data: {[key: string]: number }): StrategicDecision {
+    public static shouldSell( data: {[key: string]: number }, logger?: Logger ): StrategicDecision {
         return {
             amount: 0,
             decision: false
