@@ -83,11 +83,11 @@ function displayAccount ( account: Account ): void {
 }
 
 function shouldBuy ( data: {[key: string]: number | Date }): StrategicDecision {
-    return RSIWithMacDStrategy.shouldBuy( data );
+    return RSIWithMacDStrategy.shouldBuy( data, logger );
 }
 
 function shouldSell ( data: {[key: string]: number | Date }): StrategicDecision {
-    return RSIWithMacDStrategy.shouldSell( data );
+    return RSIWithMacDStrategy.shouldSell( data, logger );
 }
 
 function buyLogic ( price: number, data: {[key: string]: number | Date }): void {
@@ -95,7 +95,7 @@ function buyLogic ( price: number, data: {[key: string]: number | Date }): void 
     if ( buyDecision.decision && ( buyDecision.amount > 0 || buyDecision.amount === -1 )) {
         // Get current cash amount
         AccountController.get().then(( account: Account ) => {
-            const cash:   number = account.cash;
+            const cash:   number = account.cash - Constants.MIN_DAY_TRADE_CASH_AMOUNT;
             const amount: number = Math.floor( cash / price );
             if ( buyDecision.amount === -1 && amount > 0 ) {
                 OrderController.request(
@@ -148,7 +148,7 @@ function sellLogic ( price: number, data: {[key: string]: number | Date }): void
                 console.log( `Selling ${sellDecision.amount} x ${Constants.TRADED_SYMBOL} for ${price * sellDecision.amount}` );
                 logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${sellDecision.amount} x ${price}\t${price * sellDecision.amount}` );
             }
-        })
+        }).catch(() => {});
     }
 }
 
@@ -171,7 +171,6 @@ function computeIndicators ( data: Quote[], options: {[key: string]: {[key: stri
             options['macd']['long_period'],
             options['macd']['signal_period']
         ], ( err: string, results: number[][] ) => {
-            console.log( results );
             macdMetrics = results;
         console.log( err );
     });
@@ -242,10 +241,11 @@ setInterval(() => {
             QuoteController.getLastQuote( Constants.TRADED_SYMBOL ).then(( quote: Quote ) => {
                 quotes.push( quote );
                 // Compute indicators
-                const metrics: {[key: string]: number[][]} = computeIndicators( quotes, indicatorsOptions );
-                const data:    {[key: string]: number}     = {
+                const metrics: {[key: string]: number[][]}     = computeIndicators( quotes, indicatorsOptions );
+                const data:    {[key: string]: number | Date } = {
                     rsi:  metrics['rsi'][0][metrics['rsi'][0].length - 1],
                     macd: metrics['macd'][1][metrics['macd'][1].length - 1],
+                    time: new Date()
                 };
                 // Buy and Sell logic here
                 buyLogic( quotes[quotes.length - 1].open, data );
