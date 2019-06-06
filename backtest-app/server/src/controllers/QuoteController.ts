@@ -4,7 +4,7 @@
  * File Created: Sunday, 14th April 2019 12:27:23 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 4th June 2019 12:35:29 am
+ * Last Modified: Friday, 7th June 2019 12:12:31 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -45,33 +45,52 @@ import { OperationState } from '../models/OperationState';
 export class QuoteController {
 
     /**
-     * Get 1 day quotes with 1 min precision for input symbol
+     * Get all quotes for input symbol.
      * 
      * @public
-     * @param {string} symbol - Quote symbol to fetch
-     * @returns {Promise<Quote[]>} Quote[] Object
+     * @param {symbol} string - Symbol to get a quote of
+     * @returns {Promise<Quote[]>} Quote Object array
      */
-    public static get( symbol: string ): Promise<Quote[]> {
+    public static getQuotes( symbol: string ): Promise<Quote[]> {
         return new Promise( async ( resolve, reject ) => {
-            const msg:   string = `Fetching quote data for ${symbol}`;
+            const msg:   string = `Fetching all quotes for symbol ${symbol}`;
             const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
-            const route: string = `stock/${symbol}/chart/1d`;
+            const route: string = `quote`;
             console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
-            get( `${Constants.ALPACA_API_URL}/${Constants.API_VERSION}/${route}` ).then(( data: any ) => {
-                const response:     any          = JSON.parse( data );
-                const output:       Quote[]      = [];
-                const quoteAdapter: QuoteAdapter = new QuoteAdapter();
-
-                for ( let i = 0 ; i < response.length; i++ ) {
-                    const quoteData: any = response[i];
-                    const quote: Quote   = quoteAdapter.adapt( quoteData );
-                    if ( quote.open && quote.high && quote.low && quote.close ) {
-                        output.push( quote );
-                    }
-                }
+            get( `${Constants.IEX_CLOUD_DATA_URL}/${Constants.IEX_CLOUD_VERSION}/stock/${symbol}/intraday-prices?token=${Constants.IEX_CLOUD_PRIVATE_TOKEN}`).then(( data: any ) => {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
-
+                const output:       Quote[]      = [];
+                const response:     any          = JSON.parse( data );
+                const quoteAdapter: QuoteAdapter = new QuoteAdapter();
+                for ( let i = 0, size = response.length ; i < size ; i++ ) {
+                    output.push( quoteAdapter.adapt( response[i] ));
+                }
                 resolve( output );
+            }).catch(( err: any ) => {
+                console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
+                reject( err );
+            });
+        });
+    }
+
+    /**
+     * Get last quote for input symbol.
+     * 
+     * @public
+     * @param {symbol} string - Symbol to get a quote of
+     * @returns {Promise<Quote>} Quote Object
+     */
+    public static getLastQuote( symbol: string ): Promise<Quote> {
+        return new Promise( async ( resolve, reject ) => {
+            const msg:   string = `Fetching last quote for symbol ${symbol}`;
+            const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
+            const route: string = `quote`;
+            console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
+            get( `${Constants.IEX_CLOUD_DATA_URL}/${Constants.IEX_CLOUD_VERSION}/stock/${symbol}/intraday-prices?chartLast=1&token=${Constants.IEX_CLOUD_PRIVATE_TOKEN}`).then(( data: any ) => {
+                console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
+                const response:     any          = JSON.parse( data );
+                const quoteAdapter: QuoteAdapter = new QuoteAdapter();
+                resolve( quoteAdapter.adapt( response[0] ));
             }).catch(( err: any ) => {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
                 reject( err );

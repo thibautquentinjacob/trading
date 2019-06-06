@@ -1,27 +1,27 @@
 /*
- * File: constants.ts
+ * File: Quote.ts
  * Project: server
- * File Created: Sunday, 14th April 2019 12:28:35 pm
+ * File Created: Sunday, 2nd June 2019 11:31:08 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Thursday, 6th June 2019 11:55:17 pm
+ * Last Modified: Friday, 7th June 2019 12:02:24 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
  * MIT License
- * 
+ *
  * Copyright (c) 2019 Thibaut Jacob
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
  * of the Software, and to permit persons to whom the Software is furnished to do
  * so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,19 +33,26 @@
 
 
 
-export class Constants {
+export interface Quote {
 
-    // IEX Cloud API settings
-    public static IEX_CLOUD_DATA_URL:         string = 'https://cloud-sse.iexapis.com/';
-    public static IEX_CLOUD_VERSION:          string = 'stable';
-    public static IEX_CLOUD_STREAM_PRECISION: string = 'stocksUS1Minute';
-    public static IEX_CLOUD_PRIVATE_TOKEN:    string = 'sk_17df8f49db65407eb7aba757e1faeeae';
-
-    // Data API settings
-    public static ALPACA_API_URL:             string = 'https://api.iextrading.com';
-    public static API_VERSION:                string = '1.0';
-
-    // Server settings
-    public static WEBSERVER_PORT:             number = 8080;
+    date:                 Date,
+    high:                 number,
+    low:                  number,
+    average:              number,
+    volume:               number,
+    notional:             number,
+    numberOfTrades:       number,
+    marketHigh:           number,
+    marketLow:            number,
+    marketAverage:        number,
+    marketVolume:         number,
+    marketNotional:       number,
+    marketNumberOfTrades: number,
+    open:                 number,
+    close:                number,
+    marketOpen:           number,
+    marketClose:          number,
+    changeOverTime:       number,
+    marketChangeOverTime: number
 
 }

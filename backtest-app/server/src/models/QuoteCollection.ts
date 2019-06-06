@@ -4,7 +4,7 @@
  * File Created: Sunday, 14th April 2019 12:21:51 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 4th June 2019 12:35:29 am
+ * Last Modified: Friday, 7th June 2019 12:06:38 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -75,7 +75,7 @@ export class QuoteCollection {
             // For each quote, get data corresponding to the column
             for ( let j = 0 ; j < quotesAmount ; j++ ) {
                 const quote: Quote = this._quotes[j];
-                row.push( quote[column]);
+                row.push( quote[column] as number );
             }
 
             dataRows[column] = row;

@@ -17,7 +17,7 @@ export class Stock {
 
     set amount ( amount: number ) {
         if ( amount < 0 ) {
-            throw new Error( `Amount can be inferior to 0: ${amount}` );
+            throw new Error( `Amount can't be inferior to 0: ${amount}` );
         }
         this._amount = amount;
     }

@@ -4,7 +4,7 @@
  * File Created: Sunday, 14th April 2019 12:19:02 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 4th June 2019 12:35:29 am
+ * Last Modified: Friday, 7th June 2019 12:00:12 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -68,7 +68,7 @@ webSocketServer.on( 'connection', ( ws: WebSocket, req: IncomingMessage ) => {
         try {
             const parsedMessage: any = JSON.parse( message.toString());
             if ( parsedMessage.command === WebsocketCommand.GET_QUOTE ) {
-                QuoteController.get( parsedMessage.options['quote']).then(( quotes: Quote[] ) => {
+                QuoteController.getQuotes( parsedMessage.options['quote']).then(( quotes: Quote[] ) => {
                     const quoteCollection = new QuoteCollection(
                         quotes,
                         {

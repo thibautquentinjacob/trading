@@ -4,7 +4,7 @@
  * File Created: Sunday, 14th April 2019 12:21:51 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 4th June 2019 12:35:29 am
+ * Last Modified: Friday, 7th June 2019 12:06:17 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -37,50 +37,53 @@ import { Adapter } from './Adapter';
 
 export interface Quote {
 
-    date:                 number;
-    open:                 number;
-    high:                 number;
-    low:                  number;
-    close:                number;
-    average:              number;
-    volume:               number;
-    changeOverTime:       number;
-    numberOfTrades:       number;
-    marketOpen:           number;
-    marketHigh:           number;
-    marketLow:            number;
-    marketClose:          number;
-    marketAverage:        number;
-    marketVolume:         number;
-    marketNumberOfTrades: number;
-    marketChangeOverTime: number;
-    [key: string]:        number;
+    date:                 Date,
+    high:                 number,
+    low:                  number,
+    average:              number,
+    volume:               number,
+    notional:             number,
+    numberOfTrades:       number,
+    marketHigh:           number,
+    marketLow:            number,
+    marketAverage:        number,
+    marketVolume:         number,
+    marketNotional:       number,
+    marketNumberOfTrades: number,
+    open:                 number,
+    close:                number,
+    marketOpen:           number,
+    marketClose:          number,
+    changeOverTime:       number,
+    marketChangeOverTime: number,
+    [key: string]:        number | Date;
+
 }
 
 // Build Quote object out of API data
 export class QuoteAdapter implements Adapter<Quote> {
 
     public adapt( quoteData: any ): Quote {
-        const regexp: RegExp = /(\d{4})(\d{2})(\d{2})/;
-        const date:   Date   = new Date( `${quoteData.date.replace( regexp, '$1-$2-$3' )} ${quoteData.minute}` );
 
         return {
-            date:                 date.getTime(),
-            open:                 quoteData.open,
-            high:                 quoteData.high,                
-            low:                  quoteData.low,                 
-            close:                quoteData.close,               
-            average:              quoteData.average,             
-            volume:               quoteData.volume,              
-            changeOverTime:       quoteData.changeOverTime,      
-            numberOfTrades:       quoteData.numberOfTrades,      
-            marketOpen:           quoteData.marketOpen,          
-            marketHigh:           quoteData.marketHigh,          
-            marketLow:            quoteData.marketLow,           
-            marketClose:          quoteData.marketClose,         
-            marketAverage:        quoteData.marketAverage,       
-            marketVolume:         quoteData.marketVolume,        
+            date:                 new Date( `${quoteData.date} ${quoteData.minute}` ),
+            high:                 quoteData.high,
+            low:                  quoteData.low,
+            average:              quoteData.average,
+            volume:               quoteData.volume,
+            notional:             quoteData.notional,
+            numberOfTrades:       quoteData.numberOfTrades,
+            marketHigh:           quoteData.marketHigh,
+            marketLow:            quoteData.marketLow,
+            marketAverage:        quoteData.marketAverage,
+            marketVolume:         quoteData.marketVolume,
+            marketNotional:       quoteData.marketNotional,
             marketNumberOfTrades: quoteData.marketNumberOfTrades,
+            open:                 quoteData.open,
+            close:                quoteData.close,
+            marketOpen:           quoteData.marketOpen,
+            marketClose:          quoteData.marketClose,
+            changeOverTime:       quoteData.changeOverTime,
             marketChangeOverTime: quoteData.marketChangeOverTime
         };
     }

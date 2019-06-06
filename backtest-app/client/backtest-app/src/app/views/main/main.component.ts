@@ -156,7 +156,7 @@ export class MainComponent {
                     }
 
                     if ( buyDecision.decision && ( buyDecision.amount > 0 || buyDecision.amount === -1 )) {
-                        const amount: number = Math.floor( this._cash / element.open );
+                        const amount: number = Math.floor(( this._cash - 25000 ) / element.open );
                         if ( buyDecision.amount === -1 && amount > 0 ) {
                             this._portfolioService.buy( new Stock( this._currentStockSymbol.symbol, amount ), element.open );
                             markers.push({
