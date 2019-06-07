@@ -16,7 +16,8 @@ export class RSIStrategy extends Strategy {
      * @returns {StrategicDecision}
      */
     public static shouldBuy( data: {[key: string]: number | Date }): StrategicDecision {
-        if ( data.rsi > 50 ) {
+        // if ( data.rsi <= 30 ) {
+        if ( data.macd < 0 && data.rsi <= 50 ) {
             return {
                 amount:   -1,
                 decision: true
@@ -37,7 +38,8 @@ export class RSIStrategy extends Strategy {
      * @returns {StrategicDecision}
      */
     public static shouldSell( data: {[key: string]: number | Date }): StrategicDecision {
-        if ( data.rsi <= 50 ) {
+        // if ( data.rsi > 70 ) {
+        if ( data.macd > 0.01 ) {
             return {
                 amount:   -1,
                 decision: true
