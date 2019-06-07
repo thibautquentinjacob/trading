@@ -4,7 +4,7 @@
  * File Created: Sunday, 5th May 2019 8:54:48 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Wednesday, 5th June 2019 12:23:38 am
+ * Last Modified: Saturday, 8th June 2019 12:26:53 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -61,8 +61,8 @@ export class RSIWithMacDStrategy extends Strategy {
         const closingDate:     Date   = new Date( data.time );
         closingDate.setHours( 22, 0, 0 );
         const timeDiffMinutes: number = ( closingDate.getTime() - currentDate.getTime()) / ( 1000 * 60 );
-        if ( data.rsi > 50 && data.macd >= 0.01 && timeDiffMinutes > 15 ) {
-            logger.log( `Conditions met to send buy order : ${data.rsi} > 50 = ${data.rsi > 50}, ${data.macd} >= 0.01 = ${data.macd >= 0.01}, ${timeDiffMinutes} > 15 = ${timeDiffMinutes > 15}` );
+        if ( data.macd < 0 && data.rsi <= 50 && timeDiffMinutes > 15 ) {
+            logger.log( `Conditions met to send buy order : ${data.rsi} <= 50 = ${data.rsi <= 50}, ${data.macd} < 0 = ${data.macd < 0}, ${timeDiffMinutes} > 15 = ${timeDiffMinutes > 15}` );
             return {
                 amount:   -1,
                 decision: true
@@ -92,8 +92,8 @@ export class RSIWithMacDStrategy extends Strategy {
         const closingDate:     Date   = new Date( data.time );
         closingDate.setHours( 22, 0, 0 );
         const timeDiffMinutes: number = ( closingDate.getTime() - currentDate.getTime()) / ( 1000 * 60 );
-        if (( data.rsi <= 50 && data.macd <= -0.01 ) || timeDiffMinutes < 15 ) {
-            logger.log( `Conditions met to send sell order : ${data.rsi} <= 50 = ${data.rsi <= 50}, ${data.macd} <= -0.01 = ${data.macd <= -0.01}, ${timeDiffMinutes} < 15 = ${timeDiffMinutes < 15}` );
+        if ( data.macd > 0.01 || timeDiffMinutes < 15 ) {
+            logger.log( `Conditions met to send sell order : ${data.macd} > 0.01 = ${data.macd > 0.01}, ${timeDiffMinutes} < 15 = ${timeDiffMinutes < 15}` );
             return {
                 amount:   -1,
                 decision: true
