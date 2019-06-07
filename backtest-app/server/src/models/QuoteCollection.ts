@@ -4,7 +4,7 @@
  * File Created: Sunday, 14th April 2019 12:21:51 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Friday, 7th June 2019 12:06:38 am
+ * Last Modified: Friday, 7th June 2019 9:30:07 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -94,11 +94,8 @@ export class QuoteCollection {
                     const resultsAmount:            number = results[0].length;
                     // For each result entry, add it to the corresponding quote
                     for ( let j = 0 ; j < resultsAmount ; j++ ) {
-                        if ( j < ( offset - 1 )) {
-                            continue;
-                        }
                         for ( let k = 0 ; k < results.length ; k++ ) {
-                            this._quotes[j][`${indicatorNameWithOptions}_${k}`] = results[k][j];
+                            this._quotes[j + offset][`${indicatorNameWithOptions}_${k}`] = results[k][j];
                         }
                     }
                 } else {
