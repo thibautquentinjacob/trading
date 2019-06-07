@@ -4,7 +4,7 @@
  * File Created: Sunday, 14th April 2019 12:21:51 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Friday, 7th June 2019 9:30:07 pm
+ * Last Modified: Friday, 7th June 2019 11:24:27 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -50,6 +50,16 @@ export class QuoteCollection {
         indicatorsOptions: {[key: string]: number[]} = {},
         dataColumns:       {[key: string]: string }  = {}
     ) {
+        // Check if all quotes are defined. If null use the last precedent value.
+        for ( let i = 0, size = quotes.length ; i < size ; i++ ) {
+            const quote: Quote = quotes[i];
+            if ( !quote.open && i > 0 && quotes[i - 1].open ) {
+                quote.open  = quotes[i - 1].open;
+                quote.high  = quotes[i - 1].high;
+                quote.low   = quotes[i - 1].low;
+                quote.close = quotes[i - 1].close;
+            }
+        }
         this._quotes                     = quotes;
         this._technicalIndicators        = indicators;
         this._technicalIndicatorsOptions = indicatorsOptions;
