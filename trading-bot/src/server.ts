@@ -4,7 +4,7 @@
  * File Created: Tuesday, 19th March 2019 12:21:16 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Friday, 7th June 2019 9:29:27 pm
+ * Last Modified: Saturday, 8th June 2019 12:17:39 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -220,6 +220,14 @@ setInterval(() => {
             });
         } else {
             QuoteController.getLastQuote( Constants.TRADED_SYMBOL ).then(( quote: Quote ) => {
+                // If current quote is null, use last one
+                const quotesAmount: number = quotes.length;
+                if ( !quote.open && quotesAmount > 0 && quotes[quotesAmount - 1].open ) {
+                    quote.open  = quotes[quotesAmount - 1].open;
+                    quote.high  = quotes[quotesAmount - 1].high;
+                    quote.low   = quotes[quotesAmount - 1].low;
+                    quote.close = quotes[quotesAmount - 1].close;
+                }
                 quotes.push( quote );
                 // Compute indicators
                 const metrics: {[key: string]: number[][]}     = computeIndicators( quotes, indicatorsOptions );
