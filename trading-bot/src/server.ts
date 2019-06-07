@@ -4,7 +4,7 @@
  * File Created: Tuesday, 19th March 2019 12:21:16 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Thursday, 6th June 2019 12:25:08 am
+ * Last Modified: Friday, 7th June 2019 9:29:27 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -161,7 +161,9 @@ function computeIndicators ( data: Quote[], options: {[key: string]: {[key: stri
     }
     indicators.rsi.indicator( [open], [options['rsi']['period']], ( err: string, results: number[][] ) => {
         rsiMetrics = results;
-        console.log( err );
+        if ( err ) {
+            console.log( `Error raised: ${err}` );
+        }
     });
 
     indicators.macd.indicator(
@@ -172,7 +174,9 @@ function computeIndicators ( data: Quote[], options: {[key: string]: {[key: stri
             options['macd']['signal_period']
         ], ( err: string, results: number[][] ) => {
             macdMetrics = results;
-        console.log( err );
+            if ( err ) {
+                console.log( `Error raised: ${err}` );
+            }
     });
 
     return {
@@ -188,31 +192,8 @@ ClockController.get().then(( clock: Clock ) => {
     const marketStatus: string = marketOpened ? 'opened': 'closed';
     console.log( `Market is ${marketStatus}` );
 }).catch(( err: any ) => {
-    console.log( err );
+    console.log( `Error raised: ${err}` );
 });
-
-// If no quotes have been fetched yet, get all quotes
-if ( marketOpened ) {
-    if ( quotes.length === 0 ) {
-        QuoteController.getQuotes( Constants.TRADED_SYMBOL ).then(( allQuotes: Quote[] ) => {
-            for ( let i = 0, size = allQuotes.length ; i < size ; i++ ) {
-                quotes.push( allQuotes[i] );
-            }
-            // Compute indicators
-            const metrics: {[key: string]: number[][]}     = computeIndicators( quotes, indicatorsOptions );
-            const data:    {[key: string]: number | Date } = {
-                rsi:   metrics['rsi'][0][metrics['rsi'][0].length - 1],
-                macd:  metrics['macd'][1][metrics['macd'][1].length - 1],
-                time:  new Date()
-            };
-            // Buy and Sell logic here
-            buyLogic( quotes[quotes.length - 1].open, data );
-            sellLogic( quotes[quotes.length - 1].open, data );
-        }).catch(( err: any ) => {
-            console.log( err );
-        });
-    }
-}
 
 // Fetch latest symbol quote every minutes
 setInterval(() => {
@@ -235,7 +216,7 @@ setInterval(() => {
                 buyLogic( quotes[quotes.length - 1].open, data );
                 sellLogic( quotes[quotes.length - 1].open, data );
             }).catch(( err: any ) => {
-                console.log( err );
+                console.log( `Error raised: ${err}` );
             });
         } else {
             QuoteController.getLastQuote( Constants.TRADED_SYMBOL ).then(( quote: Quote ) => {
@@ -251,7 +232,7 @@ setInterval(() => {
                 buyLogic( quotes[quotes.length - 1].open, data );
                 sellLogic( quotes[quotes.length - 1].open, data );
             }).catch(( err: any ) => {
-                console.log( err );
+                console.log( `Error raised: ${err}` );
             });
         }
     }
@@ -264,7 +245,7 @@ setInterval(() => {
         const marketStatus: string = marketOpened ? 'opened': 'closed';
         console.log( `Market is ${marketStatus}` );
     }).catch(( err: any ) => {
-        console.log( err );
+        console.log( `Error raised: ${err}` );
     });
 }, 60 * 1000 );
 
@@ -272,12 +253,12 @@ setInterval(() => {
 AccountController.get().then(( account: Account ) => {
     displayAccount( account );
 }).catch(( err: any ) => {
-    console.log( err );
+    console.log( `Error raised: ${err}` );
 });
 setInterval(() => {
     AccountController.get().then(( account: Account ) => {
         displayAccount( account );
     }).catch(( err: any ) => {
-        console.log( err );
+        console.log( `Error raised: ${err}` );
     });
 }, 60 * 1000 );
