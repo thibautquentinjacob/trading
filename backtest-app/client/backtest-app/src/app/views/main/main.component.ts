@@ -124,20 +124,20 @@ export class MainComponent {
                     sma26.push( element.sma_26_0 );
                     ohlc.push([ element.open, element.high, element.low, element.close ]);
                     volumes.push( element.volume );
-                    rsi.push( element.rsi_14_0 );
+                    rsi.push( element.rsi_7_0 );
                     rsiTop.push( 70 );
                     rsiLow.push( 30 );
                     rsiMiddle.push( 50 );
-                    macd.short.push( element.macd_2_5_9_0 );
-                    macd.long.push( element.macd_2_5_9_1 );
-                    macd.signal.push( element.macd_2_5_9_2 );
+                    macd.short.push( element.macd_1_8_6_0 );
+                    macd.long.push( element.macd_1_8_6_1 );
+                    macd.signal.push( element.macd_1_8_6_2 );
 
                     // Try strategies
                     const data: {[key: string]: number | Date } = {
-                        rsi:   element.rsi_14_0,
+                        rsi:   element.rsi_7_0,
                         sma12: element.sma_12_0,
                         sma26: element.sma_26_0,
-                        macd:  element.macd_2_5_9_1,
+                        macd:  element.macd_1_8_6_1,
                         time:  parsedDate
                     };
 

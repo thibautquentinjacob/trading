@@ -4,7 +4,7 @@
  * File Created: Thursday, 4th April 2019 12:13:17 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Thursday, 6th June 2019 11:56:18 pm
+ * Last Modified: Saturday, 8th June 2019 12:14:17 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -62,7 +62,15 @@ export class QuoteController {
                 const response:     any          = JSON.parse( data );
                 const quoteAdapter: QuoteAdapter = new QuoteAdapter();
                 for ( let i = 0, size = response.length ; i < size ; i++ ) {
-                    output.push( quoteAdapter.adapt( response[i] ));
+                    const quote: Quote = quoteAdapter.adapt( response[i] );
+                    // If quote values are null, use last values
+                    if ( !quote.open && i > 0 && output[i - 1].open ) {
+                        quote.open  = output[i - 1].open;
+                        quote.high  = output[i - 1].high;
+                        quote.low   = output[i - 1].low;
+                        quote.close = output[i - 1].close;
+                    }
+                    output.push( quote );
                 }
                 resolve( output );
             }).catch(( err: any ) => {

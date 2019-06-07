@@ -16,7 +16,12 @@ export class RSIStrategy extends Strategy {
      * @returns {StrategicDecision}
      */
     public static shouldBuy( data: {[key: string]: number | Date }): StrategicDecision {
-        if ( data.rsi > 50 ) {
+        const currentDate:     Date   = data.time as Date;
+        const closingDate:     Date   = new Date( data.time );
+        closingDate.setHours( 22, 0, 0 );
+        const timeDiffMinutes: number = ( closingDate.getTime() - currentDate.getTime()) / ( 1000 * 60 );
+        // if ( data.rsi <= 30 ) {
+        if ( data.macd < 0 && data.rsi <= 50 && timeDiffMinutes > 15 ) {
             return {
                 amount:   -1,
                 decision: true
@@ -37,7 +42,12 @@ export class RSIStrategy extends Strategy {
      * @returns {StrategicDecision}
      */
     public static shouldSell( data: {[key: string]: number | Date }): StrategicDecision {
-        if ( data.rsi <= 50 ) {
+        const currentDate:     Date   = data.time as Date;
+        const closingDate:     Date   = new Date( data.time );
+        closingDate.setHours( 22, 0, 0 );
+        const timeDiffMinutes: number = ( closingDate.getTime() - currentDate.getTime()) / ( 1000 * 60 );
+        // if ( data.rsi > 70 ) {
+        if ( data.macd > 0.01 || timeDiffMinutes < 15 ) {
             return {
                 amount:   -1,
                 decision: true

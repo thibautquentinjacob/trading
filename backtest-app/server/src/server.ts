@@ -4,7 +4,7 @@
  * File Created: Sunday, 14th April 2019 12:19:02 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Friday, 7th June 2019 12:00:12 am
+ * Last Modified: Friday, 7th June 2019 11:39:27 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -80,8 +80,8 @@ webSocketServer.on( 'connection', ( ws: WebSocket, req: IncomingMessage ) => {
                         { 
                             'sma12': [12],
                             'sma26': [26],
-                            'rsi':   [14],
-                            'macd':  [2, 5, 9]
+                            'rsi':   [7],
+                            'macd':  [1, 8, 6]
                         },
                         {
                             'sma12': 'open',
