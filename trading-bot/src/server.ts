@@ -75,6 +75,11 @@ const indicatorsOptions: {[key: string]: {[key: string]: number }} = {
 
 logger.log( 'Starting new trading session' );
 
+/**
+ * Display account state (cash and equities)
+ * 
+ * @param {Account} account - Account object
+ */
 function displayAccount ( account: Account ): void {
     console.log(`
     Cash:   $${account.cash}
@@ -82,20 +87,46 @@ function displayAccount ( account: Account ): void {
     `);
 }
 
+/**
+ * Check if we should buy stocks according to the current
+ * strategy.
+ * 
+ * @param {{[key: string] : number | Date }} data - Information needed to make a decision
+ * @returns {StrategicDecision} A decision
+ */
 function shouldBuy ( data: {[key: string]: number | Date }): StrategicDecision {
     return RSIWithMacDStrategy.shouldBuy( data, logger );
 }
 
+/**
+ * Check if we should sell stocks according to the current
+ * strategy.
+ * 
+ * @param {{[key: string] : number | Date }} data - Information needed to make a decision
+ * @returns {StrategicDecision} A decision
+ */
 function shouldSell ( data: {[key: string]: number | Date }): StrategicDecision {
     return RSIWithMacDStrategy.shouldSell( data, logger );
 }
 
-function buyLogic ( price: number, data: {[key: string]: number | Date }): void {
-    const buyDecision: StrategicDecision = shouldBuy( data );
+
+/**
+ * Implement the buy logic
+ * 
+ * @param {number} price - Current stock price 
+ * @param {{[key: string]: number | Date }} technicalIndicatorData - Technical indicator data
+ */
+function buyLogic (
+    price:                  number,
+    technicalIndicatorData: {[key: string]: number | Date }
+): void {
+    // Get buy decision
+    const buyDecision: StrategicDecision = shouldBuy( technicalIndicatorData );
     if ( buyDecision.decision && ( buyDecision.amount > 0 || buyDecision.amount === -1 )) {
         // Get current cash amount
         AccountController.get().then(( account: Account ) => {
             const cash:   number = account.cash - Constants.MIN_DAY_TRADE_CASH_AMOUNT;
+            // Compute the volume we can buy
             const amount: number = Math.floor( cash / price );
             if ( buyDecision.amount === -1 && amount > 0 ) {
                 OrderController.request(
@@ -122,9 +153,20 @@ function buyLogic ( price: number, data: {[key: string]: number | Date }): void 
     }
 }
 
-function sellLogic ( price: number, data: {[key: string]: number | Date }): void {
-    const sellDecision: StrategicDecision = shouldSell( data );
+/**
+ * Implement the sell logic
+ * 
+ * @param {number} price - Current stock price 
+ * @param {{[key: string]: number | Date }} technicalIndicatorData - Technical indicator data
+ */
+function sellLogic (
+    price: number,
+    technicalIndicatorData: {[key: string]: number | Date }
+): void {
+    // Get sell decision
+    const sellDecision: StrategicDecision = shouldSell( technicalIndicatorData );
     if ( sellDecision.decision && ( sellDecision.amount > 0 || sellDecision.amount === -1 )) {
+        // Fetch the volume we own for traded symbol
         PositionController.getBySymbol( Constants.TRADED_SYMBOL ).then(( position: Position ) => {
             const amount: number = position.qty;
             if ( sellDecision.amount === -1 && amount > 0 ) {
@@ -152,26 +194,42 @@ function sellLogic ( price: number, data: {[key: string]: number | Date }): void
     }
 }
 
-function computeIndicators ( data: Quote[], options: {[key: string]: {[key: string]: number }}): {[key: string]: number[][] } {
+/**
+ * Compute technical indicator data
+ * 
+ * @param {Quote[]} quoteData - Quote data
+ * @param {{[key: string]: {[key: string]: number }}} technicalIndicatorOptions - Technical indicator options
+ */
+/* 
+    TODO: - Indicators should not be named, rather fetched and computed through a loop
+    TODO  - Indicators should be loaded based on the current strategy, so we need
+    TODO:   to redefine the way strategies work. */
+function computeIndicators (
+    quoteData:                 Quote[],
+    technicalIndicatorOptions: {[key: string]: {[key: string]: number }}
+): {[key: string]: number[][] } {
     const open:      number[]   = [];
     let rsiMetrics:  number[][] = [];
     let macdMetrics: number[][] = [];
-    for ( let i = 0, size = data.length ; i < size ; i++ ) {
-        open.push( data[i].open );
+    for ( let i = 0, size = quoteData.length ; i < size ; i++ ) {
+        open.push( quoteData[i].open );
     }
-    indicators.rsi.indicator( [open], [options['rsi']['period']], ( err: string, results: number[][] ) => {
+
+    // Compute rsi indicator
+    indicators.rsi.indicator( [open], [technicalIndicatorOptions['rsi']['period']], ( err: string, results: number[][] ) => {
         rsiMetrics = results;
         if ( err ) {
             console.log( `Error raised: ${err}` );
         }
     });
 
+    // Compute macd indicator
     indicators.macd.indicator(
         [open],
         [
-            options['macd']['short_period'],
-            options['macd']['long_period'],
-            options['macd']['signal_period']
+            technicalIndicatorOptions['macd']['short_period'],
+            technicalIndicatorOptions['macd']['long_period'],
+            technicalIndicatorOptions['macd']['signal_period']
         ], ( err: string, results: number[][] ) => {
             macdMetrics = results;
             if ( err ) {
