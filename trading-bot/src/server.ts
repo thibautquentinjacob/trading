@@ -64,12 +64,12 @@ let   marketOpened:      boolean                                   = false;
 const quotes:            Quote[]                                   = [];
 const indicatorsOptions: {[key: string]: {[key: string]: number }} = {
     rsi: {
-        period: 14
+        period: 7
     },
     macd: {
-        short_period:  2,
-        long_period:   5,
-        signal_period: 9
+        short_period:  1,
+        long_period:   8,
+        signal_period: 6
     }
 };
 
