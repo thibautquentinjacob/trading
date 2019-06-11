@@ -80,10 +80,12 @@ logger.log( 'Starting new trading session' );
  * 
  * @param {Account} account - Account object
  */
+// FIXME: portfolioValue = total value, not stocks 
 function displayAccount ( account: Account ): void {
     console.log(`
+    Total:  $${account.portfolioValue}
     Cash:   $${account.cash}
-    Stocks: $${account.portfolioValue}
+    Stocks: $${account.portfolioValue - account.cash}
     `);
 }
 
