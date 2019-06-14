@@ -20,6 +20,10 @@ import { MainModule } from './views/main/main.module';
             {
                 path: ':symbol',
                 component: MainComponent
+            },
+            {
+                path: '',
+                component: MainComponent
             }
         ]),
         BrowserModule,

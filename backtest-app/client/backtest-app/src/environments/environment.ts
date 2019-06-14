@@ -3,8 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-    production:    false,
-    INITIAL_FUNDS: 100000
+    production:     false,
+    INITIAL_FUNDS:  100000,
+    DEFAULT_SYMBOL: 'AAPL'
 };
 
 /*
