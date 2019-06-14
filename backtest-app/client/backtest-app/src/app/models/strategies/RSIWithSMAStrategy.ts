@@ -4,7 +4,7 @@
  * File Created: Sunday, 5th May 2019 8:54:48 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Wednesday, 5th June 2019 12:22:06 am
+ * Last Modified: Thursday, 13th June 2019 11:51:23 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -35,13 +35,25 @@
 
 import { Strategy } from '../Strategy';
 import { StrategicDecision } from '../StragegicDecision';
+import { Indicator } from '../Indicator';
 
 export class RSIWithSMAStrategy extends Strategy {
 
-    constructor ( name: string ) {
-        super( name );
-        this.name = 'RSI + Mac-D';
-    }
+    public static title: string = 'RSI + Mac-D';
+    public static indicators: {
+        [key: string]: Indicator
+    } = {
+        rsi: {
+            name:    'rsi',
+            options: [7],
+            metric:  'open'
+        },
+        macd: {
+            name:    'macd',
+            options: [1, 8, 6],
+            metric:  'open'
+        }
+    };
 
     /**
      * Buy if RSI is superior to 50 and macd >= 0.01 and if we have at least
@@ -51,7 +63,7 @@ export class RSIWithSMAStrategy extends Strategy {
      * @param {[key: string]: number } data - Market data
      * @returns {StrategicDecision}
      */
-    public static shouldBuy( data: {[key: string]: number | Date }): StrategicDecision {
+    public shouldBuy( data: {[key: string]: number | Date }): StrategicDecision {
         const currentDate:     Date   = data.time as Date;
         const closingDate:     Date   = new Date( data.time );
         closingDate.setHours( 16, 0, 0 );
@@ -77,7 +89,7 @@ export class RSIWithSMAStrategy extends Strategy {
      * @param {[key: string]: number } data - Market data
      * @returns {StrategicDecision}
      */
-    public static shouldSell( data: {[key: string]: number | Date }): StrategicDecision {
+    public shouldSell( data: {[key: string]: number | Date }): StrategicDecision {
         const currentDate:     Date   = data.time as Date;
         const closingDate:     Date   = new Date( data.time );
         closingDate.setHours( 16, 0, 0 );

@@ -4,7 +4,7 @@
  * File Created: Tuesday, 30th April 2019 11:54:31 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Wednesday, 5th June 2019 12:10:14 am
+ * Last Modified: Thursday, 13th June 2019 11:51:00 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -35,13 +35,25 @@
 
 import { Strategy } from '../Strategy';
 import { StrategicDecision } from '../StragegicDecision';
+import { Indicator } from '../Indicator';
 
 export class RSIStrategy_33_66 extends Strategy {
 
-    constructor ( name: string ) {
-        super( name );
-        this.name = 'RSI 33/66';
-    }
+    public static title: string = 'RSI 33/66';
+    public static indicators: {
+        [key: string]: Indicator
+    } = {
+        rsi: {
+            name:    'rsi',
+            options: [7],
+            metric:  'open'
+        },
+        macd: {
+            name:    'macd',
+            options: [1, 8, 6],
+            metric:  'open'
+        }
+    };
 
     /**
      * Buy if RSI is superior to 66
@@ -50,7 +62,7 @@ export class RSIStrategy_33_66 extends Strategy {
      * @param {[key: string]: number } data - Market data
      * @returns {StrategicDecision}
      */
-    public static shouldBuy( data: {[key: string]: number | Date }): StrategicDecision {
+    public shouldBuy( data: {[key: string]: number | Date }): StrategicDecision {
         if ( data.rsi > 66 ) {
             return {
                 amount:   -1,
@@ -71,7 +83,7 @@ export class RSIStrategy_33_66 extends Strategy {
      * @param {[key: string]: number } data - Market data
      * @returns {StrategicDecision}
      */
-    public static shouldSell( data: {[key: string]: number | Date }): StrategicDecision {
+    public shouldSell( data: {[key: string]: number | Date }): StrategicDecision {
         if ( data.rsi <= 33 ) {
             return {
                 amount:   -1,

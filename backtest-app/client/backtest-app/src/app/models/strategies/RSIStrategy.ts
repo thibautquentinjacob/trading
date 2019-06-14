@@ -1,12 +1,43 @@
 import { Strategy } from '../Strategy';
 import { StrategicDecision } from '../StragegicDecision';
+import { Indicator } from '../Indicator';
+import { EChartOption } from 'echarts';
+import { RSI } from '../chart-descriptions/RSI';
 
 export class RSIStrategy extends Strategy {
 
-    constructor ( name: string ) {
-        super( name );
-        this.name = 'RSI';
-    }
+    public title: string = 'RSI';
+
+    public indicators: {
+        [key: string]: Indicator
+    } = {
+        rsi: {
+            name:    'rsi',
+            options: [7],
+            metric:  'open'
+        },
+        macd: {
+            name:    'macd',
+            options: [1, 8, 6],
+            metric:  'open'
+        },
+        sma12: {
+            name:    'sma',
+            options: [12],
+            metric:  'open'
+        },
+        sma26: {
+            name:    'sma',
+            options: [26],
+            metric:  'open'
+        }
+    };
+    // public chartDescriptions: EChartOption.SeriesLine[] =
+    //     new RSI(
+    //         ['RSI', null, null, null],
+    //         [rsi, rsiTop, rsiLow, rsiMiddle],
+    //         ['#00ff99', '#ff0099', '#ff0099', '#fff']
+    //     ).generateDescription();
 
     /**
      * Buy if RSI is superior to 50
@@ -15,13 +46,13 @@ export class RSIStrategy extends Strategy {
      * @param {[key: string]: number } data - Market data
      * @returns {StrategicDecision}
      */
-    public static shouldBuy( data: {[key: string]: number | Date }): StrategicDecision {
+    public shouldBuy( data: {[key: string]: number | Date }): StrategicDecision {
         const currentDate:     Date   = data.time as Date;
         const closingDate:     Date   = new Date( data.time );
         closingDate.setHours( 22, 0, 0 );
         const timeDiffMinutes: number = ( closingDate.getTime() - currentDate.getTime()) / ( 1000 * 60 );
         // if ( data.rsi <= 30 ) {
-        if ( data.macd < 0 && data.rsi <= 50 && timeDiffMinutes > 15 ) {
+        if (( data.rsi <= 31 && data.macd < -0.3 ) && timeDiffMinutes > 15 ) {
             return {
                 amount:   -1,
                 decision: true
@@ -41,13 +72,14 @@ export class RSIStrategy extends Strategy {
      * @param {[key: string]: number } data - Market data
      * @returns {StrategicDecision}
      */
-    public static shouldSell( data: {[key: string]: number | Date }): StrategicDecision {
+    public shouldSell( data: {[key: string]: number | Date }): StrategicDecision {
         const currentDate:     Date   = data.time as Date;
         const closingDate:     Date   = new Date( data.time );
         closingDate.setHours( 22, 0, 0 );
         const timeDiffMinutes: number = ( closingDate.getTime() - currentDate.getTime()) / ( 1000 * 60 );
         // if ( data.rsi > 70 ) {
-        if ( data.macd > 0.01 || timeDiffMinutes < 15 ) {
+        // if ( data.macd > 0.01 || timeDiffMinutes < 15 ) {
+        if (( data.macd < 0 && data.rsi >= 60 ) || data.rsi >= 80 ) {
             return {
                 amount:   -1,
                 decision: true
