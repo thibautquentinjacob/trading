@@ -3,6 +3,7 @@ import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 
 import { Symbol } from '../models/Symbol';
 import { BehaviorSubject } from 'rxjs';
+import { ServerCommand } from '../models/ServerCommand';
 
 @Injectable({
     providedIn: 'root'
@@ -26,7 +27,7 @@ export class SymbolsService {
         );
 
         this._subject.next({
-            command: 'GET_SYMBOLS'
+            command: ServerCommand.GET_SYMBOLS
         });
     }
 
