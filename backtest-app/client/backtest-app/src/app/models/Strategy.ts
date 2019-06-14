@@ -1,23 +1,21 @@
 import { StrategicDecision } from './StragegicDecision';
+import { Indicator } from './Indicator';
+import { EChartOption } from 'echarts';
 
 export class Strategy {
 
-    private _name: string;
+    public title:       string;
+    // Associated indicators
+    public indicators: {
+        [key: string]: Indicator
+    };
+    // Associated plot descriptions
+    public chartDescriptions: EChartOption.SeriesLine[];
 
-    constructor ( name: string ) {
-        this.name = name;
-    }
-
-    set name( name: string ) {
-        this._name = name;
-    }
-
-    get name(): string {
-        return this._name;
-    }
+    constructor() {}
 
     // Provided market data, should we buy or not
-    public static shouldBuy( data: {[key: string]: number }): StrategicDecision {
+    public shouldBuy( data: {[key: string]: number | Date }): StrategicDecision {
         return {
             amount: 0,
             decision: false
@@ -25,7 +23,7 @@ export class Strategy {
     }
 
     // Provided market data, should we sell or not
-    public static shouldSell( data: {[key: string]: number }): StrategicDecision {
+    public shouldSell( data: {[key: string]: number | Date }): StrategicDecision {
         return {
             amount: 0,
             decision: false
