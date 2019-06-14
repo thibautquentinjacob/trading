@@ -4,7 +4,7 @@
  * File Created: Sunday, 14th April 2019 12:19:02 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Friday, 7th June 2019 11:39:27 pm
+ * Last Modified: Thursday, 13th June 2019 11:40:10 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -69,26 +69,23 @@ webSocketServer.on( 'connection', ( ws: WebSocket, req: IncomingMessage ) => {
             const parsedMessage: any = JSON.parse( message.toString());
             if ( parsedMessage.command === WebsocketCommand.GET_QUOTE ) {
                 QuoteController.getQuotes( parsedMessage.options['quote']).then(( quotes: Quote[] ) => {
+                    const indicators:       {[key: string]: string }  = {};
+                    const indicatorOptions: {[key: string]: number[]} = {};
+                    const dataColumns:      {[key: string]: string }  = {};
+
+                    const indicatorKeys:    string[]                  = Object.keys( parsedMessage.options.strategy.indicators );
+                    for ( let i = 0, size = indicatorKeys.length ; i < size ; i++ ) {
+                        const indicator: string       = indicatorKeys[i];
+                        indicators[indicator]         = parsedMessage.options.strategy.indicators[indicator].name;
+                        indicatorOptions[indicator]   = parsedMessage.options.strategy.indicators[indicator].options;
+                        dataColumns[indicator]        = parsedMessage.options.strategy.indicators[indicator].metric;
+                    }
                     const quoteCollection = new QuoteCollection(
                         quotes,
-                        {
-                            'sma12': 'sma',
-                            'sma26': 'sma' ,
-                            'rsi':   'rsi',
-                            'macd':  'macd'
-                        },
-                        { 
-                            'sma12': [12],
-                            'sma26': [26],
-                            'rsi':   [7],
-                            'macd':  [1, 8, 6]
-                        },
-                        {
-                            'sma12': 'open',
-                            'sma26': 'open',
-                            'rsi':   'open',
-                            'macd':  'open'
-                        });
+                        indicators,
+                        indicatorOptions,
+                        dataColumns
+                    );
                     ws.send( JSON.stringify( quoteCollection ));
                 }).catch(( err: any ) => {
                     console.log( err );
