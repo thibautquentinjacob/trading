@@ -4,7 +4,7 @@
  * File Created: Tuesday, 19th March 2019 12:21:16 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Saturday, 8th June 2019 12:17:39 am
+ * Last Modified: Friday, 14th June 2019 12:21:01 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -80,7 +80,6 @@ logger.log( 'Starting new trading session' );
  * 
  * @param {Account} account - Account object
  */
-// FIXME: portfolioValue = total value, not stocks 
 function displayAccount ( account: Account ): void {
     console.log(`
     Total:  $${account.portfolioValue}

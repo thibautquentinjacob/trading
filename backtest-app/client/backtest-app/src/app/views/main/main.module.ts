@@ -27,5 +27,4 @@ import { StrategySelectorModule } from 'src/app/components/strategy-selector/str
     ],
     providers: []
 })
-export class MainModule {
-}
+export class MainModule {}
