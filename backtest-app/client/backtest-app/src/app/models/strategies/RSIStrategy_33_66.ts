@@ -4,7 +4,7 @@
  * File Created: Tuesday, 30th April 2019 11:54:31 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Thursday, 13th June 2019 11:51:00 pm
+ * Last Modified: Friday, 14th June 2019 11:53:13 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -46,12 +46,14 @@ export class RSIStrategy_33_66 extends Strategy {
         rsi: {
             name:    'rsi',
             options: [7],
-            metric:  'open'
+            metric:  'open',
+            output:  ['output']
         },
         macd: {
             name:    'macd',
             options: [1, 8, 6],
-            metric:  'open'
+            metric:  'open',
+            output:  ['short', 'long', 'signal']
         }
     };
 
