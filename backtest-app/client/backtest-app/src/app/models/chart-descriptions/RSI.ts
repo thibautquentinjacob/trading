@@ -4,7 +4,7 @@
  * File Created: Wednesday, 12th June 2019 8:41:28 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Wednesday, 12th June 2019 9:45:01 pm
+ * Last Modified: Saturday, 15th June 2019 1:18:16 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -38,7 +38,11 @@ import { ChartDescription } from '../ChartDescription';
 
 export class RSI extends ChartDescription {
 
-    constructor( names: string[], data: number[][], colors: string[] ) {
+    constructor(
+        names:  string[],
+        data:   number[][],
+        colors: string[]
+    ) {
         super( names, data, colors );
     }
 
@@ -55,47 +59,78 @@ export class RSI extends ChartDescription {
                 lineStyle: {
                     color: this._colors[0],
                     width: 1,
+                },
+                markLine: {
+                    label: {
+                        show: false
+                    },
+                    data: [
+                        {
+                            symbol: 'none',
+                            yAxis: 70,
+                            lineStyle: {
+                                width:   1,
+                                color:   this._colors[1],
+                            }
+                        },
+                        {
+                            symbol: 'none',
+                            yAxis: 30,
+                            lineStyle: {
+                                width:   1,
+                                color:   this._colors[2],
+                            }
+                        },
+                        {
+                            symbol: 'none',
+                            yAxis: 50,
+                            lineStyle: {
+                                width:   1,
+                                color:   this._colors[3],
+                            }
+                        }
+                    ]
                 }
             },
-            {
-                data:       this._data[1],
-                type:       'line',
-                xAxisIndex: 2,
-                yAxisIndex: 2,
-                symbol:     'circle',
-                symbolSize: 0,
-                lineStyle: {
-                    width:   1,
-                    color:   this._colors[1],
-                    opacity: 0.5
-                }
-            },
-            {
-                data:       this._data[2],
-                type:       'line',
-                xAxisIndex: 2,
-                yAxisIndex: 2,
-                symbol:     'circle',
-                symbolSize: 0,
-                lineStyle: {
-                    width: 1,
-                    color: this._colors[2],
-                    opacity: 0.5
-                }
-            },
-            {
-                data:       this._data[3],
-                type:       'line',
-                xAxisIndex: 2,
-                yAxisIndex: 2,
-                symbol:     'circle',
-                symbolSize: 0,
-                lineStyle: {
-                    width:   1,
-                    color:   this._colors[3],
-                    opacity: 0.3
-                }
-            }
+            // {
+            //     data:       this._data[1],
+            //     type:       'line',
+            //     xAxisIndex: 2,
+            //     yAxisIndex: 2,
+            //     symbol:     'circle',
+            //     symbolSize: 0,
+            //     lineStyle: {
+            //         width:   1,
+            //         color:   this._colors[1],
+            //         opacity: 0.5
+            //     }
+            // },
+            // {
+            //     data:       this._data[2],
+            //     type:       'line',
+            //     xAxisIndex: 2,
+            //     yAxisIndex: 2,
+            //     symbol:     'circle',
+            //     symbolSize: 0,
+            //     lineStyle: {
+            //         width: 1,
+            //         color: this._colors[2],
+            //         opacity: 0.5
+            //     }
+            // },
+            // {
+            //     data:       this._data[3],
+            //     type:       'line',
+            //     xAxisIndex: 2,
+            //     yAxisIndex: 2,
+            //     symbol:     'circle',
+            //     symbolSize: 0,
+            //     lineStyle: {
+            //         width:   1,
+            //         color:   this._colors[3],
+            //         opacity: 0.3
+            //     }
+            // }
         ];
     }
 }

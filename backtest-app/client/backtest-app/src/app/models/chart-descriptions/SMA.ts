@@ -4,7 +4,7 @@
  * File Created: Wednesday, 12th June 2019 8:42:05 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Wednesday, 12th June 2019 9:46:35 pm
+ * Last Modified: Friday, 14th June 2019 11:17:54 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -38,7 +38,11 @@ import { ChartDescription } from '../ChartDescription';
 
 export class SMA extends ChartDescription {
 
-    constructor( names: string[], data: number[][], colors: string[] ) {
+    constructor(
+        names:  string[],
+        data:   number[][],
+        colors: string[]
+    ) {
         super( names, data, colors );
     }
 
