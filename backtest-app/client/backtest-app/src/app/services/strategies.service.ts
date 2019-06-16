@@ -4,7 +4,7 @@
  * File Created: Sunday, 5th May 2019 9:56:02 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 4th June 2019 12:35:30 am
+ * Last Modified: Thursday, 13th June 2019 11:55:11 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -35,14 +35,24 @@
 
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { RSIStrategy } from '../models/strategies/RSIStrategy';
+import { RSIStrategy_33_66 } from '../models/strategies/RSIStrategy_33_66';
+import { RSIWithSMAStrategy } from '../models/strategies/RSIWithSMAStrategy';
+import { Strategy } from '../models/Strategy';
 
 @Injectable({
     providedIn: 'root'
 })
 export class StrategiesService {
 
-    public  currentStrategy: BehaviorSubject<string>   = new BehaviorSubject( 'RSI' );
-    public  strategies:      BehaviorSubject<string[]> = new BehaviorSubject([]);
+    public  currentStrategyName: BehaviorSubject<string>   = new BehaviorSubject( 'RSI' );
+    public  currentStrategy:     BehaviorSubject<Strategy> = new BehaviorSubject( new RSIStrategy());
+    public  strategies:          BehaviorSubject<string[]> = new BehaviorSubject([]);
+    private _loadedStrategies: {[key: string]: Strategy }  = {
+        'RSI':       new RSIStrategy(),
+        'RSI 33/66': new RSIStrategy_33_66(),
+        'RSI + SMA': new RSIWithSMAStrategy()
+    };
 
     constructor() {
         this.strategies.next([
@@ -53,7 +63,9 @@ export class StrategiesService {
     }
 
     public setCurrentStrategy( strategyName: string ) {
+        console.log( this._loadedStrategies );
         console.log( `Setting current strategy to ${strategyName}` );
-        this.currentStrategy.next( strategyName );
+        this.currentStrategyName.next( strategyName );
+        this.currentStrategy.next( this._loadedStrategies[strategyName]);
     }
 }
