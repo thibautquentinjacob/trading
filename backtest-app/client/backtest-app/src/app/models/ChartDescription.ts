@@ -5,7 +5,7 @@
  * File Created: Wednesday, 12th June 2019 9:18:15 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Wednesday, 12th June 2019 9:45:35 pm
+ * Last Modified: Friday, 14th June 2019 11:18:27 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -43,7 +43,11 @@ export class ChartDescription {
     protected _data:   number[][];
     protected _colors: string[];
 
-    constructor( names: string[], data: number[][], colors: string[] ) {
+    constructor(
+        names:  string[],
+        data:   number[][],
+        colors: string[]
+    ) {
         this._names  = names;
         this._data   = data;
         this._colors = colors;
