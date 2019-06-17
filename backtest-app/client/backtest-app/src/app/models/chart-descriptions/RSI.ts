@@ -4,7 +4,7 @@
  * File Created: Wednesday, 12th June 2019 8:41:28 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Saturday, 15th June 2019 1:18:16 am
+ * Last Modified: Monday, 17th June 2019 11:12:51 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -71,6 +71,7 @@ export class RSI extends ChartDescription {
                             lineStyle: {
                                 width:   1,
                                 color:   this._colors[1],
+                                opacity: 0.5
                             }
                         },
                         {
@@ -79,6 +80,7 @@ export class RSI extends ChartDescription {
                             lineStyle: {
                                 width:   1,
                                 color:   this._colors[2],
+                                opacity: 0.5
                             }
                         },
                         {
@@ -87,50 +89,12 @@ export class RSI extends ChartDescription {
                             lineStyle: {
                                 width:   1,
                                 color:   this._colors[3],
+                                opacity: 0.3
                             }
                         }
                     ]
                 }
             },
-            // {
-            //     data:       this._data[1],
-            //     type:       'line',
-            //     xAxisIndex: 2,
-            //     yAxisIndex: 2,
-            //     symbol:     'circle',
-            //     symbolSize: 0,
-            //     lineStyle: {
-            //         width:   1,
-            //         color:   this._colors[1],
-            //         opacity: 0.5
-            //     }
-            // },
-            // {
-            //     data:       this._data[2],
-            //     type:       'line',
-            //     xAxisIndex: 2,
-            //     yAxisIndex: 2,
-            //     symbol:     'circle',
-            //     symbolSize: 0,
-            //     lineStyle: {
-            //         width: 1,
-            //         color: this._colors[2],
-            //         opacity: 0.5
-            //     }
-            // },
-            // {
-            //     data:       this._data[3],
-            //     type:       'line',
-            //     xAxisIndex: 2,
-            //     yAxisIndex: 2,
-            //     symbol:     'circle',
-            //     symbolSize: 0,
-            //     lineStyle: {
-            //         width:   1,
-            //         color:   this._colors[3],
-            //         opacity: 0.3
-            //     }
-            // }
         ];
     }
 }
