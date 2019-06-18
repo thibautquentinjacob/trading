@@ -3,11 +3,11 @@ import { StrategicDecision } from '../StragegicDecision';
 import { Indicator } from '../Indicator';
 import { EChartOption } from 'echarts';
 import { RSI } from '../chart-descriptions/RSI';
+import { StockData } from '../StockData';
 
 export class RSIStrategy extends Strategy {
 
-    public title: string = 'RSI';
-
+    public title: string    = 'RSI';
     public indicators: {
         [key: string]: Indicator
     } = {
@@ -36,12 +36,27 @@ export class RSIStrategy extends Strategy {
             output:  ['output']
         }
     };
+
+    // FIXME: Should use internal data
     // public chartDescriptions: EChartOption.SeriesLine[] =
     //     new RSI(
     //         ['RSI', null, null, null],
-    //         [rsi, rsiTop, rsiLow, rsiMiddle],
+    //         [rsi],
     //         ['#00ff99', '#ff0099', '#ff0099', '#fff']
     //     ).generateDescription();
+
+    constructor () {
+        super();
+        // Build indicator full names
+        const indicatorKeys: string[] = Object.keys( this.indicators );
+        for ( let i = 0, size = indicatorKeys.length ; i < size ; i++ ) {
+            const indicatorKey:     string   = indicatorKeys[i];
+            const indicatorName:    string   = this.indicators[indicatorKey].name;
+            const indicatorOptions: number[] = this.indicators[indicatorKey].options;
+            this.indicators[indicatorKey].fullName = `${indicatorName}_${indicatorOptions.join( '_' )}`;
+        }
+        console.log( this.indicators );
+    }
 
     /**
      * Buy if RSI is superior to 50
@@ -50,13 +65,17 @@ export class RSIStrategy extends Strategy {
      * @param {[key: string]: number } data - Market data
      * @returns {StrategicDecision}
      */
-    public shouldBuy( data: {[key: string]: number | Date }): StrategicDecision {
-        const currentDate:     Date   = data.time as Date;
-        const closingDate:     Date   = new Date( data.time );
+    public shouldBuy( data: StockData ): StrategicDecision {
+        const dates:           Date[] = data.dates as Date[];
+        const currentDate:     Date   = new Date( dates[dates.length - 1]);
+        const closingDate:     Date   = new Date( dates[dates.length - 1]);
         closingDate.setHours( 22, 0, 0 );
         const timeDiffMinutes: number = ( closingDate.getTime() - currentDate.getTime()) / ( 1000 * 60 );
-        // if ( data.rsi <= 30 ) {
-        if (( data.rsi <= 31 && data.macd < -0.3 ) && timeDiffMinutes > 15 ) {
+        const rsiName                 = this.indicators.rsi.fullName;
+        const macdName                = this.indicators.macd.fullName;
+        const rsi:             number = data[rsiName]['output'][data[rsiName]['output'].length - 1];
+        const macd:            number = data[macdName]['long'][data[macdName]['long'].length - 1];
+        if (( rsi <= 31 && macd < -0.3 ) && timeDiffMinutes > 15 ) {
             return {
                 amount:   -1,
                 decision: true
@@ -76,14 +95,19 @@ export class RSIStrategy extends Strategy {
      * @param {[key: string]: number } data - Market data
      * @returns {StrategicDecision}
      */
-    public shouldSell( data: {[key: string]: number | Date }): StrategicDecision {
-        const currentDate:     Date   = data.time as Date;
-        const closingDate:     Date   = new Date( data.time );
+    public shouldSell( data: StockData ): StrategicDecision {
+        const dates:           Date[] = data.dates as Date[];
+        const currentDate:     Date   = new Date( dates[dates.length - 1]);
+        const closingDate:     Date   = new Date( dates[dates.length - 1]);
         closingDate.setHours( 22, 0, 0 );
         const timeDiffMinutes: number = ( closingDate.getTime() - currentDate.getTime()) / ( 1000 * 60 );
+        const rsiName                 = this.indicators.rsi.fullName;
+        const macdName                = this.indicators.macd.fullName;
+        const rsi:             number = data[rsiName]['output'][data[rsiName]['output'].length - 1];
+        const macd:            number = data[macdName]['long'][data[macdName]['long'].length - 1];
         // if ( data.rsi > 70 ) {
         // if ( data.macd > 0.01 || timeDiffMinutes < 15 ) {
-        if (( data.macd < 0 && data.rsi >= 60 ) || data.rsi >= 80 ) {
+        if (( macd < 0 && rsi >= 60 ) || rsi >= 80 ) {
             return {
                 amount:   -1,
                 decision: true

@@ -1,10 +1,10 @@
 /*
- * File: Indicator.ts
+ * File: StockData.ts
  * Project: backtest-app
- * File Created: Wednesday, 12th June 2019 6:58:16 pm
+ * File Created: Tuesday, 18th June 2019 12:31:47 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 18th June 2019 11:55:34 pm
+ * Last Modified: Tuesday, 18th June 2019 11:37:35 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -33,12 +33,11 @@
 
 
 
-export interface Indicator {
-
-    name:      string;   // Indicator name
-    fullName?: string;   // Indicator name with options
-    options:   number[]; // Indicator parameters
-    output:    string[]; // Output names
-    metric:    string;   // Open, High, Low, Close
-
-}
+export type StockData = {
+    [key: string]: {
+        [key: string]: number[]
+    }        |
+    Date[]   |
+    string[] |
+    number[]
+};

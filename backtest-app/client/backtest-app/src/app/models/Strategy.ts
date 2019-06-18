@@ -1,6 +1,7 @@
 import { StrategicDecision } from './StragegicDecision';
 import { Indicator } from './Indicator';
 import { EChartOption } from 'echarts';
+import { StockData } from './StockData';
 
 export class Strategy {
 
@@ -15,7 +16,7 @@ export class Strategy {
     constructor() {}
 
     // Provided market data, should we buy or not
-    public shouldBuy( data: {[key: string]: number | Date }): StrategicDecision {
+    public shouldBuy( data: StockData ): StrategicDecision {
         return {
             amount: 0,
             decision: false
@@ -23,7 +24,7 @@ export class Strategy {
     }
 
     // Provided market data, should we sell or not
-    public shouldSell( data: {[key: string]: number | Date }): StrategicDecision {
+    public shouldSell( data: StockData ): StrategicDecision {
         return {
             amount: 0,
             decision: false

@@ -22,6 +22,7 @@ import { RSI } from 'src/app/models/chart-descriptions/RSI';
 import { MACD } from 'src/app/models/chart-descriptions/MACD';
 import { environment } from 'src/environments/environment';
 import { Indicator } from 'src/app/models/Indicator';
+import { StockData } from 'src/app/models/StockData';
 
 @Component({
     selector: 'app-main',
@@ -116,7 +117,11 @@ export class MainComponent {
             ( msg: any ) => {
                 console.log( 'message received', msg );
                 // Initialize data structure to hold OHLC, time and TI data
-                const data: {[key: string]: {[key: string]: number[]} | Date } = {};
+                const data: StockData = {
+                    times:   [],
+                    dates:   [],
+                    volumes: []
+                };
 
                 // For each indicators in the current strategy
                 // create a new entry in the structure.
@@ -124,68 +129,53 @@ export class MainComponent {
                 for ( let i = 0, size = indicatorKeys.length ; i < size ; i++ ) {
                     const indicatorName: string    = indicatorKeys[i];
                     const indicator:     Indicator = this._currentStrategy.indicators[indicatorName];
-                    data[indicatorName]         = {};
+                    // indicatorName_option1_option_2...
+                    const fieldName                = `${indicator.name}_${indicator.options.join( '_' )}`;
+                    data[fieldName]                = {};
                     // For each technical indicator output
                     for ( let j = 0, outputSize = indicator.output.length ; j < outputSize ; j++ ) {
-                        data[indicatorName][indicator.output[j]] = [];
+                        if ( !data[fieldName][indicator.output[j]]) {
+                            data[fieldName][indicator.output[j]] = [];
+                        }
                     }
                 }
-                console.log( data );
 
-                const date:      string[]   = [];
                 const ohlc:      number[][] = [];
-                const volumes:   number[]   = [];
-
-                const sma12:     number[]   = [];
-                const sma26:     number[]   = [];
-                const rsi:       number[]   = [];
-                const rsiTop:    number[]   = [];
-                const rsiLow:    number[]   = [];
-                const rsiMiddle: number[]   = [];
-                const macd: {
-                    short:  number[],
-                    long:   number[],
-                    signal: number[]
-                } = {
-                    short:  [],
-                    long:   [],
-                    signal: []
-                };
                 const markers:  Marker[] = [];
-
+                // For each quote
                 msg._quotes.forEach( element => {
+                    // For each indicator
+                    for ( let i = 0, size = indicatorKeys.length ; i < size ; i++ ) {
+                        const indicatorName: string    = indicatorKeys[i];
+                        const indicator:     Indicator = this._currentStrategy.indicators[indicatorName];
+                        // indicatorName_option1_option_2...
+                        const fieldName                = `${indicator.name}_${indicator.options.join( '_' )}`;
+                        // For each technical indicator output
+                        for ( let j = 0, outputSize = indicator.output.length ; j < outputSize ; j++ ) {
+                            if ( !data[fieldName][indicator.output[j]]) {
+                                data[fieldName][indicator.output[j]] = [];
+                            }
+                            const elementName = `${fieldName}_${j}`;
+                            data[fieldName][indicator.output[j]].push( element[elementName]);
+                        }
+                    }
 
-                    const transformedDate       = this._convertDate( element.date );
-                    date.push( transformedDate );
-                    sma12.push( element.sma_12_0 );
-                    sma26.push( element.sma_26_0 );
+                    // Store converted time
+                    const convertedDate: string = this._convertDate( element.date );
+                    ( data.times as string[]).push( convertedDate );
+                    // Store date
+                    ( data.dates as Date[]).push( element.date );
+                    // Store volume
+                    ( data.volumes as number[]).push( element.volume );
+
                     ohlc.push([
                         element.open,
                         element.high,
                         element.low,
                         element.close
                     ]);
-                    volumes.push( element.volume );
-
-                    // Compute technical indicators required by the current strategy
-                    rsi.push( element.rsi_7_0 );
-                    rsiTop.push( 70 );
-                    rsiLow.push( 30 );
-                    rsiMiddle.push( 50 );
-
-                    macd.short.push( element.macd_1_8_6_0 );
-                    macd.long.push( element.macd_1_8_6_1 );
-                    macd.signal.push( element.macd_1_8_6_2 );
 
                     // Try strategies
-                    const data: {[key: string]: number | Date } = {
-                        rsi:   element.rsi_7_0,
-                        sma12: element.sma_12_0,
-                        sma26: element.sma_26_0,
-                        macd:  element.macd_1_8_6_1,
-                        time:  new Date( element.date )
-                    };
-
                     const buyDecision:  StrategicDecision = this._currentStrategy.shouldBuy( data );
                     const sellDecision: StrategicDecision = this._currentStrategy.shouldSell( data );
 
@@ -195,18 +185,18 @@ export class MainComponent {
                         if ( buyDecision.amount === -1 && amount > 0 ) {
                             this._portfolioService.buy( new Stock( this._currentStockSymbol.symbol, amount ), element.open );
                             markers.push({
-                                name: `Buying ${amount} x ${this._currentStockSymbol.symbol} for ${element.open * amount} at ${transformedDate}`,
+                                name: `Buying ${amount} x ${this._currentStockSymbol.symbol} for ${element.open * amount} at ${data.time}`,
                                 type: 'buy',
                                 yAxis: element.open,
-                                xAxis: transformedDate
+                                xAxis: convertedDate
                             });
                         } else if ( buyDecision.amount !== -1 ) {
                             this._portfolioService.buy( new Stock( this._currentStockSymbol.symbol, buyDecision.amount ), element.close );
                             markers.push({
-                                name: `Buying ${buyDecision.amount} x ${this._currentStockSymbol.symbol} for ${element.open * buyDecision.amount} at ${transformedDate}`,
+                                name: `Buying ${buyDecision.amount} x ${this._currentStockSymbol.symbol} for ${element.open * buyDecision.amount} at ${data.time}`,
                                 type: 'buy',
                                 yAxis: element.open,
-                                xAxis: transformedDate
+                                xAxis: convertedDate
                             });
                         }
                     }
@@ -217,25 +207,27 @@ export class MainComponent {
                         if ( sellDecision.amount === -1 && amount > 0 ) {
                             this._portfolioService.sell( new Stock( this._currentStockSymbol.symbol, amount ), element.open );
                             markers.push({
-                                name: `Selling ${amount} x ${this._currentStockSymbol} for ${element.open * amount} at ${transformedDate}`,
+                                name: `Selling ${amount} x ${this._currentStockSymbol} for ${element.open * amount} at ${data.time}`,
                                 type: 'sell',
                                 yAxis: element.open,
-                                xAxis: transformedDate
+                                xAxis: convertedDate
                             });
                         } else if ( sellDecision.amount !== -1 ) {
                             this._portfolioService.sell( new Stock( this._currentStockSymbol.symbol, sellDecision.amount ), element.open );
                             markers.push({
-                                name: `Selling ${sellDecision.amount} x ${this._currentStockSymbol.symbol} for ${element.open * sellDecision.amount} at ${transformedDate}`,
+                                name: `Selling ${sellDecision.amount} x ${this._currentStockSymbol.symbol} for ${element.open * sellDecision.amount} at ${data.time}`,
                                 type: 'sell',
                                 yAxis: element.open,
-                                xAxis: transformedDate
+                                xAxis: convertedDate
                             });
                         }
                     }
                 });
+
+                // TODO: Add chart descriptions dynamically
                 const chartDescriptions: {[key: string]: EChartOption.SeriesLine[]} = {
-                    sma26: new SMA( ['SMA 26'], [sma26], ['#ff0099'] ).generateDescription(),
-                    sma12: new SMA( ['SMA 16'], [sma12], ['#00aaff'] ).generateDescription()
+                    sma26: new SMA( ['SMA 26'], [data.sma_26['output']], ['#ff0099'] ).generateDescription(),
+                    sma12: new SMA( ['SMA 16'], [data.sma_12['output']], ['#00aaff'] ).generateDescription()
                 };
                 this.chartOption = {
                     grid: [
@@ -269,9 +261,8 @@ export class MainComponent {
                     ],
                     backgroundColor: '#111',
                     legend: {
-                        bottom: 10,
+                        bottom: 0,
                         left: 'center',
-                        data: ['Dow-Jones index', 'sma_10', 'MA10', 'MA20', 'MA30'],
                         inactiveColor: '#003399',
                         textStyle: {
                             color: '#fff'
@@ -330,7 +321,7 @@ export class MainComponent {
                             name : 'Time',
                             scale: true,
                             type: 'category',
-                            data: date,
+                            data: data.times,
                             boundaryGap : true,
                             splitLine: {
                                 show: true,
@@ -353,7 +344,7 @@ export class MainComponent {
                         {
                             type: 'category',
                             gridIndex: 1,
-                            data: date,
+                            data: data.times,
                             scale: true,
                             boundaryGap : false,
                             axisLine: {onZero: false},
@@ -367,7 +358,7 @@ export class MainComponent {
                         {
                             type: 'category',
                             gridIndex: 2,
-                            data: date,
+                            data: data.times,
                             scale: true,
                             boundaryGap : false,
                             axisLine: {onZero: false},
@@ -381,7 +372,7 @@ export class MainComponent {
                         {
                             type: 'category',
                             gridIndex: 3,
-                            data: date,
+                            data: data.times,
                             scale: true,
                             boundaryGap : false,
                             axisLine: {onZero: false},
@@ -527,13 +518,14 @@ export class MainComponent {
                                 label: {
                                     color: '#fff',
                                     formatter: ( params ) => {
-                                        return markers[params.dataIndex].type === 'buy' ? 'B' : 'S';
+                                        return markers[params.dataIndex].type === 'buy' ? '⬇︎' : '⬆︎';
                                     },
                                     fontSize: '8',
                                     // fontWeight: '700'
                                 },
                                 itemStyle: {
                                     color: ( params ) => {
+                                        console.log( params );
                                         if ( markers[params.dataIndex].type === 'buy' ) {
                                             return new graphic.LinearGradient(
                                                 0, 0, 0, 1,
@@ -543,7 +535,6 @@ export class MainComponent {
                                                 ]
                                             );
                                         } else {
-                                            console.log( 'Here' );
                                             return new graphic.LinearGradient(
                                                 0, 0, 0, 1,
                                                 [
@@ -553,13 +544,13 @@ export class MainComponent {
                                             );
                                         }
                                     },
-                                    // color: new graphic.LinearGradient(
-                                    //     0, 0, 0, 1,
-                                    //     [
-                                    //         {offset: 0, color: '#0CF49B'},
-                                    //         {offset: 1, color: '#0CF49B33'}
-                                    //     ]
-                                    // ),
+                                    color: new graphic.LinearGradient(
+                                        0, 0, 0, 1,
+                                        [
+                                            {offset: 0, color: '#0CF49B33'},
+                                            {offset: 1, color: '#0CF49B33'}
+                                        ]
+                                    ),
                                     borderColor: '#0CF49B99',
                                     borderWidth: 1
                                 },
@@ -570,7 +561,7 @@ export class MainComponent {
                         chartDescriptions.sma26[0],
                         {
                             name: 'Volume',
-                            data: volumes,
+                            data: data.volumes,
                             type: 'bar',
                             xAxisIndex: 1,
                             yAxisIndex: 1,
@@ -626,12 +617,16 @@ export class MainComponent {
                 };
                 this.chartOption.series = this.chartOption.series.concat( new RSI(
                     ['RSI', null, null, null],
-                    [rsi, rsiTop, rsiLow, rsiMiddle],
+                    [data[this._currentStrategy.indicators.rsi.fullName]['output']],
                     ['#00ff99', '#ff0099', '#ff0099', '#fff']
                 ).generateDescription());
                 this.chartOption.series = this.chartOption.series.concat( new MACD(
                     ['MACD Short', 'MACD Long', 'MACD Signal'],
-                    [macd.short, macd.long, macd.signal],
+                    [
+                        data[this._currentStrategy.indicators.macd.fullName]['short'],
+                        data[this._currentStrategy.indicators.macd.fullName]['long'],
+                        data[this._currentStrategy.indicators.macd.fullName]['signal']
+                    ],
                     ['#0CFF9B', '#FF105033', '#FF1050', '#0CF49B', '#0CF49B33', '#FF1050']
                 ).generateDescription());
             }, // Called whenever there is a message from the server.
@@ -668,6 +663,7 @@ export class MainComponent {
         return `${parsedHours}:${parsedMinutes}`;
     }
 
+    // FIXME: Strategy changing no longer works
     private _strategySelected( event ) {
         this._portfolioService.resetPortfolio();
         this._strategiesService.setCurrentStrategy( event );

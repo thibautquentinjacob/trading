@@ -4,7 +4,7 @@
  * File Created: Tuesday, 30th April 2019 11:54:31 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Friday, 14th June 2019 11:53:13 pm
+ * Last Modified: Wednesday, 19th June 2019 12:19:22 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -36,6 +36,7 @@
 import { Strategy } from '../Strategy';
 import { StrategicDecision } from '../StragegicDecision';
 import { Indicator } from '../Indicator';
+import { StockData } from '../StockData';
 
 export class RSIStrategy_33_66 extends Strategy {
 
@@ -64,7 +65,7 @@ export class RSIStrategy_33_66 extends Strategy {
      * @param {[key: string]: number } data - Market data
      * @returns {StrategicDecision}
      */
-    public shouldBuy( data: {[key: string]: number | Date }): StrategicDecision {
+    public shouldBuy( data: StockData ): StrategicDecision {
         if ( data.rsi > 66 ) {
             return {
                 amount:   -1,
@@ -85,8 +86,8 @@ export class RSIStrategy_33_66 extends Strategy {
      * @param {[key: string]: number } data - Market data
      * @returns {StrategicDecision}
      */
-    public shouldSell( data: {[key: string]: number | Date }): StrategicDecision {
-        if ( data.rsi <= 33 ) {
+    public shouldSell( data: StockData ): StrategicDecision {
+        if ( data[data.length].rsi <= 33 ) {
             return {
                 amount:   -1,
                 decision: true

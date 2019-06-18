@@ -4,7 +4,7 @@
  * File Created: Sunday, 5th May 2019 8:54:48 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Friday, 14th June 2019 11:53:29 pm
+ * Last Modified: Tuesday, 18th June 2019 12:37:59 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -36,6 +36,7 @@
 import { Strategy } from '../Strategy';
 import { StrategicDecision } from '../StragegicDecision';
 import { Indicator } from '../Indicator';
+import { StockData } from '../StockData';
 
 export class RSIWithSMAStrategy extends Strategy {
 
@@ -54,6 +55,18 @@ export class RSIWithSMAStrategy extends Strategy {
             options: [1, 8, 6],
             metric:  'open',
             output:  ['short', 'long', 'signal']
+        },
+        sma12: {
+            name:    'sma',
+            options: [12],
+            metric:  'open',
+            output:  ['output']
+        },
+        sma26: {
+            name:    'sma',
+            options: [26],
+            metric:  'open',
+            output:  ['output']
         }
     };
 
@@ -65,7 +78,7 @@ export class RSIWithSMAStrategy extends Strategy {
      * @param {[key: string]: number } data - Market data
      * @returns {StrategicDecision}
      */
-    public shouldBuy( data: {[key: string]: number | Date }): StrategicDecision {
+    public shouldBuy( data: StockData ): StrategicDecision {
         const currentDate:     Date   = data.time as Date;
         const closingDate:     Date   = new Date( data.time );
         closingDate.setHours( 16, 0, 0 );
@@ -91,7 +104,7 @@ export class RSIWithSMAStrategy extends Strategy {
      * @param {[key: string]: number } data - Market data
      * @returns {StrategicDecision}
      */
-    public shouldSell( data: {[key: string]: number | Date }): StrategicDecision {
+    public shouldSell( data: StockData ): StrategicDecision {
         const currentDate:     Date   = data.time as Date;
         const closingDate:     Date   = new Date( data.time );
         closingDate.setHours( 16, 0, 0 );
