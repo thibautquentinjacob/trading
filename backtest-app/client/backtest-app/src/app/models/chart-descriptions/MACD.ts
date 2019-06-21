@@ -4,7 +4,7 @@
  * File Created: Wednesday, 12th June 2019 8:42:12 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Friday, 14th June 2019 11:17:07 pm
+ * Last Modified: Thursday, 20th June 2019 10:27:08 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -81,7 +81,7 @@ export class MACD extends ChartDescription {
                                         {offset: 0, color: this._colors[1]},
                                         {offset: 1, color: this._colors[2]}
                                     ]
-                                )
+                                );
                             } else {
                                 return new graphic.LinearGradient(
                                     0, 0, 0, 1,
@@ -89,7 +89,7 @@ export class MACD extends ChartDescription {
                                         {offset: 0, color: this._colors[3]},
                                         {offset: 1, color: this._colors[4]}
                                     ]
-                                )
+                                );
                             }
                         }
                     },

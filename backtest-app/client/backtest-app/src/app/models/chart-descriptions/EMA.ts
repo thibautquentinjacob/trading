@@ -1,10 +1,10 @@
 /*
- * File: StockData.ts
+ * File: sma.ts
  * Project: backtest-app
- * File Created: Tuesday, 18th June 2019 12:31:47 am
+ * File Created: Wednesday, 12th June 2019 8:42:05 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Thursday, 20th June 2019 10:27:39 pm
+ * Last Modified: Friday, 21st June 2019 8:07:42 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -33,11 +33,32 @@
 
 
 
-export interface StockData {
-    [key: string]: {
-        [key: string]: number[]
-    }        |
-    Date[]   |
-    string[] |
-    number[]
+import { EChartOption } from 'echarts';
+import { ChartDescription } from '../ChartDescription';
+
+export class EMA extends ChartDescription {
+
+    constructor(
+        names:  string[],
+        data:   number[][],
+        colors: string[]
+    ) {
+        super( names, data, colors );
+    }
+
+    public generateDescription(): EChartOption.SeriesLine[] {
+        return [{
+            name:       this._names[0],
+            data:       this._data[0],
+            type:       'line',
+            xAxisIndex: 0,
+            yAxisIndex: 0,
+            symbol:     'circle',
+            symbolSize: 0,
+            lineStyle: {
+                width: 1,
+                color: this._colors[0],
+            }
+        }];
+    }
 }

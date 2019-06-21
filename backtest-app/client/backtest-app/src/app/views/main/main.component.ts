@@ -120,7 +120,11 @@ export class MainComponent {
                 const data: StockData = {
                     times:   [],
                     dates:   [],
-                    volumes: []
+                    volumes: [],
+                    open:    [],
+                    high:    [],
+                    low:     [],
+                    close:   []
                 };
 
                 // For each indicators in the current strategy
@@ -140,7 +144,7 @@ export class MainComponent {
                     }
                 }
 
-                const ohlc:      number[][] = [];
+                const ohlc:     number[][] = [];
                 const markers:  Marker[] = [];
                 // For each quote
                 msg._quotes.forEach( element => {
@@ -167,6 +171,11 @@ export class MainComponent {
                     ( data.dates as Date[]).push( element.date );
                     // Store volume
                     ( data.volumes as number[]).push( element.volume );
+                    // Store market OHLC
+                    ( data.open as number[]).push( element.open );
+                    ( data.high as number[]).push( element.high );
+                    ( data.low as number[]).push( element.low );
+                    ( data.close as number[]).push( element.close );
 
                     ohlc.push([
                         element.open,
@@ -178,7 +187,6 @@ export class MainComponent {
                     // Try strategies
                     const buyDecision:  StrategicDecision = this._currentStrategy.shouldBuy( data );
                     const sellDecision: StrategicDecision = this._currentStrategy.shouldSell( data );
-
 
                     if ( buyDecision.decision && ( buyDecision.amount > 0 || buyDecision.amount === -1 )) {
                         const amount: number = Math.floor(( this._cash - 25000 ) / element.open );
@@ -224,11 +232,6 @@ export class MainComponent {
                     }
                 });
 
-                // TODO: Add chart descriptions dynamically
-                const chartDescriptions: {[key: string]: EChartOption.SeriesLine[]} = {
-                    sma26: new SMA( ['SMA 26'], [data.sma_26['output']], ['#ff0099'] ).generateDescription(),
-                    sma12: new SMA( ['SMA 16'], [data.sma_12['output']], ['#00aaff'] ).generateDescription()
-                };
                 this.chartOption = {
                     grid: [
                         // Candlesticks
@@ -557,8 +560,6 @@ export class MainComponent {
                                 data: markers
                             },
                         },
-                        chartDescriptions.sma12[0],
-                        chartDescriptions.sma26[0],
                         {
                             name: 'Volume',
                             data: data.volumes,
@@ -612,23 +613,12 @@ export class MainComponent {
                                     barBorderWidth: 1
                                 },
                             }
-                        },
+                        }
                     ]
                 };
-                this.chartOption.series = this.chartOption.series.concat( new RSI(
-                    ['RSI', null, null, null],
-                    [data[this._currentStrategy.indicators.rsi.fullName]['output']],
-                    ['#00ff99', '#ff0099', '#ff0099', '#fff']
-                ).generateDescription());
-                this.chartOption.series = this.chartOption.series.concat( new MACD(
-                    ['MACD Short', 'MACD Long', 'MACD Signal'],
-                    [
-                        data[this._currentStrategy.indicators.macd.fullName]['short'],
-                        data[this._currentStrategy.indicators.macd.fullName]['long'],
-                        data[this._currentStrategy.indicators.macd.fullName]['signal']
-                    ],
-                    ['#0CFF9B', '#FF105033', '#FF1050', '#0CF49B', '#0CF49B33', '#FF1050']
-                ).generateDescription());
+
+                this.chartOption.series = this.chartOption.series.concat( this._currentStrategy.generateChartDescriptions( data ));
+                console.log( this.chartOption.series );
             }, // Called whenever there is a message from the server.
             err => console.log( err ), // Called if at any point WebSocket API signals some kind of error.
             () => console.log( 'complete' ) // Called when connection is closed (for whatever reason).

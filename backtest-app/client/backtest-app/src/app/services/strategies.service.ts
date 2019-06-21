@@ -4,7 +4,7 @@
  * File Created: Sunday, 5th May 2019 9:56:02 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Thursday, 13th June 2019 11:55:11 pm
+ * Last Modified: Friday, 21st June 2019 8:16:04 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -36,29 +36,31 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { RSIStrategy } from '../models/strategies/RSIStrategy';
-import { RSIStrategy_33_66 } from '../models/strategies/RSIStrategy_33_66';
-import { RSIWithSMAStrategy } from '../models/strategies/RSIWithSMAStrategy';
+// import { RSIStrategy_33_66 } from '../models/strategies/RSIStrategy_33_66';
+// import { RSIWithSMAStrategy } from '../models/strategies/RSIWithSMAStrategy';
 import { Strategy } from '../models/Strategy';
+import { SMAStrategy } from '../models/strategies/SMAStrategy';
+import { EMAStrategy } from '../models/strategies/EMAStrategy';
 
 @Injectable({
     providedIn: 'root'
 })
 export class StrategiesService {
 
-    public  currentStrategyName: BehaviorSubject<string>   = new BehaviorSubject( 'RSI' );
-    public  currentStrategy:     BehaviorSubject<Strategy> = new BehaviorSubject( new RSIStrategy());
+    public  currentStrategy:     BehaviorSubject<Strategy> = new BehaviorSubject( new EMAStrategy());
+    public  currentStrategyName: BehaviorSubject<string>   = new BehaviorSubject( this.currentStrategy.value.title );
     public  strategies:          BehaviorSubject<string[]> = new BehaviorSubject([]);
     private _loadedStrategies: {[key: string]: Strategy }  = {
-        'RSI':       new RSIStrategy(),
-        'RSI 33/66': new RSIStrategy_33_66(),
-        'RSI + SMA': new RSIWithSMAStrategy()
+        'RSI': new RSIStrategy(),
+        'EMA': new EMAStrategy(),
+        'SMA': new SMAStrategy()
     };
 
     constructor() {
         this.strategies.next([
             'RSI',
-            'RSI 33/66',
-            'RSI + SMA'
+            'SMA',
+            'EMA'
         ]);
     }
 

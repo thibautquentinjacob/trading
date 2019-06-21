@@ -1,30 +1,51 @@
+/*
+ * File: RSIStrategy.1.ts
+ * Project: backtest-app
+ * File Created: Friday, 21st June 2019 12:35:15 am
+ * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
+ * -----
+ * Last Modified: Friday, 21st June 2019 1:17:32 am
+ * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
+ * -----
+ * License:
+ * MIT License
+ *
+ * Copyright (c) 2019 Thibaut Jacob
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+
 import { Strategy } from '../Strategy';
 import { StrategicDecision } from '../StragegicDecision';
 import { Indicator } from '../Indicator';
 import { EChartOption } from 'echarts';
-import { RSI } from '../chart-descriptions/RSI';
 import { StockData } from '../StockData';
-import { MACD } from '../chart-descriptions/MACD';
 import { SMA } from '../chart-descriptions/SMA';
 
-export class RSIStrategy extends Strategy {
+export class SMAStrategy extends Strategy {
 
-    public title: string    = 'RSI';
+    public title: string    = 'SMA';
     public indicators: {
         [key: string]: Indicator
     } = {
-        rsi: {
-            name:    'rsi',
-            options: [7],
-            metric:  'open',
-            output:  ['output']
-        },
-        macd: {
-            name:    'macd',
-            options: [1, 8, 6],
-            metric:  'open',
-            output:  ['short', 'long', 'signal']
-        },
         sma12: {
             name:    'sma',
             options: [12],
@@ -57,20 +78,6 @@ export class RSIStrategy extends Strategy {
     public generateChartDescriptions( data: StockData ): EChartOption.SeriesLine[] {
         let descriptions: EChartOption.SeriesLine[] = [];
         descriptions = descriptions.concat(
-            new RSI(
-                ['RSI', null, null, null],
-                [data[this.indicators.rsi.fullName]['output']],
-                ['#00ff99', '#ff0099', '#ff0099', '#fff']
-            ).generateDescription(),
-            new MACD(
-                ['MACD Short', 'MACD Long', 'MACD Signal'],
-                [
-                    data[this.indicators.macd.fullName]['short'],
-                    data[this.indicators.macd.fullName]['long'],
-                    data[this.indicators.macd.fullName]['signal']
-                ],
-                ['#0CFF9B', '#FF105033', '#FF1050', '#0CF49B', '#0CF49B33', '#FF1050']
-            ).generateDescription(),
             new SMA(
                 ['SMA 26'],
                 [data[this.indicators.sma26.fullName]['output']],
@@ -99,11 +106,11 @@ export class RSIStrategy extends Strategy {
         const closingDate:     Date   = new Date( dates[dates.length - 1]);
         closingDate.setHours( 22, 0, 0 );
         const timeDiffMinutes: number = ( closingDate.getTime() - currentDate.getTime()) / ( 1000 * 60 );
-        const rsiName                 = this.indicators.rsi.fullName;
-        const macdName                = this.indicators.macd.fullName;
-        const rsi:             number = data[rsiName]['output'][data[rsiName]['output'].length - 1];
-        const macd:            number = data[macdName]['long'][data[macdName]['long'].length - 1];
-        if (( rsi <= 31 && macd < -0.3 ) && timeDiffMinutes > 15 ) {
+        const sma12Name                  = this.indicators.sma12.fullName;
+        const sma26Name                  = this.indicators.sma26.fullName;
+        const sma12:              number = data[sma12Name]['output'][data[sma12Name]['output'].length - 1];
+        const sma26:              number = data[sma26Name]['output'][data[sma26Name]['output'].length - 1];
+        if ( Math.ceil( sma12 ) === Math.ceil( sma26 ) && ( sma12 > sma26 ) && timeDiffMinutes > 15 ) {
             return {
                 amount:   -1,
                 decision: true
@@ -130,13 +137,11 @@ export class RSIStrategy extends Strategy {
         const closingDate:     Date   = new Date( dates[dates.length - 1]);
         closingDate.setHours( 22, 0, 0 );
         const timeDiffMinutes: number = ( closingDate.getTime() - currentDate.getTime()) / ( 1000 * 60 );
-        const rsiName                 = this.indicators.rsi.fullName;
-        const macdName                = this.indicators.macd.fullName;
-        const rsi:             number = data[rsiName]['output'][data[rsiName]['output'].length - 1];
-        const macd:            number = data[macdName]['long'][data[macdName]['long'].length - 1];
-        // if ( data.rsi > 70 ) {
-        // if ( data.macd > 0.01 || timeDiffMinutes < 15 ) {
-        if (( macd < 0 && rsi >= 60 ) || rsi >= 80 ) {
+        const sma12Name                  = this.indicators.sma12.fullName;
+        const sma26Name                  = this.indicators.sma26.fullName;
+        const sma12:              number = data[sma12Name]['output'][data[sma12Name]['output'].length - 1];
+        const sma26:              number = data[sma26Name]['output'][data[sma26Name]['output'].length - 1];
+        if ( Math.ceil( sma12 ) === Math.ceil( sma26 ) && sma12 < sma26 ) {
             return {
                 amount:   -1,
                 decision: true
