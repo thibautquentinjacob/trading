@@ -41,6 +41,7 @@ export class MainComponent {
     public  _currentStrategyName: string;
     public  _currentStrategy:     Strategy;
     public  _strategies:          string[];
+    public  _loading:             boolean;
 
     constructor (
         private _portfolioService:  PortfolioService,
@@ -48,7 +49,7 @@ export class MainComponent {
         private _strategiesService: StrategiesService,
         private _activatedRoute:    ActivatedRoute
     ) {
-
+        this._loading = true;
         // Check activated route params. If a symbol has been passed,
         // use as current symbol. Otherwise, use default defined in
         // environment file.
@@ -56,6 +57,7 @@ export class MainComponent {
             // If symbol was passed
             if ( params.symbol ) {
                 console.log( `Setting symbol to ${params.symbol}` );
+                this._currentStockSymbol = params.symbol;
                 this._symbolsService.setCurrentSymbol({
                     name: '',
                     symbol: params.symbol
@@ -63,6 +65,7 @@ export class MainComponent {
             // Otherwise use default
             } else {
                 console.log( `No symbol passed, setting symbol to ${environment.DEFAULT_SYMBOL}` );
+                this._currentStockSymbol = params.symbol;
                 this._symbolsService.setCurrentSymbol({
                     name:   '',
                     symbol: environment.DEFAULT_SYMBOL
@@ -115,6 +118,7 @@ export class MainComponent {
         // On server message
         this.socket.subscribe(
             ( msg: any ) => {
+                this._loading = true;
                 console.log( 'message received', msg );
                 // Initialize data structure to hold OHLC, time and TI data
                 const data: StockData = {
@@ -618,7 +622,7 @@ export class MainComponent {
                 };
 
                 this.chartOption.series = this.chartOption.series.concat( this._currentStrategy.generateChartDescriptions( data ));
-                console.log( this.chartOption.series );
+                this._loading = false;
             }, // Called whenever there is a message from the server.
             err => console.log( err ), // Called if at any point WebSocket API signals some kind of error.
             () => console.log( 'complete' ) // Called when connection is closed (for whatever reason).
@@ -631,6 +635,7 @@ export class MainComponent {
      * @param event
      */
     private _symbolSelected ( event ) {
+        this._loading = true;
         this._portfolioService.resetPortfolio();
         this._symbolsService.setCurrentSymbol( event );
     }
@@ -653,26 +658,17 @@ export class MainComponent {
         return `${parsedHours}:${parsedMinutes}`;
     }
 
-    // FIXME: Strategy changing no longer works
     private _strategySelected( event ) {
+        this._loading = true;
+        console.log( `New strategy selected: ${ event }` );
         this._portfolioService.resetPortfolio();
         this._strategiesService.setCurrentStrategy( event );
         this.socket.next({
             command: ServerCommand.GET_QUOTE,
             options: {
-                quote: this._currentStockSymbol.symbol
+                quote:    this._currentStockSymbol.symbol,
+                strategy: this._currentStrategy
             }
         });
-        // Load strategies
-        // this.chartOption.series = this.chartOption.series.concat( new RSI(
-        //     ['RSI', null, null, null],
-        //     [rsi, rsiTop, rsiLow, rsiMiddle],
-        //     ['#00ff99', '#ff0099', '#ff0099', '#fff']
-        // ).generateDescription());
-        // this.chartOption.series = this.chartOption.series.concat( new MACD(
-        //     ['MACD Short', 'MACD Long', 'MACD Signal'],
-        //     [macd.short, macd.long, macd.signal],
-        //     ['#0CFF9B', '#FF105033', '#FF1050', '#0CF49B', '#0CF49B33', '#FF1050']
-        // ).generateDescription());
     }
 }

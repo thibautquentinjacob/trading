@@ -25,9 +25,15 @@
     </div>
 </div>
 
-<div echarts
-    [options]="chartOption"
-    [loading]="true"
-    [autoResize]="true"
-    class="demo-chart">
+<div>
+    <mat-spinner
+        *ngIf="_loading"
+        class="loader">
+    </mat-spinner>
+    <div echarts
+        [options]="chartOption"
+        [autoResize]="true"
+        class="chart"
+        [ngClass]="{ 'loading' : _loading }">
+    </div>
 </div>

@@ -8,6 +8,7 @@ import { SymbolSelectorModule } from 'src/app/components/symbol-selector/symbol-
 import { MainComponent } from './main.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { StrategySelectorModule } from 'src/app/components/strategy-selector/strategy-selector.module';
+import { MatProgressSpinnerModule } from '@angular/material';
 
 @NgModule({
     declarations: [
@@ -20,7 +21,8 @@ import { StrategySelectorModule } from 'src/app/components/strategy-selector/str
         FlexLayoutModule,
         TopMetricBarModule,
         SymbolSelectorModule,
-        StrategySelectorModule
+        StrategySelectorModule,
+        MatProgressSpinnerModule
     ],
     exports: [
         MainComponent

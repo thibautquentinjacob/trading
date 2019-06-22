@@ -15,7 +15,7 @@ export class TopMetricBarComponent implements OnInit {
 
     public    total:         number;
     public    initialTotal:  number;
-    @Input() _currentSymbol: string;
+    @Input() _currentSymbol: Symbol;
     @Input() _symbols:       Symbol[];
 
     public _metrics: {

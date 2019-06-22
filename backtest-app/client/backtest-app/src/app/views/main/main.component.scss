@@ -1,3 +1,18 @@
-.demo-chart {
+.chart {
     height: 600px;
+}
+
+.loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 999;
+}
+
+.loading {
+    filter: blur(3px);
+}
+
+::ng-deep .mat-progress-spinner circle, .mat-spinner circle {
+    stroke: #37fe8275!important;
 }

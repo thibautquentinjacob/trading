@@ -32,7 +32,7 @@ export class SymbolsService {
     }
 
     public setCurrentSymbol( symbol: Symbol ) {
-        console.log( `Setting current symbol to ${symbol}` );
+        console.log( `Setting current symbol to ${symbol}`, symbol );
         this.currentSymbol.next( symbol );
     }
 }
