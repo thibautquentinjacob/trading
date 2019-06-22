@@ -4,7 +4,7 @@
  * File Created: Wednesday, 12th June 2019 6:58:16 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 18th June 2019 11:55:34 pm
+ * Last Modified: Saturday, 22nd June 2019 4:52:01 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -39,6 +39,6 @@ export interface Indicator {
     fullName?: string;   // Indicator name with options
     options:   number[]; // Indicator parameters
     output:    string[]; // Output names
-    metric:    string;   // Open, High, Low, Close
+    metrics:   string[]; // Open, High, Low, Close
 
 }

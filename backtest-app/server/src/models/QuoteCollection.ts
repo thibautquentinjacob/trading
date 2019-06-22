@@ -4,7 +4,7 @@
  * File Created: Sunday, 14th April 2019 12:21:51 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 18th June 2019 12:09:56 am
+ * Last Modified: Saturday, 22nd June 2019 7:39:34 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -42,13 +42,13 @@ export class QuoteCollection {
     private _technicalIndicators:        {[key: string]: string };
     private _technicalIndicatorsOptions: {[key: string]: number[]}
     // Which columns to use for each indicator
-    private _dataColumns:                {[key: string]: string };
+    private _dataColumns:                {[key: string]: string[] };
 
     constructor(
         quotes:            Quote[],
-        indicators:        {[key: string]: string }  = {},
-        indicatorsOptions: {[key: string]: number[]} = {},
-        dataColumns:       {[key: string]: string }  = {}
+        indicators:        {[key: string]: string }   = {},
+        indicatorsOptions: {[key: string]: number[]}  = {},
+        dataColumns:       {[key: string]: string[] } = {}
     ) {
         // Check if all quotes are defined. If null use the last precedent value.
         for ( let i = 0, size = quotes.length ; i < size ; i++ ) {
@@ -69,38 +69,50 @@ export class QuoteCollection {
     }
 
     private _computeIndicatorValues(): void {
-        const dataColumnsKeys:   string[]                    = Object.keys( this._dataColumns )
-        const dataColumnsAmount: number                      = dataColumnsKeys.length;
-        const quotesAmount:      number                      = this._quotes.length;
-        const indicatorKeys:     string[]                    = Object.keys( this._technicalIndicators );
-        const indicatorsAmount:  number                      = indicatorKeys.length;
-        const Tulind:            {[key: string]: Indicator } = indicators;
-        const dataRows:          {[key: string]: number[] }  = {};
+        const dataColumnsKeys:   string[]                     = Object.keys( this._dataColumns )
+        const dataColumnsAmount: number                       = dataColumnsKeys.length;
+        const quotesAmount:      number                       = this._quotes.length;
+        const indicatorKeys:     string[]                     = Object.keys( this._technicalIndicators );
+        const indicatorsAmount:  number                       = indicatorKeys.length;
+        const Tulind:            {[key: string]: Indicator }  = indicators;
+        // Hold the indicator input metrics (OHLC)
+        const dataRows:          {[key: string]: number[][] } = {};
 
-        // For each data columns, extract values from quotes and store them
+        // For each indicators, build input values from quotes and store them
+        console.log( this.dataColumns );
         for ( let i = 0 ; i < dataColumnsAmount ; i++ ) {
-            const column: string   = this._dataColumns[dataColumnsKeys[i]];
-            const row:    number[] = [];
+            const indicator: string   = dataColumnsKeys[i];
+            // Get input columns required by this indicator
+            const columns:   string[] = this._dataColumns[indicator];
+            dataRows[indicator]       = [];
+
+            // Initialize input arrays
+            for ( let j = 0, size = columns.length ; j < size ; j++ ) {
+                dataRows[indicator].push([]);
+            }
             
             // For each quote, get data corresponding to the column
             for ( let j = 0 ; j < quotesAmount ; j++ ) {
                 const quote: Quote = this._quotes[j];
-                row.push( quote[column] as number );
-            }
 
-            dataRows[column] = row;
+                for ( let k = 0, size = columns.length ; k < size ; k++ ) {
+                    const inputName: string = columns[k];
+                    dataRows[indicator][k].push( quote[inputName] as number );
+                }
+            }
         }
 
         // For each indicators, compute values
         for ( let i = 0 ; i < indicatorsAmount ; i++ ) {
-            const indicator: string = this._technicalIndicators[indicatorKeys[i]];
-            const offset:    number = Tulind[indicator].start( this._technicalIndicatorsOptions[indicatorKeys[i]]);
+            const indicatorName: string = indicatorKeys[i]
+            const indicator:     string = this._technicalIndicators[indicatorName];
+            const offset:        number = Tulind[indicator].start( this._technicalIndicatorsOptions[indicatorName]);
             Tulind[indicator].indicator(
-                [dataRows[this._dataColumns[indicatorKeys[i]]]],
-                this._technicalIndicatorsOptions[indicatorKeys[i]], ( err: string, results: number[][]) => {
+                dataRows[indicatorName],
+                this._technicalIndicatorsOptions[indicatorName], ( err: string, results: number[][]) => {
                 // Insert indicator data back into quotes
                 if ( !err ) {
-                    const indicatorNameWithOptions: string = `${indicator}_${this._technicalIndicatorsOptions[indicatorKeys[i]].join( '_' )}`;
+                    const indicatorNameWithOptions: string = `${indicator}_${this._technicalIndicatorsOptions[indicatorName].join( '_' )}`;
                     const resultsAmount:            number = results[0].length;
                     // For each result entry, add it to the corresponding quote
                     for ( let j = 0 ; j < resultsAmount ; j++ ) {
@@ -139,11 +151,11 @@ export class QuoteCollection {
         this._technicalIndicatorsOptions = technicalIndicatorsOptions;
     }
 
-    get dataColumns (): {[key: string]: string } {
+    get dataColumns (): {[key: string]: string[] } {
         return this._dataColumns;
     }
 
-    set dataColumns ( dataColumns: {[key: string]: string }) {
+    set dataColumns ( dataColumns: {[key: string]: string[] }) {
         this._dataColumns = dataColumns;
     }
 
