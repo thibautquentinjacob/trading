@@ -4,7 +4,7 @@
  * File Created: Friday, 21st June 2019 12:35:15 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Saturday, 22nd June 2019 1:56:31 am
+ * Last Modified: Saturday, 22nd June 2019 2:29:40 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -124,7 +124,11 @@ export class EMAStrategy extends Strategy {
         const ema5:              number = data[ema5Name]['output'][data[ema5Name]['output'].length - 1];
         const ema8:              number = data[ema8Name]['output'][data[ema8Name]['output'].length - 1];
         const ema50:             number = data[ema50Name]['output'][data[ema50Name]['output'].length - 1];
-        if ( Math.ceil( ema5 ) === Math.ceil( ema8 ) && ( ema5 > ema8 ) && ema50 > ema5 && ema50 > ema8 && timeDiffMinutes > 15 ) {
+        if (
+            Math.ceil( ema5 ) === Math.ceil( ema8 ) &&
+            ( ema5 > ema8 ) &&
+            ( ema50 < ema5 ) &&
+            ( ema50 < ema8 ) && timeDiffMinutes > 15 ) {
             return {
                 amount:   -1,
                 decision: true
@@ -157,7 +161,11 @@ export class EMAStrategy extends Strategy {
         const ema5:              number = data[ema5Name]['output'][data[ema5Name]['output'].length - 1];
         const ema8:              number = data[ema8Name]['output'][data[ema8Name]['output'].length - 1];
         const ema50:             number = data[ema50Name]['output'][data[ema50Name]['output'].length - 1];
-        if ( Math.ceil( ema5 ) === Math.ceil( ema8 ) && ema5 < ema8 && ema50 < ema5 && ema50 < ema8 ) {
+        if (
+            Math.ceil( ema5 ) === Math.ceil( ema8 ) &&
+            ( ema5 < ema8 ) &&
+            ( ema50 > ema5 ) &&
+            ( ema50 > ema8 ) ) {
             return {
                 amount:   -1,
                 decision: true
