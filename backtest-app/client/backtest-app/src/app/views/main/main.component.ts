@@ -17,9 +17,6 @@ import { SymbolsService } from '../../services/symbols.service';
 import { StrategiesService } from 'src/app/services/strategies.service';
 
 // Chart descriptions
-import { SMA } from 'src/app/models/chart-descriptions/SMA';
-import { RSI } from 'src/app/models/chart-descriptions/RSI';
-import { MACD } from 'src/app/models/chart-descriptions/MACD';
 import { environment } from 'src/environments/environment';
 import { Indicator } from 'src/app/models/Indicator';
 import { StockData } from 'src/app/models/StockData';
@@ -33,6 +30,9 @@ export class MainComponent {
     title                             = 'backtest-app';
     socket:      WebSocketSubject<{}> = webSocket(`ws://${environment.SERVER_HOSTNAME}:${environment.SERVER_PORT}`);
     chartOption: EChartOption         = {};
+    initOpts = {
+        renderer: 'canvas',
+    };
 
     private _cash:                number;
     private _stocks:              {[key: string]: Stock };
@@ -360,7 +360,10 @@ export class MainComponent {
                             axisLabel: {show: false},
                             splitNumber: 20,
                             min: 'dataMin',
-                            max: 'dataMax'
+                            max: 'dataMax',
+                            axisPointer: {
+                                label: {show: false},
+                            }
                         },
                         {
                             type: 'category',
@@ -374,7 +377,10 @@ export class MainComponent {
                             axisLabel: {show: false},
                             splitNumber: 20,
                             min: 'dataMin',
-                            max: 'dataMax'
+                            max: 'dataMax',
+                            axisPointer: {
+                                label: {show: false},
+                            }
                         },
                         {
                             type: 'category',
@@ -388,7 +394,10 @@ export class MainComponent {
                             axisLabel: {show: false},
                             splitNumber: 20,
                             min: 'dataMin',
-                            max: 'dataMax'
+                            max: 'dataMax',
+                            axisPointer: {
+                                label: {show: false},
+                            }
                         }
                     ],
                     yAxis: [
