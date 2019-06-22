@@ -16,25 +16,25 @@ export class RSIStrategy extends Strategy {
         rsi: {
             name:    'rsi',
             options: [7],
-            metric:  'open',
+            metrics:  ['open'],
             output:  ['output']
         },
         macd: {
             name:    'macd',
             options: [1, 8, 6],
-            metric:  'open',
+            metrics:  ['open'],
             output:  ['short', 'long', 'signal']
         },
         sma12: {
             name:    'sma',
             options: [12],
-            metric:  'open',
+            metrics:  ['open'],
             output:  ['output']
         },
         sma26: {
             name:    'sma',
             options: [26],
-            metric:  'open',
+            metrics:  ['open'],
             output:  ['output']
         }
     };

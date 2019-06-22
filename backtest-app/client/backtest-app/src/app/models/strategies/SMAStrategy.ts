@@ -4,7 +4,7 @@
  * File Created: Friday, 21st June 2019 12:35:15 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Friday, 21st June 2019 1:17:32 am
+ * Last Modified: Saturday, 22nd June 2019 4:52:33 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -49,13 +49,13 @@ export class SMAStrategy extends Strategy {
         sma12: {
             name:    'sma',
             options: [12],
-            metric:  'open',
+            metrics:  ['open'],
             output:  ['output']
         },
         sma26: {
             name:    'sma',
             options: [26],
-            metric:  'open',
+            metrics:  ['open'],
             output:  ['output']
         }
     };
