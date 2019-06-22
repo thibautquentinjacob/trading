@@ -4,7 +4,7 @@
  * File Created: Friday, 21st June 2019 12:35:15 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Saturday, 22nd June 2019 2:29:40 pm
+ * Last Modified: Sunday, 23rd June 2019 1:38:35 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -38,8 +38,9 @@ import { StrategicDecision } from '../StragegicDecision';
 import { Indicator } from '../Indicator';
 import { EChartOption } from 'echarts';
 import { StockData } from '../StockData';
-import { SMA } from '../chart-descriptions/SMA';
 import { EMA } from '../chart-descriptions/EMA';
+import { CCI } from '../chart-descriptions/CCI';
+import { RSI } from '../chart-descriptions/RSI';
 
 export class EMAStrategy extends Strategy {
 
@@ -50,21 +51,33 @@ export class EMAStrategy extends Strategy {
         ema5: {
             name:    'ema',
             options: [5],
-            metric:  'open',
+            metrics:  ['open'],
             output:  ['output']
         },
         ema8: {
             name:    'ema',
             options: [8],
-            metric:  'open',
+            metrics:  ['open'],
             output:  ['output']
         },
         ema50: {
             name:    'ema',
             options: [50],
-            metric:  'open',
+            metrics:  ['open'],
             output:  ['output']
-        }
+        },
+        cci: {
+            name:    'cci',
+            options: [5],
+            metrics:  ['high', 'low', 'close'],
+            output:  ['output']
+        },
+        rsi: {
+            name:    'rsi',
+            options: [7],
+            metrics:  ['open'],
+            output:  ['output']
+        },
     };
 
 
@@ -99,6 +112,16 @@ export class EMAStrategy extends Strategy {
                 ['EMA 50'],
                 [data[this.indicators.ema50.fullName]['output']],
                 ['#00ff00']
+            ).generateDescription(),
+            new CCI(
+                ['CCI'],
+                [data[this.indicators.cci.fullName]['output']],
+                ['#00ffdd99', '#00ff00', '#00ff00', '#333333']
+            ).generateDescription(),
+            new RSI(
+                ['RSI', null, null, null],
+                [data[this.indicators.rsi.fullName]['output']],
+                ['#00ff99', '#ff0099', '#ff0099', '#fff']
             ).generateDescription()
         );
         return descriptions;
