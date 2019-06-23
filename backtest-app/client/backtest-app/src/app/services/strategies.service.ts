@@ -4,7 +4,7 @@
  * File Created: Sunday, 5th May 2019 9:56:02 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Friday, 21st June 2019 8:16:04 pm
+ * Last Modified: Monday, 24th June 2019 1:28:27 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -52,16 +52,17 @@ export class StrategiesService {
     public  strategies:          BehaviorSubject<string[]> = new BehaviorSubject([]);
     private _loadedStrategies: {[key: string]: Strategy }  = {
         'RSI': new RSIStrategy(),
-        'EMA': new EMAStrategy(),
+        'EMA + CCI': new EMAStrategy(),
         'SMA': new SMAStrategy()
     };
 
     constructor() {
-        this.strategies.next([
-            'RSI',
-            'SMA',
-            'EMA'
-        ]);
+        const strategyNames: string[] = [];
+        const keys:            string[] = Object.keys( this._loadedStrategies );
+        for ( let i = 0, size = keys.length ; i < size ; i++ ) {
+            strategyNames.push( this._loadedStrategies[keys[i]].title );
+        }
+        this.strategies.next( strategyNames );
     }
 
     public setCurrentStrategy( strategyName: string ) {
