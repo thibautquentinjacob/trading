@@ -4,7 +4,7 @@
  * File Created: Sunday, 14th April 2019 12:19:02 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Saturday, 22nd June 2019 5:12:23 pm
+ * Last Modified: Sunday, 23rd June 2019 9:55:45 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -69,12 +69,13 @@ webSocketServer.on( 'connection', ( ws: WebSocket, req: IncomingMessage ) => {
             const parsedMessage: any = JSON.parse( message.toString());
             if ( parsedMessage.command === WebsocketCommand.GET_QUOTE ) {
                 QuoteController.getQuotes( parsedMessage.options['quote']).then(( quotes: Quote[] ) => {
-                    console.log( parsedMessage );
                     const indicators:       {[key: string]: string }   = {};
                     const indicatorOptions: {[key: string]: number[]}  = {};
                     const dataColumns:      {[key: string]: string[] } = {};
 
-                    const indicatorKeys:    string[]                  = Object.keys( parsedMessage.options.strategy.indicators );
+                    const indicatorKeys:    string[]                   = Object.keys(
+                         parsedMessage.options.strategy.indicators
+                    );
                     for ( let i = 0, size = indicatorKeys.length ; i < size ; i++ ) {
                         const indicator: string       = indicatorKeys[i];
                         indicators[indicator]         = parsedMessage.options.strategy.indicators[indicator].name;
