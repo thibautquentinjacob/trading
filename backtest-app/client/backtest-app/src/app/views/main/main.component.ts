@@ -197,7 +197,7 @@ export class MainComponent {
                         if ( buyDecision.amount === -1 && amount > 0 ) {
                             this._portfolioService.buy( new Stock( this._currentStockSymbol.symbol, amount ), element.open );
                             markers.push({
-                                name: `Buying ${amount} x ${this._currentStockSymbol.symbol} for ${element.open * amount} at ${data.time}`,
+                                name: `B`,
                                 type: 'buy',
                                 yAxis: element.open,
                                 xAxis: convertedDate
@@ -205,7 +205,7 @@ export class MainComponent {
                         } else if ( buyDecision.amount !== -1 ) {
                             this._portfolioService.buy( new Stock( this._currentStockSymbol.symbol, buyDecision.amount ), element.close );
                             markers.push({
-                                name: `Buying ${buyDecision.amount} x ${this._currentStockSymbol.symbol} for ${element.open * buyDecision.amount} at ${data.time}`,
+                                name: `B`,
                                 type: 'buy',
                                 yAxis: element.open,
                                 xAxis: convertedDate
@@ -219,7 +219,7 @@ export class MainComponent {
                         if ( sellDecision.amount === -1 && amount > 0 ) {
                             this._portfolioService.sell( new Stock( this._currentStockSymbol.symbol, amount ), element.open );
                             markers.push({
-                                name: `Selling ${amount} x ${this._currentStockSymbol} for ${element.open * amount} at ${data.time}`,
+                                name: `S`,
                                 type: 'sell',
                                 yAxis: element.open,
                                 xAxis: convertedDate
@@ -227,7 +227,7 @@ export class MainComponent {
                         } else if ( sellDecision.amount !== -1 ) {
                             this._portfolioService.sell( new Stock( this._currentStockSymbol.symbol, sellDecision.amount ), element.open );
                             markers.push({
-                                name: `Selling ${sellDecision.amount} x ${this._currentStockSymbol.symbol} for ${element.open * sellDecision.amount} at ${data.time}`,
+                                name: `S`,
                                 type: 'sell',
                                 yAxis: element.open,
                                 xAxis: convertedDate
@@ -534,15 +534,14 @@ export class MainComponent {
                                 label: {
                                     color: '#fff',
                                     formatter: ( params ) => {
-                                        return markers[params.dataIndex].type === 'buy' ? '⬇︎' : '⬆︎';
+                                        return params.data.name === 'B' ? '⬇︎' : '⬆︎';
                                     },
                                     fontSize: '8',
                                     // fontWeight: '700'
                                 },
                                 itemStyle: {
                                     color: ( params ) => {
-                                        console.log( params );
-                                        if ( markers[params.dataIndex].type === 'buy' ) {
+                                        if ( params.data.name === 'B' ) {
                                             return new graphic.LinearGradient(
                                                 0, 0, 0, 1,
                                                 [
