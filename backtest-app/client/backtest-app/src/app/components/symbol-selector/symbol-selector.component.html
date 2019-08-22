@@ -15,6 +15,7 @@
                 value="{{ _currentSymbol.symbol }}"
                 [matAutocomplete]="auto">
                 <mat-autocomplete
+                    autoActiveFirstOption
                     [class]="{ 'menu' : true }"
                     #auto="matAutocomplete"
                     (optionSelected)="_optionSelected( $event )">

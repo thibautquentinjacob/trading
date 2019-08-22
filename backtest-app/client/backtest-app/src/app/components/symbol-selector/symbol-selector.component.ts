@@ -22,16 +22,19 @@ export class SymbolSelectorComponent implements OnInit, OnChanges {
     constructor() {}
 
     ngOnInit() {
+        console.log( this._currentSymbol );
         console.log( this._symbols );
-        this._filteredSymbols = this._symbolControl.valueChanges.pipe(
-            startWith(''),
-            map( value => this._filter( value ))
-        );
     }
 
     ngOnChanges( changes: SimpleChanges ): void {
         if ( changes._symbols ) {
             this._symbols = changes._symbols.currentValue;
+            this._filteredSymbols = this._symbolControl.valueChanges.pipe(
+                startWith( this._currentSymbol.symbol ),
+                map( value => this._filter( value ))
+            );
+            console.log( this._symbols );
+            console.log( this._currentSymbol );
         }
         if ( changes._currentSymbol ) {
             this._currentSymbol = changes._currentSymbol.currentValue;
@@ -52,7 +55,7 @@ export class SymbolSelectorComponent implements OnInit, OnChanges {
             return symbol.name.toLowerCase().includes( filterValue ) ||
                    symbol.symbol.toLowerCase().includes( filterValue );
         });
-
+        console.log( filtered );
         return filtered.slice( 0, 20 );
     }
 }
