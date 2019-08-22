@@ -4,7 +4,7 @@
  * File Created: Wednesday, 12th June 2019 8:42:12 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Sunday, 23rd June 2019 1:39:09 am
+ * Last Modified: Thursday, 8th August 2019 9:06:03 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -58,7 +58,7 @@ export class CCI extends ChartDescription {
                 symbolSize: 0,
                 lineStyle: {
                     width: 1,
-                    color: this._colors[0],
+                    color: this._colors[0]
                 },
                 areaStyle: {
                     color: new graphic.LinearGradient(0, 0, 0, 1, [
