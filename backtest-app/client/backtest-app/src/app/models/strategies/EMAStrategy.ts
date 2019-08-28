@@ -4,7 +4,7 @@
  * File Created: Friday, 21st June 2019 12:35:15 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Monday, 24th June 2019 1:23:02 am
+ * Last Modified: Thursday, 29th August 2019 12:51:54 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -198,6 +198,7 @@ export class EMAStrategy extends Strategy {
         const closingDate:     Date   = new Date( dates[dates.length - 1]);
         closingDate.setHours( 22, 0, 0 );
         const timeDiffMinutes: number = ( closingDate.getTime() - currentDate.getTime()) / ( 1000 * 60 );
+        // console.log( timeDiffMinutes );
         const ema5Name                  = this.indicators.ema5.fullName;
         const ema8Name                  = this.indicators.ema8.fullName;
         const ema50Name                 = this.indicators.ema50.fullName;
@@ -212,8 +213,8 @@ export class EMAStrategy extends Strategy {
             // ( ema5 < ema8 ) &&
             // ( ema50 > ema5 ) &&
             // ( ema50 > ema8 )
-            currentCCI < 0 && previousCCI > 0
-            ) {
+            timeDiffMinutes < 15 ||
+            ( currentCCI < 0 && previousCCI > 0 )) {
             return {
                 amount:   -1,
                 decision: true

@@ -33,8 +33,8 @@ export class SymbolSelectorComponent implements OnInit, OnChanges {
                 startWith( this._currentSymbol.symbol ),
                 map( value => this._filter( value ))
             );
-            console.log( this._symbols );
-            console.log( this._currentSymbol );
+            // console.log( this._symbols );
+            // console.log( this._currentSymbol );
         }
         if ( changes._currentSymbol ) {
             this._currentSymbol = changes._currentSymbol.currentValue;

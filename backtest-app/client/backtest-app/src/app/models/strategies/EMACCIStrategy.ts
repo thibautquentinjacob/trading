@@ -4,7 +4,7 @@
  * File Created: Friday, 21st June 2019 12:35:15 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Thursday, 8th August 2019 12:41:22 am
+ * Last Modified: Thursday, 29th August 2019 12:49:07 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -213,10 +213,11 @@ export class EMACCIStrategy extends Strategy {
         if (
             // Math.ceil( ema5 ) === Math.ceil( ema8 ) &&
             // ( ema5 < ema8 ) &&
+            timeDiffMinutes < 15 || (
             ema50 < ema5 &&
             ema50 < ema8 &&
             ( rsi >= 70 ||
-            ( currentCCI < 0 && previousCCI > 0 && Math.abs( previousCCI - currentCCI ) > 70 ))
+            ( currentCCI < 0 && previousCCI > 0 && Math.abs( previousCCI - currentCCI ) > 70 )))
             ) {
             return {
                 amount:   -1,

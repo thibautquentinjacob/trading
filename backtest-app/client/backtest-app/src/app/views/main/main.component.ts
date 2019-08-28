@@ -540,25 +540,25 @@ export class MainComponent {
                                     // fontWeight: '700'
                                 },
                                 itemStyle: {
-                                    color: ( params ) => {
-                                        if ( params.data.name === 'B' ) {
-                                            return new graphic.LinearGradient(
-                                                0, 0, 0, 1,
-                                                [
-                                                    {offset: 0, color: '#0CF49B'},
-                                                    {offset: 1, color: '#0CF49B33'}
-                                                ]
-                                            );
-                                        } else {
-                                            return new graphic.LinearGradient(
-                                                0, 0, 0, 1,
-                                                [
-                                                    {offset: 0, color: '#FF1050'},
-                                                    {offset: 1, color: '#FF105033'}
-                                                ]
-                                            );
-                                        }
-                                    },
+                                    // color: ( params ) => {
+                                    //     if ( params.data.name === 'B' ) {
+                                    //         return new graphic.LinearGradient(
+                                    //             0, 0, 0, 1,
+                                    //             [
+                                    //                 {offset: 0, color: '#0CF49B'},
+                                    //                 {offset: 1, color: '#0CF49B33'}
+                                    //             ]
+                                    //         );
+                                    //     } else {
+                                    //         return new graphic.LinearGradient(
+                                    //             0, 0, 0, 1,
+                                    //             [
+                                    //                 {offset: 0, color: '#FF1050'},
+                                    //                 {offset: 1, color: '#FF105033'}
+                                    //             ]
+                                    //         );
+                                    //     }
+                                    // },
                                     color: new graphic.LinearGradient(
                                         0, 0, 0, 1,
                                         [
