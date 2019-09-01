@@ -1,29 +1,42 @@
+$color: #0e9862;
+$accent_color: #30ffaf;
+
 :host {
 
-    color: #30ffaf;
+    color: $accent_color;
 
     mat-icon {
-        color: #0e9862;
+        color: $color;
         position: relative;
         top: 8px;
         margin-right: 10px;
     }
 
     .mat-input-element {
-        caret-color: #0e9862;
+        caret-color: $color;
+        font-family: 'Oswald', sans-serif;
     }
 
     ::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
-        color: #0e9862!important;
+        color: $color!important;
     }
 
     ::ng-deep .mat-form-field.mat-focused .mat-form-field-ripple {
-        background-color: #0e9862!important;
+        background-color: $color!important;
     }
 
     ::ng-deep .menu {
         background-color: rgba( 0, 0, 0, 0.5 );
         color: #30ffaf!important;
+    }
+
+    ::ng-deep .mat-form-field-infix {
+
+        label {
+            color: $color!important;
+            font-family: 'Oswald', sans-serif;
+        }
+
     }
 
 }

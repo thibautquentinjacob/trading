@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, EventEmitter, Output, ViewEncapsulation } from '@angular/core';
 import { Observable } from 'rxjs';
 import { MatAutocompleteSelectedEvent } from '@angular/material';
 import { map, startWith } from 'rxjs/operators';
@@ -28,6 +28,7 @@ export class StrategySelectorComponent implements OnInit, OnChanges {
             startWith(''),
             map( value => this._filter( value ))
         );
+        this._strategyControl.patchValue( this._currentStrategy );
     }
 
     ngOnChanges( changes: SimpleChanges ): void {
@@ -37,6 +38,7 @@ export class StrategySelectorComponent implements OnInit, OnChanges {
         }
         if ( changes._currentStrategy ) {
             this._currentStrategy = changes._currentStrategy.currentValue;
+            this._strategyControl.patchValue( changes._currentStrategy.currentValue );
         }
     }
 

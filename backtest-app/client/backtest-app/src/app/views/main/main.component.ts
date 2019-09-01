@@ -286,7 +286,8 @@ export class MainComponent {
                         borderColor: '#000',
                         padding: 10,
                         textStyle: {
-                            color: '#fff'
+                            color: '#fff',
+                            fontFamily: 'Oswald'
                         }
                     },
                     axisPointer: {

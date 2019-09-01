@@ -16,3 +16,19 @@
 ::ng-deep .mat-progress-spinner circle, .mat-spinner circle {
     stroke: #37fe8275!important;
 }
+
+::ng-deep .mat-autocomplete-panel {
+    background: rgba( #111, 0.8 );
+    border: 1px solid #072317;
+}
+
+::ng-deep .mat-option {
+    color: #0e9862!important;
+    font-family: 'Oswald';
+    height: 32px!important;
+    transition: background 300ms ease;
+}
+
+::ng-deep .mat-option:hover, ::ng-deep .mat-selected {
+    background: #122f25!important;
+}
