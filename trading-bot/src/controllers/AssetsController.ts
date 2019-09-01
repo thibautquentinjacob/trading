@@ -4,7 +4,7 @@
  * File Created: Wednesday, 3rd April 2019 12:50:50 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 4th June 2019 12:35:29 am
+ * Last Modified: Friday, 30th August 2019 12:35:41 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -67,7 +67,7 @@ export class AssetsController {
                 }
             }
             console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
-            get( `${Constants.ALPACA_API_URL}/v1/${route}${queryString}`, {
+            get( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/v1/${route}${queryString}`, {
                 headers: Constants.alpacaDefaultHeaders
             }).then(( data: any ) => {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
@@ -100,7 +100,7 @@ export class AssetsController {
             const route:       string = `assets/${symbol}`;
             
             console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
-            get( `${Constants.ALPACA_API_URL}/v1/${route}`, {
+            get( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/v1/${route}`, {
                 headers: Constants.alpacaDefaultHeaders
             }).then(( data: any ) => {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));

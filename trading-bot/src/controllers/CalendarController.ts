@@ -4,7 +4,7 @@
  * File Created: Wednesday, 3rd April 2019 1:17:35 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 4th June 2019 12:35:29 am
+ * Last Modified: Friday, 30th August 2019 12:36:14 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -69,7 +69,7 @@ export class CalendarController {
             }
             
             console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
-            get( `${Constants.ALPACA_API_URL}/v1/${route}${queryString}`, {
+            get( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/v1/${route}${queryString}`, {
                 headers: Constants.alpacaDefaultHeaders
             }).then(( data: any ) => {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));

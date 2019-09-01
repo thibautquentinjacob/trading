@@ -4,7 +4,7 @@
  * File Created: Tuesday, 26th March 2019 12:31:58 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 4th June 2019 12:35:29 am
+ * Last Modified: Friday, 30th August 2019 12:36:34 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -78,7 +78,7 @@ export class OrderController {
             if ( until ) {
                 params += `&until=${until}`;
             }
-            get( `${Constants.ALPACA_API_URL}/v1/${route}?${params}`, {
+            get( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/v1/${route}?${params}`, {
                 headers: Constants.alpacaDefaultHeaders
             }).then(( data: any ) => {
                 // const response:     any          = JSON.parse( data );
@@ -132,7 +132,7 @@ export class OrderController {
                 reject( null );
             }
 
-            post( `${Constants.ALPACA_API_URL}/v1/${route}`, {
+            post( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/v1/${route}`, {
                 headers: Constants.alpacaDefaultHeaders,
                 body: {
                     symbol:           symbol,
@@ -170,7 +170,7 @@ export class OrderController {
         const route: string = `orders/${orderId}`;
         console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
         return new Promise( async ( resolve, reject ) => {
-            get( `${Constants.ALPACA_API_URL}/v1/${route}`, {
+            get( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/v1/${route}`, {
                 headers: Constants.alpacaDefaultHeaders
             }).then(( data: any ) => {
                 const response:     any          = JSON.parse( data );
@@ -198,7 +198,7 @@ export class OrderController {
             const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
             const route: string = `orders:${clientId}`;
             console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
-            get( `${Constants.ALPACA_API_URL}/v1/${route}`, {
+            get( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/v1/${route}`, {
                 headers: Constants.alpacaDefaultHeaders
             }).then(( data: any ) => {
                 const response:     any          = JSON.parse( data );
@@ -226,7 +226,7 @@ export class OrderController {
             const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
             const route: string = `orders/${orderId}`;
             console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
-            del( `${Constants.ALPACA_API_URL}/v1/${route}`, {
+            del( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/v1/${route}`, {
                 headers: Constants.alpacaDefaultHeaders
             }).then(() => {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));

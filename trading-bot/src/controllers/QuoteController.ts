@@ -4,7 +4,7 @@
  * File Created: Thursday, 4th April 2019 12:13:17 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Saturday, 8th June 2019 12:14:17 am
+ * Last Modified: Friday, 30th August 2019 12:40:56 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -43,6 +43,10 @@ import { Quote, QuoteAdapter } from '../models/Quote';
 
 export class QuoteController {
 
+    private static _url:     string = Constants.IEX_CLOUD_SETTINGS.IEX_CLOUD_DATA_URL;
+    private static _version: string = Constants.IEX_CLOUD_SETTINGS.IEX_CLOUD_VERSION;
+    private static _token:   string = Constants.IEX_CLOUD_SETTINGS.IEX_CLOUD_PRIVATE_TOKEN;
+
     /**
      * Get all quotes for input symbol.
      * 
@@ -56,7 +60,7 @@ export class QuoteController {
             const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
             const route: string = `quote`;
             console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
-            get( `${Constants.IEX_CLOUD_DATA_URL}/${Constants.IEX_CLOUD_VERSION}/stock/${symbol}/intraday-prices?token=${Constants.IEX_CLOUD_PRIVATE_TOKEN}`).then(( data: any ) => {
+            get( `${QuoteController._url}/${QuoteController._version}/stock/${symbol}/intraday-prices?token=${QuoteController._token}`).then(( data: any ) => {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
                 const output:       Quote[]      = [];
                 const response:     any          = JSON.parse( data );
@@ -93,7 +97,7 @@ export class QuoteController {
             const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
             const route: string = `quote`;
             console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
-            get( `${Constants.IEX_CLOUD_DATA_URL}/${Constants.IEX_CLOUD_VERSION}/stock/${symbol}/intraday-prices?chartLast=1&token=${Constants.IEX_CLOUD_PRIVATE_TOKEN}`).then(( data: any ) => {
+            get( `${QuoteController._url}/${QuoteController._version}/stock/${symbol}/intraday-prices?chartLast=1&token=${QuoteController._token}`).then(( data: any ) => {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
                 const response:     any          = JSON.parse( data );
                 const quoteAdapter: QuoteAdapter = new QuoteAdapter();
