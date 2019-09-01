@@ -4,7 +4,7 @@
  * File Created: Friday, 30th August 2019 12:30:10 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Saturday, 31st August 2019 12:35:32 pm
+ * Last Modified: Sunday, 1st September 2019 12:36:50 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -34,8 +34,10 @@
 
 
 import { RSIStrategy } from './RSIStrategy';
+import { CCIStrategy } from './CCIStrategy';
 import { Strategy } from '../Strategy';
 
 export const strategies: {[key: string]: Strategy } = {
-    'RSI':       new RSIStrategy(),
+    'RSI': new RSIStrategy(),
+    'CCI': new CCIStrategy()
 };
