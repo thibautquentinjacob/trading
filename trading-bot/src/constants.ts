@@ -4,7 +4,7 @@
  * File Created: Tuesday, 26th March 2019 12:34:55 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 4th June 2019 12:35:29 am
+ * Last Modified: Saturday, 31st August 2019 5:55:16 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -36,15 +36,19 @@
 export class Constants {
 
     // IEX Cloud API settings
-    public static IEX_CLOUD_DATA_URL:         string = 'https://cloud-sse.iexapis.com/';
-    public static IEX_CLOUD_VERSION:          string = 'stable';
-    public static IEX_CLOUD_STREAM_PRECISION: string = 'stocksUS1Minute';
-    public static IEX_CLOUD_PRIVATE_TOKEN:    string = 'sk_17df8f49db65407eb7aba757e1faeeae';
+    public static IEX_CLOUD_SETTINGS: {[key: string]: string } = {
+        IEX_CLOUD_DATA_URL:         'https://cloud-sse.iexapis.com/',
+        IEX_CLOUD_VERSION:          'stable',
+        IEX_CLOUD_STREAM_PRECISION: 'stocksUS1Minute',
+        IEX_CLOUD_PRIVATE_TOKEN:    'sk_17df8f49db65407eb7aba757e1faeeae',
+    };
 
     // Alpaca API settings
-    public static ALPACA_API_URL:             string = 'https://paper-api.alpaca.markets';
-    public static ALPACA_KEY_ID:              string = 'PKZHLVTKOXLFX097CS6B';
-    public static ALPACA_KEY_SECRET:          string = 'VNMwCnCytEk/51EjDgeiJgFjz2hIuDOZ/z0rV/8B';
+    public static ALPACA_SETTINGS: {[key: string]: string } = {
+        ALPACA_API_URL:    'https://paper-api.alpaca.markets',
+        ALPACA_KEY_ID:     'PKZHLVTKOXLFX097CS6B',
+        ALPACA_KEY_SECRET: 'VNMwCnCytEk/51EjDgeiJgFjz2hIuDOZ/z0rV/8B'
+    };
 
     public static IEXCloudAPIDefaultHeaders: {[key: string]: string } = {
         'Accept': 'text/event-stream'
@@ -52,12 +56,15 @@ export class Constants {
 
     // Alpaca API headers
     public static alpacaDefaultHeaders:      {[key: string]: string } = {
-        'APCA-API-KEY-ID':     Constants.ALPACA_KEY_ID,
-        'APCA-API-SECRET-KEY': Constants.ALPACA_KEY_SECRET
+        'APCA-API-KEY-ID':     Constants.ALPACA_SETTINGS.ALPACA_KEY_ID,
+        'APCA-API-SECRET-KEY': Constants.ALPACA_SETTINGS.ALPACA_KEY_SECRET
     };
 
     // The symbol to trade
     public static TRADED_SYMBOL:             string = 'AAPL';
+
+    // Default strategy
+    public static DEFAULT_STRATEGY:          string = 'RSI';
 
     // SEC min day trade security amount
     public static MIN_DAY_TRADE_CASH_AMOUNT: number = 25000;
