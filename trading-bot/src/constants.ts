@@ -4,7 +4,7 @@
  * File Created: Tuesday, 26th March 2019 12:34:55 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Saturday, 31st August 2019 5:55:16 pm
+ * Last Modified: Sunday, 1st September 2019 12:37:01 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -64,7 +64,7 @@ export class Constants {
     public static TRADED_SYMBOL:             string = 'AAPL';
 
     // Default strategy
-    public static DEFAULT_STRATEGY:          string = 'RSI';
+    public static DEFAULT_STRATEGY:          string = 'CCI';
 
     // SEC min day trade security amount
     public static MIN_DAY_TRADE_CASH_AMOUNT: number = 25000;
