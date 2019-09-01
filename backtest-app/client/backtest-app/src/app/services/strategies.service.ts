@@ -4,7 +4,7 @@
  * File Created: Sunday, 5th May 2019 9:56:02 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Monday, 24th June 2019 1:28:27 am
+ * Last Modified: Sunday, 1st September 2019 3:46:13 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -36,24 +36,24 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { RSIStrategy } from '../models/strategies/RSIStrategy';
-// import { RSIStrategy_33_66 } from '../models/strategies/RSIStrategy_33_66';
-// import { RSIWithSMAStrategy } from '../models/strategies/RSIWithSMAStrategy';
 import { Strategy } from '../models/Strategy';
 import { SMAStrategy } from '../models/strategies/SMAStrategy';
-import { EMAStrategy } from '../models/strategies/EMAStrategy';
+import { CCIStrategy } from '../models/strategies/CCIStrategy';
+import { EMACCIStrategy } from '../models/strategies/EMACCIStrategy';
 
 @Injectable({
     providedIn: 'root'
 })
 export class StrategiesService {
 
-    public  currentStrategy:     BehaviorSubject<Strategy> = new BehaviorSubject( new EMAStrategy());
+    public  currentStrategy:     BehaviorSubject<Strategy> = new BehaviorSubject( new CCIStrategy());
     public  currentStrategyName: BehaviorSubject<string>   = new BehaviorSubject( this.currentStrategy.value.title );
     public  strategies:          BehaviorSubject<string[]> = new BehaviorSubject([]);
     private _loadedStrategies: {[key: string]: Strategy }  = {
-        'RSI': new RSIStrategy(),
-        'EMA + CCI': new EMAStrategy(),
-        'SMA': new SMAStrategy()
+        'RSI':       new RSIStrategy(),
+        'CCI':       new CCIStrategy(),
+        'SMA':       new SMAStrategy(),
+        'EMA + CCI': new EMACCIStrategy()
     };
 
     constructor() {

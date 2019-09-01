@@ -86,7 +86,6 @@ export class Portfolio {
     }
 
     public sell ( stock: Stock, stockPrice: number ): boolean {
-        console.log( stock );
         const totalPrice: number = stockPrice * stock.amount;
         // If we have enough stocks
         if ( this._stocks[stock.symbol] && this._stocks[stock.symbol].amount >= stock.amount ) {

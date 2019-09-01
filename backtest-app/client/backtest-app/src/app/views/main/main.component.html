@@ -13,7 +13,7 @@
         fxLayoutAlign="space-between center">
         <app-strategy-selector
             [_strategies]="_strategies"
-            [_currentStrategy]="'RSI'"
+            [_currentStrategy]="_currentStrategyName"
             (strategySelected)="_strategySelected( $event )">
         </app-strategy-selector>
 

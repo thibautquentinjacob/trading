@@ -4,7 +4,7 @@
  * File Created: Friday, 21st June 2019 12:35:15 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Thursday, 29th August 2019 12:51:54 am
+ * Last Modified: Sunday, 1st September 2019 1:46:20 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -41,11 +41,10 @@ import { StockData } from '../StockData';
 import { EMA } from '../chart-descriptions/EMA';
 import { CCI } from '../chart-descriptions/CCI';
 import { RSI } from '../chart-descriptions/RSI';
-import { BollingerBands } from '../chart-descriptions/BollingerBands';
 
-export class EMAStrategy extends Strategy {
+export class CCIStrategy extends Strategy {
 
-    public title: string    = 'EMA + CCI';
+    public title: string    = 'CCI';
     public indicators: {
         [key: string]: Indicator
     } = {
@@ -78,13 +77,7 @@ export class EMAStrategy extends Strategy {
             options: [7],
             metrics:  ['open'],
             output:  ['output']
-        },
-        bollingerBands: {
-            name:    'bbands',
-            options: [5, 2],
-            metrics:  ['open'],
-            output:  ['lower', 'middle', 'upper']
-        },
+        }
     };
 
 
@@ -128,16 +121,7 @@ export class EMAStrategy extends Strategy {
                 ['RSI', null, null, null],
                 [data[this.indicators.rsi.fullName]['output']],
                 ['#00ff99', '#ff0099', '#ff0099', '#fff']
-            ).generateDescription(),
-            // new BollingerBands(
-            //     ['Bollinger Bands', null, null, null],
-            //     [
-            //         data[this.indicators.bollingerBands.fullName]['lower'],
-            //         data[this.indicators.bollingerBands.fullName]['middle'],
-            //         data[this.indicators.bollingerBands.fullName]['upper']
-            //     ],
-            //     ['#0099FF88', '#999', '#0099FF88']
-            // ).generateDescription()
+            ).generateDescription()
         );
         return descriptions;
     }
@@ -160,16 +144,9 @@ export class EMAStrategy extends Strategy {
         const ema8Name                  = this.indicators.ema8.fullName;
         const ema50Name                 = this.indicators.ema50.fullName;
         const cciName                   = this.indicators.cci.fullName;
-        const ema5:              number = data[ema5Name]['output'][data[ema5Name]['output'].length - 1];
-        const ema8:              number = data[ema8Name]['output'][data[ema8Name]['output'].length - 1];
-        const ema50:             number = data[ema50Name]['output'][data[ema50Name]['output'].length - 1];
         const currentCCI:        number = data[cciName]['output'][data[cciName]['output'].length - 1];
         const previousCCI:       number = data[cciName]['output'][data[cciName]['output'].length - 2];
         if (
-            // Math.ceil( ema5 ) === Math.ceil( ema8 ) &&
-            // ( ema5 > ema8 ) &&
-            // ( ema50 < ema5 ) &&
-            // ( ema50 < ema8 ) &&
             currentCCI > 0 && previousCCI < 0 &&
             timeDiffMinutes > 15 ) {
             return {
@@ -203,16 +180,9 @@ export class EMAStrategy extends Strategy {
         const ema8Name                  = this.indicators.ema8.fullName;
         const ema50Name                 = this.indicators.ema50.fullName;
         const cciName                   = this.indicators.cci.fullName;
-        const ema5:              number = data[ema5Name]['output'][data[ema5Name]['output'].length - 1];
-        const ema8:              number = data[ema8Name]['output'][data[ema8Name]['output'].length - 1];
-        const ema50:             number = data[ema50Name]['output'][data[ema50Name]['output'].length - 1];
         const currentCCI:        number = data[cciName]['output'][data[cciName]['output'].length - 1];
         const previousCCI:       number = data[cciName]['output'][data[cciName]['output'].length - 2];
         if (
-            // Math.ceil( ema5 ) === Math.ceil( ema8 ) &&
-            // ( ema5 < ema8 ) &&
-            // ( ema50 > ema5 ) &&
-            // ( ema50 > ema8 )
             timeDiffMinutes < 15 ||
             ( currentCCI < 0 && previousCCI > 0 )) {
             return {
