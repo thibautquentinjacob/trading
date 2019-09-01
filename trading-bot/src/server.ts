@@ -4,7 +4,7 @@
  * File Created: Tuesday, 19th March 2019 12:21:16 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Sunday, 1st September 2019 12:19:00 pm
+ * Last Modified: Sunday, 1st September 2019 1:17:27 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -52,6 +52,7 @@ import { strategies } from './models/strategies/index';
 import { Strategy } from './models/Strategy';
 import { StockData } from './models/StockData';
 import { Helper } from './Helper';
+import { OperationState } from './models/OperationState';
 
 console.log( yellow( `
 .▄▄ · ▄▄▄▄▄      ▐▄• ▄ 
@@ -63,13 +64,28 @@ console.log( yellow( `
 
 const logger:            Logger   = new Logger( 'log.txt' );
 let   marketOpened:      boolean  = false;
+const quotes:            Quote[]  = [];
 const strategy:          Strategy = strategies[Constants.DEFAULT_STRATEGY];
 if ( !strategy ) {
-    console.log( `Unknown strategy ${Constants.DEFAULT_STRATEGY}. Available strategies are ${Object.keys( strategies )}` );
-    process.exit(-1);
+    console.log( Helper.formatLog(
+        'init',
+        `Unknown strategy ${Constants.DEFAULT_STRATEGY}. Available strategies are ${Object.keys( strategies )}`, 'Check',
+        OperationState.FAILURE )
+    );
+    process.exit( -1 );
+} else {
+    console.log( Helper.formatLog(
+        'init',
+        `Using strategy ${Constants.DEFAULT_STRATEGY}`, 'Check',
+        OperationState.SUCCESS )
+    );
 }
-const quotes:            Quote[] = [];
 
+console.log( Helper.formatLog(
+    'init',
+    `Starting new trading session`, 'Bootstrap',
+    OperationState.SUCCESS )
+);
 logger.log( 'Starting new trading session' );
 
 /**
@@ -78,11 +94,15 @@ logger.log( 'Starting new trading session' );
  * @param {Account} account - Account object
  */
 function displayAccount ( account: Account ): void {
-    console.log(`
+    console.log( Helper.formatLog(
+        'global',
+        `Portfolio status\n
     Total:  $${account.portfolioValue}
     Cash:   $${account.cash}
     Stocks: $${account.portfolioValue - account.cash}
-    `);
+    \n`, 'Check',
+        OperationState.SUCCESS )
+    );
 }
 
 /**
@@ -107,7 +127,6 @@ function shouldSell ( data: StockData ): StrategicDecision {
     return strategy.shouldSell( data, logger );
 }
 
-
 /**
  * Implement the buy logic
  * 
@@ -116,7 +135,6 @@ function shouldSell ( data: StockData ): StrategicDecision {
 function buyLogic ( data: StockData ): void {
     // Get buy decision
     const buyDecision: StrategicDecision = shouldBuy( data );
-    console.log( buyDecision );
     if ( buyDecision.decision && ( buyDecision.amount > 0 || buyDecision.amount === -1 )) {
         // Get current cash amount
         AccountController.get().then(( account: Account ) => {
@@ -191,7 +209,11 @@ function sellLogic ( data: StockData ): void {
 ClockController.get().then(( clock: Clock ) => {
     marketOpened               = clock.isOpen
     const marketStatus: string = marketOpened ? 'opened': 'closed';
-    console.log( `Market is ${marketStatus}` );
+    console.log( Helper.formatLog(
+        'global',
+        `Market is ${marketStatus}`, 'Check',
+        OperationState.SUCCESS )
+    );
 }).catch(( err: any ) => {
     console.log( `Error raised: ${err}` );
 });
@@ -276,7 +298,11 @@ setInterval(() => {
     ClockController.get().then(( clock: Clock ) => {
         marketOpened = clock.isOpen
         const marketStatus: string = marketOpened ? 'opened': 'closed';
-        console.log( `Market is ${marketStatus}` );
+        console.log( Helper.formatLog(
+            'global',
+            `Market is ${marketStatus}`, 'Check',
+            OperationState.SUCCESS )
+        );
     }).catch(( err: any ) => {
         console.log( `Error raised: ${err}` );
     });
