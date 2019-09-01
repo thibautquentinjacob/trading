@@ -4,7 +4,7 @@
  * File Created: Friday, 21st June 2019 12:35:15 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Sunday, 1st September 2019 12:36:10 pm
+ * Last Modified: Sunday, 1st September 2019 1:23:30 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -67,7 +67,7 @@ export class CCIStrategy extends Strategy {
 
     /**
      * Provided market data, should we buy or not.
-     * If rsi <= 31 and mac < -0.3 -> BUY
+     * If currentCCI > 0 and previousCCI < 0 -> BUY
      *
      * @public
      * @param {StockData} data - Stock data + required indicators
@@ -102,7 +102,7 @@ export class CCIStrategy extends Strategy {
 
     /**
      * Provided market data, should we sell or not.
-     * If ( macd < 0 and rsi >= 60 ) or rsi >= 80 -> SELL
+     * If currentCCI < 0 and previousCCI > 0 -> SELL
      *
      * @public
      * @param {StockData} data - Stock data + required indicators
@@ -114,7 +114,6 @@ export class CCIStrategy extends Strategy {
         const closingDate:     Date   = new Date( dates[dates.length - 1]);
         closingDate.setHours( 22, 0, 0 );
         const timeDiffMinutes: number = ( closingDate.getTime() - currentDate.getTime()) / ( 1000 * 60 );
-        // console.log( timeDiffMinutes );
         const cciName:         string   = this.indicators.cci.fullName || '';
         const cciOutput:       number[] = data.indicators[cciName]['output'];
         const currentCCI:      number   = cciOutput[cciOutput.length - 1];
