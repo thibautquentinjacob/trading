@@ -4,7 +4,7 @@
  * File Created: Monday, 3rd June 2019 9:11:27 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 4th June 2019 12:35:29 am
+ * Last Modified: Saturday, 31st August 2019 12:23:37 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -36,6 +36,7 @@
 export interface StrategicDecision {
 
         amount:   number,
+        price:    number,
         decision: boolean
 
 }
