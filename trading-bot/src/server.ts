@@ -4,7 +4,7 @@
  * File Created: Tuesday, 19th March 2019 12:21:16 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Friday, 14th June 2019 12:21:01 am
+ * Last Modified: Sunday, 1st September 2019 12:19:00 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -40,9 +40,7 @@ import { Clock } from "./models/Clock";
 import { QuoteController } from './controllers/QuoteController';
 import { Quote } from './models/Quote';
 import { Constants } from './constants';
-import { indicators } from 'tulind';
 import { StrategicDecision } from './models/StragegicDecision';
-import { RSIWithMacDStrategy } from './models/strategies/RSIWithMacDStrategy';
 import { OrderController } from './controllers/OrderController';
 import { Side } from './models/Side';
 import { OrderType } from './models/OrderType';
@@ -50,6 +48,10 @@ import { TimeInForce } from './models/TimeInForce';
 import { PositionController } from './controllers/PositionController';
 import { Position } from './models/Position';
 import { Logger } from './models/Logger';
+import { strategies } from './models/strategies/index';
+import { Strategy } from './models/Strategy';
+import { StockData } from './models/StockData';
+import { Helper } from './Helper';
 
 console.log( yellow( `
 .▄▄ · ▄▄▄▄▄      ▐▄• ▄ 
@@ -59,19 +61,14 @@ console.log( yellow( `
  ▀▀▀▀  ▀▀▀  ▀█▄▀▪•▀▀ ▀▀
 `));
 
-const logger:            Logger                                    = new Logger( 'log.txt' );
-let   marketOpened:      boolean                                   = false;
-const quotes:            Quote[]                                   = [];
-const indicatorsOptions: {[key: string]: {[key: string]: number }} = {
-    rsi: {
-        period: 7
-    },
-    macd: {
-        short_period:  1,
-        long_period:   8,
-        signal_period: 6
-    }
-};
+const logger:            Logger   = new Logger( 'log.txt' );
+let   marketOpened:      boolean  = false;
+const strategy:          Strategy = strategies[Constants.DEFAULT_STRATEGY];
+if ( !strategy ) {
+    console.log( `Unknown strategy ${Constants.DEFAULT_STRATEGY}. Available strategies are ${Object.keys( strategies )}` );
+    process.exit(-1);
+}
+const quotes:            Quote[] = [];
 
 logger.log( 'Starting new trading session' );
 
@@ -92,43 +89,40 @@ function displayAccount ( account: Account ): void {
  * Check if we should buy stocks according to the current
  * strategy.
  * 
- * @param {{[key: string] : number | Date }} data - Information needed to make a decision
+ * @param {StockData} data - Information needed to make a decision
  * @returns {StrategicDecision} A decision
  */
-function shouldBuy ( data: {[key: string]: number | Date }): StrategicDecision {
-    return RSIWithMacDStrategy.shouldBuy( data, logger );
+function shouldBuy ( data: StockData ): StrategicDecision {
+    return strategy.shouldBuy( data, logger );
 }
 
 /**
  * Check if we should sell stocks according to the current
  * strategy.
  * 
- * @param {{[key: string] : number | Date }} data - Information needed to make a decision
+ * @param {StockData} data - Information needed to make a decision
  * @returns {StrategicDecision} A decision
  */
-function shouldSell ( data: {[key: string]: number | Date }): StrategicDecision {
-    return RSIWithMacDStrategy.shouldSell( data, logger );
+function shouldSell ( data: StockData ): StrategicDecision {
+    return strategy.shouldSell( data, logger );
 }
 
 
 /**
  * Implement the buy logic
  * 
- * @param {number} price - Current stock price 
- * @param {{[key: string]: number | Date }} technicalIndicatorData - Technical indicator data
+ * @param {data} StockData - Technical indicator data
  */
-function buyLogic (
-    price:                  number,
-    technicalIndicatorData: {[key: string]: number | Date }
-): void {
+function buyLogic ( data: StockData ): void {
     // Get buy decision
-    const buyDecision: StrategicDecision = shouldBuy( technicalIndicatorData );
+    const buyDecision: StrategicDecision = shouldBuy( data );
+    console.log( buyDecision );
     if ( buyDecision.decision && ( buyDecision.amount > 0 || buyDecision.amount === -1 )) {
         // Get current cash amount
         AccountController.get().then(( account: Account ) => {
             const cash:   number = account.cash - Constants.MIN_DAY_TRADE_CASH_AMOUNT;
             // Compute the volume we can buy
-            const amount: number = Math.floor( cash / price );
+            const amount: number = Math.floor( cash / buyDecision.price );
             if ( buyDecision.amount === -1 && amount > 0 ) {
                 OrderController.request(
                     Constants.TRADED_SYMBOL,
@@ -137,8 +131,8 @@ function buyLogic (
                     OrderType.MARKET,
                     TimeInForce.DAY,
                 );
-                console.log( `Buying ${amount} x ${Constants.TRADED_SYMBOL} for ${price * amount}` );
-                logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${amount} x ${price}\t${price * amount}` );
+                console.log( `Buying ${amount} x ${Constants.TRADED_SYMBOL} for ${buyDecision.price * amount}` );
+                logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${amount} x ${buyDecision.price}\t${buyDecision.price * amount}` );
             } else if ( buyDecision.amount !== -1 ) {
                 OrderController.request(
                     Constants.TRADED_SYMBOL,
@@ -147,8 +141,8 @@ function buyLogic (
                     OrderType.MARKET,
                     TimeInForce.DAY,
                 );
-                console.log( `Buying ${buyDecision.amount} x ${Constants.TRADED_SYMBOL} for ${price * buyDecision.amount}` );
-                logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${buyDecision.amount} x ${price}\t${price * buyDecision.amount}` );
+                console.log( `Buying ${buyDecision.amount} x ${Constants.TRADED_SYMBOL} for ${buyDecision.price * buyDecision.amount}` );
+                logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${buyDecision.amount} x ${buyDecision.price}\t${buyDecision.price * buyDecision.amount}` );
             }
         });
     }
@@ -157,15 +151,11 @@ function buyLogic (
 /**
  * Implement the sell logic
  * 
- * @param {number} price - Current stock price 
- * @param {{[key: string]: number | Date }} technicalIndicatorData - Technical indicator data
+ * @param {StockData} data - Technical indicator data
  */
-function sellLogic (
-    price: number,
-    technicalIndicatorData: {[key: string]: number | Date }
-): void {
+function sellLogic ( data: StockData ): void {
     // Get sell decision
-    const sellDecision: StrategicDecision = shouldSell( technicalIndicatorData );
+    const sellDecision: StrategicDecision = shouldSell( data );
     if ( sellDecision.decision && ( sellDecision.amount > 0 || sellDecision.amount === -1 )) {
         // Fetch the volume we own for traded symbol
         PositionController.getBySymbol( Constants.TRADED_SYMBOL ).then(( position: Position ) => {
@@ -178,8 +168,8 @@ function sellLogic (
                     OrderType.MARKET,
                     TimeInForce.DAY,
                 );
-                console.log( `Selling ${amount} x ${Constants.TRADED_SYMBOL} for ${price * amount}` );
-                logger.log( `SELL\t${Constants.TRADED_SYMBOL}\t${amount} x ${price}\t${price * amount}` );
+                console.log( `Selling ${amount} x ${Constants.TRADED_SYMBOL} for ${sellDecision.price * amount}` );
+                logger.log( `SELL\t${Constants.TRADED_SYMBOL}\t${amount} x ${sellDecision.price}\t${sellDecision.price * amount}` );
             } else if ( sellDecision.amount !== -1 ) {
                 OrderController.request(
                     Constants.TRADED_SYMBOL,
@@ -188,61 +178,13 @@ function sellLogic (
                     OrderType.MARKET,
                     TimeInForce.DAY,
                 );
-                console.log( `Selling ${sellDecision.amount} x ${Constants.TRADED_SYMBOL} for ${price * sellDecision.amount}` );
-                logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${sellDecision.amount} x ${price}\t${price * sellDecision.amount}` );
+                console.log( `Selling ${sellDecision.amount} x ${Constants.TRADED_SYMBOL} for ${sellDecision.price * sellDecision.amount}` );
+                logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${sellDecision.amount} x ${sellDecision.price}\t${sellDecision.price * sellDecision.amount}` );
             }
         }).catch(() => {});
     }
 }
 
-/**
- * Compute technical indicator data
- * 
- * @param {Quote[]} quoteData - Quote data
- * @param {{[key: string]: {[key: string]: number }}} technicalIndicatorOptions - Technical indicator options
- */
-/* 
-    TODO: - Indicators should not be named, rather fetched and computed through a loop
-    TODO  - Indicators should be loaded based on the current strategy, so we need
-    TODO:   to redefine the way strategies work. */
-function computeIndicators (
-    quoteData:                 Quote[],
-    technicalIndicatorOptions: {[key: string]: {[key: string]: number }}
-): {[key: string]: number[][] } {
-    const open:      number[]   = [];
-    let rsiMetrics:  number[][] = [];
-    let macdMetrics: number[][] = [];
-    for ( let i = 0, size = quoteData.length ; i < size ; i++ ) {
-        open.push( quoteData[i].open );
-    }
-
-    // Compute rsi indicator
-    indicators.rsi.indicator( [open], [technicalIndicatorOptions['rsi']['period']], ( err: string, results: number[][] ) => {
-        rsiMetrics = results;
-        if ( err ) {
-            console.log( `Error raised: ${err}` );
-        }
-    });
-
-    // Compute macd indicator
-    indicators.macd.indicator(
-        [open],
-        [
-            technicalIndicatorOptions['macd']['short_period'],
-            technicalIndicatorOptions['macd']['long_period'],
-            technicalIndicatorOptions['macd']['signal_period']
-        ], ( err: string, results: number[][] ) => {
-            macdMetrics = results;
-            if ( err ) {
-                console.log( `Error raised: ${err}` );
-            }
-    });
-
-    return {
-        rsi:  rsiMetrics,
-        macd: macdMetrics
-    };
-}
 
 // Use the clock controller to check for opening time
 // Check if the market is open or closed
@@ -258,24 +200,42 @@ ClockController.get().then(( clock: Clock ) => {
 setInterval(() => {
     // If market is opened, fetch latest quotes
     if ( marketOpened ) {
+
+        // Bootstrap data structures
+        const initResult: {
+            data:             StockData,
+            indicators:       {[key: string]: string },
+            indicatorOptions: {[key: string]: number[]},
+            dataColumns:      {[key: string]: string[]}
+        } = Helper.initializeData( strategy );
+
+        let   data:             StockData                 = initResult.data;
+        const indicators:       {[key: string]: string }  = initResult.indicators;
+        const indicatorOptions: {[key: string]: number[]} = initResult.indicatorOptions;
+        const dataColumns:      {[key: string]: string[]} = initResult.dataColumns;
+
         // If no quotes have been fetched yet, get all quotes
         if ( quotes.length === 0 ) {
-            QuoteController.getQuotes( Constants.TRADED_SYMBOL ).then(( allQuotes: Quote[] ) => {
-                for ( let i = 0, size = allQuotes.length ; i < size ; i++ ) {
-                    quotes.push( allQuotes[i] );
-                }
-                // Compute indicators
-                const metrics: {[key: string]: number[][]}     = computeIndicators( quotes, indicatorsOptions );
-                const data:    {[key: string]: number | Date } = {
-                    rsi:  metrics['rsi'][0][metrics['rsi'][0].length - 1],
-                    macd: metrics['macd'][1][metrics['macd'][1].length - 1],
-                    time: new Date()
-                };
+            QuoteController.getQuotes( Constants.TRADED_SYMBOL ).then(( quotes: Quote[] ) => {
+
+                quotes = quotes;
+
+                // Build a QuoteCollection to compute indicator values
+                // for our data.
+                data = Helper.computeIndicators(
+                    quotes,
+                    indicators,
+                    indicatorOptions,
+                    dataColumns,
+                    strategy,
+                    data
+                );
+
                 // Buy and Sell logic here
-                buyLogic( quotes[quotes.length - 1].open, data );
-                sellLogic( quotes[quotes.length - 1].open, data );
+                buyLogic( data );
+                sellLogic( data );
             }).catch(( err: any ) => {
-                console.log( `Error raised: ${err}` );
+                console.log( err );
             });
         } else {
             QuoteController.getLastQuote( Constants.TRADED_SYMBOL ).then(( quote: Quote ) => {
@@ -288,16 +248,22 @@ setInterval(() => {
                     quote.close = quotes[quotesAmount - 1].close;
                 }
                 quotes.push( quote );
-                // Compute indicators
-                const metrics: {[key: string]: number[][]}     = computeIndicators( quotes, indicatorsOptions );
-                const data:    {[key: string]: number | Date } = {
-                    rsi:  metrics['rsi'][0][metrics['rsi'][0].length - 1],
-                    macd: metrics['macd'][1][metrics['macd'][1].length - 1],
-                    time: new Date()
-                };
+                
+                // Build a QuoteCollection to compute indicator values
+                // for our data.
+                data = Helper.computeIndicators(
+                    quotes,
+                    indicators,
+                    indicatorOptions,
+                    dataColumns,
+                    strategy,
+                    data
+                );
+
                 // Buy and Sell logic here
-                buyLogic( quotes[quotes.length - 1].open, data );
-                sellLogic( quotes[quotes.length - 1].open, data );
+                buyLogic( data );
+                sellLogic( data );
+
             }).catch(( err: any ) => {
                 console.log( `Error raised: ${err}` );
             });

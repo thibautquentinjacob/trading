@@ -4,7 +4,7 @@
  * File Created: Monday, 1st April 2019 12:39:47 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 4th June 2019 12:35:29 am
+ * Last Modified: Sunday, 1st September 2019 12:17:43 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -36,6 +36,11 @@
 import { OperationState } from "./models/OperationState";
 import { white, grey, magenta, yellow, blue, red, green } from "colors";
 import { ErrorMessage } from "./models/ErrorMessage";
+import { Quote } from "./models/Quote";
+import { QuoteCollection } from "./models/QuoteCollection";
+import { StockData } from "./models/StockData";
+import { Indicator } from "./models/Indicator";
+import { Strategy } from "./models/Strategy";
 
 export class Helper {
 
@@ -58,4 +63,146 @@ export class Helper {
         }
     }
 
+    /**
+     * Format date to be displayed in the plot.
+     *
+     * @private
+     * @param {string} date - Input date as a string
+     * @returns {string} Formatted date
+     */
+    public static convertDate ( date: string ): string {
+        const parsedDate:    Date   = new Date( date );
+        const parsedHours:   string = parsedDate.getHours() > 9 ?
+                                      parsedDate.getHours() + '' :
+                                      '0' + parsedDate.getHours();
+        const parsedMinutes: string = parsedDate.getMinutes() > 9 ?
+                                      parsedDate.getMinutes() + '' :
+                                      '0' + parsedDate.getMinutes();
+        return `${parsedHours}:${parsedMinutes}`;
+    }
+
+    /**
+     * Build a quote collection to compute all indicators for each input quote
+     * based on the provided inputs and options.
+     * 
+     * @param {Quote[]} quotes - Quote data
+     * @param {{[key: string]: string }} indicators - Indicator names
+     * @param {{[key: string]: number[]}} indicatorOptions - Indicator options
+     * @param {{[key: string]: string[]}} dataColumns - Indicator input (open, close, etc.)
+     * @param {Strategy} strategy - Current strategy
+     * @param {StockData} data - Structured used to take strategic decisions
+     */
+    public static computeIndicators (
+        quotes:           Quote[],
+        indicators:       {[key: string]: string },
+        indicatorOptions: {[key: string]: number[]},
+        dataColumns:      {[key: string]: string[]},
+        strategy:         Strategy,
+        data:             StockData
+    ): StockData {
+        // Build a QuoteCollection to compute indicator values
+        // for our data.
+        const quoteCollection = new QuoteCollection(
+            quotes,
+            indicators,
+            indicatorOptions,
+            dataColumns
+        );
+
+        const indicatorKeys: string[] = Object.keys( strategy.indicators );
+        quoteCollection.quotes.forEach(( element: Quote ) => {
+            // For each indicator
+            for ( let i = 0, size = indicatorKeys.length ; i < size ; i++ ) {
+                const indicatorName: string    = indicatorKeys[i];
+                const indicator:     Indicator = strategy.indicators[indicatorName];
+                // indicatorName_option1_option_2...
+                const fieldName                = `${indicator.name}_${indicator.options.join( '_' )}`;
+                // For each technical indicator output
+                for ( let j = 0, outputSize = indicator.output.length ; j < outputSize ; j++ ) {
+                    const outputName: string = indicator.output[j];
+                    if ( !data.indicators[fieldName][outputName]) {
+                        data.indicators[fieldName][outputName] = [];
+                    }
+                    const elementName = `${fieldName}_${j}`;
+                    data.indicators[fieldName][outputName].push( element.indicators[elementName]);
+                }
+            }
+
+            // Store converted time
+            const convertedDate: string = Helper.convertDate( element.date.getTime() + '' );
+            ( data.times as string[]).push( convertedDate );
+            // Store date
+            ( data.dates as Date[]).push( element.date );
+            // Store volume
+            ( data.volumes as number[]).push( element.volume );
+            // Store market OHLC
+            ( data.open as number[]).push( element.open );
+            ( data.high as number[]).push( element.high );
+            ( data.low as number[]).push( element.low );
+            ( data.close as number[]).push( element.close );
+        });
+
+        return data;
+    }
+
+    /**
+     * Bootstrap data structures for indicator computation
+     * 
+     * @param {Strategy} strategy - Current strategy
+     */
+    public static initializeData ( strategy: Strategy ): {
+        data:             StockData,
+        indicators:       {[key: string]: string },
+        indicatorOptions: {[key: string]: number[]},
+        dataColumns:      {[key: string]: string[]}
+    } {
+        const data: StockData = {
+            times:      [],
+            dates:      [],
+            volumes:    [],
+            open:       [],
+            high:       [],
+            low:        [],
+            close:      [],
+            indicators: {}
+        };
+
+        // For each indicators in the current strategy
+        // create a new entry in the structure.
+        const indicatorKeys: string[] = Object.keys( strategy.indicators );
+        for ( let i = 0, size = indicatorKeys.length ; i < size ; i++ ) {
+            const indicatorName: string    = indicatorKeys[i];
+            const indicator:     Indicator = strategy.indicators[indicatorName];
+            // indicatorName_option1_option_2...
+            const fieldName:     string    = `${indicator.name}_${indicator.options.join( '_' )}`;
+            data.indicators[fieldName]     = {};
+            // For each technical indicator output
+            for ( let j = 0, outputSize = indicator.output.length ; j < outputSize ; j++ ) {
+                const outputName: string = indicator.output[j];
+                if ( !( data.indicators[fieldName][outputName])) {
+                    data.indicators[fieldName][outputName] = [];
+                }
+            }
+        }
+
+        const indicators:       {[key: string]: string }  = {};
+        const indicatorOptions: {[key: string]: number[]} = {};
+        const dataColumns:      {[key: string]: string[]} = {};
+
+        // For each indicator, fetch indicator name, its options and
+        // the input metrics.
+        for ( let i = 0, size = indicatorKeys.length ; i < size ; i++ ) {
+            const indicator: string     = indicatorKeys[i];
+            indicators[indicator]       = strategy.indicators[indicator].name;
+            indicatorOptions[indicator] = strategy.indicators[indicator].options;
+            dataColumns[indicator]      = strategy.indicators[indicator].metrics;
+        }
+
+        return {
+            data:             data,
+            indicators:       indicators,
+            indicatorOptions: indicatorOptions,
+            dataColumns:      dataColumns
+        };
+    }
 }
