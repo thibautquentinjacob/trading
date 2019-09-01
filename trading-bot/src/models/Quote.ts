@@ -4,7 +4,7 @@
  * File Created: Sunday, 2nd June 2019 11:31:08 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 4th June 2019 12:35:29 am
+ * Last Modified: Sunday, 1st September 2019 11:20:51 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -37,26 +37,29 @@ import { Adapter } from './Adapter';
 
 export interface Quote {
 
-    date:                 Date,
-    high:                 number,
-    low:                  number,
-    average:              number,
-    volume:               number,
-    notional:             number,
-    numberOfTrades:       number,
-    marketHigh:           number,
-    marketLow:            number,
-    marketAverage:        number,
-    marketVolume:         number,
-    marketNotional:       number,
-    marketNumberOfTrades: number,
-    open:                 number,
-    close:                number,
-    marketOpen:           number,
-    marketClose:          number,
-    changeOverTime:       number,
-    marketChangeOverTime: number
-
+    date:                 Date;
+    high:                 number;
+    low:                  number;
+    average:              number;
+    volume:               number;
+    notional:             number;
+    numberOfTrades:       number;
+    marketHigh:           number;
+    marketLow:            number;
+    marketAverage:        number;
+    marketVolume:         number;
+    marketNotional:       number;
+    marketNumberOfTrades: number;
+    open:                 number;
+    close:                number;
+    marketOpen:           number;
+    marketClose:          number;
+    changeOverTime:       number;
+    marketChangeOverTime: number;
+    [key: string]:        number | Date | {[key: string]: number};
+    indicators:           {
+        [key: string]: number
+    };
 }
 
 // Build Quote object out of API data
@@ -83,7 +86,8 @@ export class QuoteAdapter implements Adapter<Quote> {
             marketOpen:           quoteData.marketOpen,
             marketClose:          quoteData.marketClose,
             changeOverTime:       quoteData.changeOverTime,
-            marketChangeOverTime: quoteData.marketChangeOverTime
+            marketChangeOverTime: quoteData.marketChangeOverTime,
+            indicators:           {}
         };
     }
 
