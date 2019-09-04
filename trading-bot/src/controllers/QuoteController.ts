@@ -4,7 +4,7 @@
  * File Created: Thursday, 4th April 2019 12:13:17 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Friday, 30th August 2019 12:40:56 am
+ * Last Modified: Wednesday, 4th September 2019 10:36:58 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -97,7 +97,7 @@ export class QuoteController {
             const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
             const route: string = `quote`;
             console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
-            get( `${QuoteController._url}/${QuoteController._version}/stock/${symbol}/intraday-prices?chartLast=1&token=${QuoteController._token}`).then(( data: any ) => {
+            get( `${QuoteController._url}/${QuoteController._version}/stock/${symbol}/quote/latestPrice?token=${QuoteController._token}`).then(( data: any ) => {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
                 const response:     any          = JSON.parse( data );
                 const quoteAdapter: QuoteAdapter = new QuoteAdapter();
