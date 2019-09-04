@@ -4,7 +4,7 @@
  * File Created: Tuesday, 19th March 2019 12:21:16 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Sunday, 1st September 2019 1:17:27 pm
+ * Last Modified: Wednesday, 4th September 2019 10:40:09 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -291,7 +291,7 @@ setInterval(() => {
             });
         }
     }
-}, 60 * 1000 );
+}, Constants.STRATEGY_UPDATE_FREQ );
 
 // Refresh market status every minute
 setInterval(() => {
@@ -306,7 +306,7 @@ setInterval(() => {
     }).catch(( err: any ) => {
         console.log( `Error raised: ${err}` );
     });
-}, 60 * 1000 );
+}, Constants.METRICS_UPDATE_FREQ );
 
 // Refresh account state every minute
 AccountController.get().then(( account: Account ) => {
@@ -320,4 +320,4 @@ setInterval(() => {
     }).catch(( err: any ) => {
         console.log( `Error raised: ${err}` );
     });
-}, 60 * 1000 );
+}, Constants.METRICS_UPDATE_FREQ );

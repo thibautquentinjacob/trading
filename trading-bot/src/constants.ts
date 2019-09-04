@@ -4,7 +4,7 @@
  * File Created: Tuesday, 26th March 2019 12:34:55 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Sunday, 1st September 2019 12:37:01 pm
+ * Last Modified: Wednesday, 4th September 2019 10:39:26 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -68,5 +68,11 @@ export class Constants {
 
     // SEC min day trade security amount
     public static MIN_DAY_TRADE_CASH_AMOUNT: number = 25000;
+
+    // Market update frequency
+    public static STRATEGY_UPDATE_FREQ:      number = 1000;
+
+    // Metrics update frequency
+    public static METRICS_UPDATE_FREQ:       number = 1000;
 
 }
