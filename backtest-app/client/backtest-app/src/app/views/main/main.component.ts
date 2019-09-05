@@ -183,9 +183,9 @@ export class MainComponent {
 
                     ohlc.push([
                         element.open,
-                        element.high,
+                        element.close,
                         element.low,
-                        element.close
+                        element.high
                     ]);
 
                     // Try strategies
@@ -494,6 +494,11 @@ export class MainComponent {
                             xAxisIndex: 0,
                             yAxisIndex: 0,
                             data: ohlc,
+                            // large: true,
+                            // largeThreshold: 600,
+                            progressive: 1000,
+                            progressiveThreshold: 10000,
+                            progressiveChunkMode: 'mod',
                             itemStyle: {
                                 normal: {
                                     width: 1,
@@ -572,6 +577,7 @@ export class MainComponent {
                                 },
                                 data: markers
                             },
+                            zlevel: 0
                         },
                         {
                             name: 'Volume',
@@ -583,49 +589,33 @@ export class MainComponent {
                                 normal: {
                                     color: ( params ) => {
                                         if ( params.dataIndex > 1 ) {
-                                            if ( ohlc[params.dataIndex][3] > ohlc[params.dataIndex - 1][3]) {
-                                                // If close( n ) < close( n - 1 )
-                                                if ( ohlc[params.dataIndex][1] <= ohlc[params.dataIndex][0] ) {
-                                                    return new graphic.LinearGradient(
-                                                        0, 0, 0, 1,
-                                                        [
-                                                            {offset: 0, color: '#FF105033'},
-                                                            {offset: 1, color: '#FF1050'}
-                                                        ]
-                                                    )
-                                                } else {
-                                                    return new graphic.LinearGradient(
-                                                        0, 0, 0, 1,
-                                                        [
-                                                            {offset: 0, color: '#0CF49B'},
-                                                            {offset: 1, color: '#0CF49B33'}
-                                                        ]
-                                                    )
-                                                }
+                                            // oclh
+                                            // If open is lower than close value
+                                            if ( ohlc[params.dataIndex][0] <= ohlc[params.dataIndex][1]) {
+                                                return new graphic.LinearGradient(
+                                                    0, 0, 0, 1,
+                                                    [
+                                                        {offset: 0, color: '#0CF49B'},
+                                                        {offset: 1, color: '#0CF49B33'}
+                                                    ]
+                                                );
+                                            // Else bearish
                                             } else {
-                                                return '#111';
+                                                return new graphic.LinearGradient(
+                                                    0, 0, 0, 1,
+                                                    [
+                                                        {offset: 0, color: '#FF105033'},
+                                                        {offset: 1, color: '#FF1050'}
+                                                    ]
+                                                );
                                             }
-                                        } else {
-                                            return '#0CFF9B';
                                         }
                                     },
-                                    borderColor: new graphic.LinearGradient(
-                                        0, 0, 0, 1,
-                                        [
-                                            {offset: 0, color: '#0CF49B'},
-                                            {offset: 1, color: '#0CF49B33'}
-                                        ]
-                                    ),
-                                    borderColor0: new graphic.LinearGradient(
-                                        0, 0, 0, 1,
-                                        [
-                                            {offset: 0, color: '#FF105033'},
-                                            {offset: 1, color: '#FF1050'}
-                                        ]
-                                    ),
+                                    barBorderColor: '#0CF49B33',
                                     barBorderWidth: 1
                                 },
-                            }
+                            },
+                            zlevel: 1
                         }
                     ]
                 };
