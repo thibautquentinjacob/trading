@@ -4,7 +4,7 @@
  * File Created: Sunday, 2nd June 2019 11:31:08 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Friday, 7th June 2019 12:02:24 am
+ * Last Modified: Friday, 6th September 2019 11:06:44 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -35,24 +35,24 @@
 
 export interface Quote {
 
-    date:                 Date,
-    high:                 number,
-    low:                  number,
-    average:              number,
-    volume:               number,
-    notional:             number,
-    numberOfTrades:       number,
-    marketHigh:           number,
-    marketLow:            number,
-    marketAverage:        number,
-    marketVolume:         number,
-    marketNotional:       number,
-    marketNumberOfTrades: number,
-    open:                 number,
-    close:                number,
-    marketOpen:           number,
-    marketClose:          number,
-    changeOverTime:       number,
-    marketChangeOverTime: number
+    date:                 Date;
+    high:                 number;
+    low:                  number;
+    average:              number;
+    volume:               number;
+    notional:             number;
+    numberOfTrades:       number;
+    marketHigh:           number;
+    marketLow:            number;
+    marketAverage:        number;
+    marketVolume:         number;
+    marketNotional:       number;
+    marketNumberOfTrades: number;
+    open:                 number;
+    close:                number;
+    marketOpen:           number;
+    marketClose:          number;
+    changeOverTime:       number;
+    marketChangeOverTime: number;
 
 }
