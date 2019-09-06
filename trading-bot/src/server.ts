@@ -4,7 +4,7 @@
  * File Created: Tuesday, 19th March 2019 12:21:16 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Wednesday, 4th September 2019 10:40:09 pm
+ * Last Modified: Friday, 6th September 2019 11:35:36 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -147,7 +147,7 @@ function buyLogic ( data: StockData ): void {
                     amount,
                     Side.BUY,
                     OrderType.MARKET,
-                    TimeInForce.DAY,
+                    TimeInForce.IOC
                 );
                 console.log( `Buying ${amount} x ${Constants.TRADED_SYMBOL} for ${buyDecision.price * amount}` );
                 logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${amount} x ${buyDecision.price}\t${buyDecision.price * amount}` );
@@ -157,7 +157,7 @@ function buyLogic ( data: StockData ): void {
                     buyDecision.amount,
                     Side.BUY,
                     OrderType.MARKET,
-                    TimeInForce.DAY,
+                    TimeInForce.IOC,
                 );
                 console.log( `Buying ${buyDecision.amount} x ${Constants.TRADED_SYMBOL} for ${buyDecision.price * buyDecision.amount}` );
                 logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${buyDecision.amount} x ${buyDecision.price}\t${buyDecision.price * buyDecision.amount}` );
@@ -184,7 +184,7 @@ function sellLogic ( data: StockData ): void {
                     amount,
                     Side.SELL,
                     OrderType.MARKET,
-                    TimeInForce.DAY,
+                    TimeInForce.IOC,
                 );
                 console.log( `Selling ${amount} x ${Constants.TRADED_SYMBOL} for ${sellDecision.price * amount}` );
                 logger.log( `SELL\t${Constants.TRADED_SYMBOL}\t${amount} x ${sellDecision.price}\t${sellDecision.price * amount}` );
@@ -194,7 +194,7 @@ function sellLogic ( data: StockData ): void {
                     sellDecision.amount,
                     Side.SELL,
                     OrderType.MARKET,
-                    TimeInForce.DAY,
+                    TimeInForce.IOC,
                 );
                 console.log( `Selling ${sellDecision.amount} x ${Constants.TRADED_SYMBOL} for ${sellDecision.price * sellDecision.amount}` );
                 logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${sellDecision.amount} x ${sellDecision.price}\t${sellDecision.price * sellDecision.amount}` );

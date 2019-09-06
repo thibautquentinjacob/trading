@@ -4,7 +4,7 @@
  * File Created: Thursday, 28th March 2019 1:10:01 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 4th June 2019 12:35:29 am
+ * Last Modified: Friday, 6th September 2019 11:34:53 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -37,6 +37,9 @@ export enum TimeInForce {
 
     DAY = 'day',
     GTC = 'gtc',
-    OPG = 'opg'
+    OPG = 'opg',
+    CLS = 'cls',
+    IOC = 'ioc',
+    FOK = 'fok'
 
 }
