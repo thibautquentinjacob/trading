@@ -4,7 +4,7 @@
  * File Created: Tuesday, 26th March 2019 12:34:55 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Wednesday, 4th September 2019 10:39:26 pm
+ * Last Modified: Saturday, 7th September 2019 12:25:31 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -45,9 +45,10 @@ export class Constants {
 
     // Alpaca API settings
     public static ALPACA_SETTINGS: {[key: string]: string } = {
-        ALPACA_API_URL:    'https://paper-api.alpaca.markets',
-        ALPACA_KEY_ID:     'PKZHLVTKOXLFX097CS6B',
-        ALPACA_KEY_SECRET: 'VNMwCnCytEk/51EjDgeiJgFjz2hIuDOZ/z0rV/8B'
+        ALPACA_API_URL:     'https://paper-api.alpaca.markets',
+        ALPACA_KEY_ID:      'PKZHLVTKOXLFX097CS6B',
+        ALPACA_KEY_SECRET:  'VNMwCnCytEk/51EjDgeiJgFjz2hIuDOZ/z0rV/8B',
+        ALPACA_API_VERSION: 'v2'
     };
 
     public static IEXCloudAPIDefaultHeaders: {[key: string]: string } = {

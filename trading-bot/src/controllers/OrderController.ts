@@ -4,7 +4,7 @@
  * File Created: Tuesday, 26th March 2019 12:31:58 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Friday, 30th August 2019 12:36:34 am
+ * Last Modified: Saturday, 7th September 2019 12:38:21 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -78,7 +78,7 @@ export class OrderController {
             if ( until ) {
                 params += `&until=${until}`;
             }
-            get( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/v1/${route}?${params}`, {
+            get( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/${Constants.ALPACA_SETTINGS.ALPACA_API_VERSION}/${route}?${params}`, {
                 headers: Constants.alpacaDefaultHeaders
             }).then(( data: any ) => {
                 // const response:     any          = JSON.parse( data );
@@ -112,6 +112,7 @@ export class OrderController {
         timeInForce:    TimeInForce,
         limitPrice?:    number,
         stopPrice?:     number,
+        extendedHours?: number,
         clientOrderId?: string
     ): Promise<Order> {
         const msg:   string = `
@@ -132,7 +133,7 @@ export class OrderController {
                 reject( null );
             }
 
-            post( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/v1/${route}`, {
+            post( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/${Constants.ALPACA_SETTINGS.ALPACA_API_VERSION}/${route}`, {
                 headers: Constants.alpacaDefaultHeaders,
                 body: {
                     symbol:           symbol,
@@ -142,7 +143,8 @@ export class OrderController {
                     time_in_force:    timeInForce,
                     limit_price:      limitPrice,
                     stop_price:       stopPrice,
-                    client_order_id:  clientOrderId
+                    client_order_id:  clientOrderId,
+                    extended_hours:   extendedHours ? extendedHours : false
                 },
                 json: true
             }).then(( data: any ) => {
@@ -170,7 +172,7 @@ export class OrderController {
         const route: string = `orders/${orderId}`;
         console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
         return new Promise( async ( resolve, reject ) => {
-            get( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/v1/${route}`, {
+            get( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/${Constants.ALPACA_SETTINGS.ALPACA_API_VERSION}/${route}`, {
                 headers: Constants.alpacaDefaultHeaders
             }).then(( data: any ) => {
                 const response:     any          = JSON.parse( data );
@@ -198,7 +200,7 @@ export class OrderController {
             const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
             const route: string = `orders:${clientId}`;
             console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
-            get( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/v1/${route}`, {
+            get( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/${Constants.ALPACA_SETTINGS.ALPACA_API_VERSION}/${route}`, {
                 headers: Constants.alpacaDefaultHeaders
             }).then(( data: any ) => {
                 const response:     any          = JSON.parse( data );
@@ -213,9 +215,34 @@ export class OrderController {
     }
 
     /**
+     * Cancel all orders
+     * 
+     * @public
+     * @returns {Promise<void>} void
+     */
+    public static cancelAll(): Promise<void> {
+        return new Promise( async ( resolve, reject ) => {
+            const msg:   string = `Cancelling all orders`;
+            const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
+            const route: string = `orders`;
+            console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
+            del( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/${Constants.ALPACA_SETTINGS.ALPACA_API_VERSION}/${route}`, {
+                headers: Constants.alpacaDefaultHeaders
+            }).then(() => {
+                console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
+                resolve();
+            }).catch(( err ) => {
+                console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
+                reject( err );
+            });
+        });
+    }
+
+    /**
      * Cancel an order
      * 
      * @public
+     * @param {string} orderId - Order id to cancel
      * @returns {Promise<void>} void
      */
     public static cancel(
@@ -226,7 +253,7 @@ export class OrderController {
             const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
             const route: string = `orders/${orderId}`;
             console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
-            del( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/v1/${route}`, {
+            del( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/${Constants.ALPACA_SETTINGS.ALPACA_API_VERSION}/${route}`, {
                 headers: Constants.alpacaDefaultHeaders
             }).then(() => {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));

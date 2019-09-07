@@ -4,7 +4,7 @@
  * File Created: Tuesday, 26th March 2019 12:31:58 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Friday, 30th August 2019 12:35:23 am
+ * Last Modified: Saturday, 7th September 2019 12:28:00 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -56,7 +56,7 @@ export class AccountController {
             const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
             const route: string = `account`;
             console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
-            get( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/v1/${route}`, {
+            get( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/${Constants.ALPACA_SETTINGS.ALPACA_API_VERSION}/${route}`, {
                 headers: Constants.alpacaDefaultHeaders
             }).then(( data: any ) => {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));

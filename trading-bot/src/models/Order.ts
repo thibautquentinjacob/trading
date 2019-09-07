@@ -4,7 +4,7 @@
  * File Created: Monday, 25th March 2019 12:44:10 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 4th June 2019 12:35:29 am
+ * Last Modified: Saturday, 7th September 2019 12:23:56 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -51,7 +51,6 @@ export interface Order {
     canceledAt?:    Date;
     assetId:        string;
     symbol:         string;
-    exchange:       string;
     assetClass:     string;
     quantity:       number;
     filledQuantity: number;
@@ -61,6 +60,7 @@ export interface Order {
     limitPrice?:    number;
     stopPrice?:     number;
     status:         OrderStatus;
+    extendedHours?: boolean;
 
 }
 
@@ -81,7 +81,6 @@ export class OrderAdapter implements Adapter<Order> {
             canceledAt:     parsedOrderData.canceled_at,
             assetId:        parsedOrderData.asset_id,
             symbol:         parsedOrderData.symbol,
-            exchange:       parsedOrderData.exchange,
             assetClass:     parsedOrderData.asset_class,
             quantity:       parseInt( parsedOrderData.qty ),
             filledQuantity: parseInt( parsedOrderData.filled_qty ),
@@ -90,7 +89,8 @@ export class OrderAdapter implements Adapter<Order> {
             timeInForce:    parsedOrderData.time_in_force,
             limitPrice:     parsedOrderData.limit_price,
             stopPrice:      parsedOrderData.stop_price,
-            status:         parsedOrderData.status
+            status:         parsedOrderData.status,
+            extendedHours:  parsedOrderData.extended_hours ? parsedOrderData.extended_hours : false
         };
     }
 

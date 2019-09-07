@@ -4,7 +4,7 @@
  * File Created: Monday, 25th March 2019 12:44:00 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 4th June 2019 12:35:29 am
+ * Last Modified: Saturday, 7th September 2019 12:21:38 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -34,21 +34,36 @@
 
 
 import { Adapter } from './Adapter';
+import { AccountStatus } from './AccountStatus';
 
 export interface Account {
 
-    id:               string;
-    status:           string;
-    currency:         string;
-    buyingPower:      number;
-    cash:             number;
-    cashWithdrawable: number;
-    portfolioValue:   number;
-    patternDayTrader: boolean;
-    tradingBlocked:   boolean;
-    transfersBlocked: boolean;
-    accountBlocked:   boolean;
-    createdAt:        Date;
+    id:                    string;
+    accountNumber:         string;
+    status:                AccountStatus;
+    currency:              string;
+    cash:                  number;
+    portfolioValue:        number;
+    patternDayTrader:      boolean;
+    tradeSuspendedByUser:  boolean;
+    tradingBlocked:        boolean;
+    transfersBlocked:      boolean;
+    accountBlocked:        boolean;
+    createdAt:             Date;
+    shortingEnabled:       boolean;
+    longMarketVaue:        number;
+    ShortMarketValue:      number;
+    equity:                number;
+    lastEquity:            number;
+    multiplier:            number;
+    buyingPower:           number;
+    initialMargin:         number;
+    maintenanceMargin:     number;
+    sma:                   number;
+    daytradeCount:         number;
+    lastMaintenanceMargin: number;
+    daytradingBuyingPower: number;
+    regtBuyingPower:       number;
 
 }
 
@@ -58,18 +73,32 @@ export class AccountAdapter implements Adapter<Account> {
     public adapt( accountData: any ): Account {
 
         return {
-            id:               accountData.id,
-            status:           accountData.status,
-            currency:         accountData.currency,
-            buyingPower:      parseFloat( accountData.buying_power ),
-            cash:             parseFloat( accountData.cash ),
-            cashWithdrawable: parseFloat( accountData.cash_withdrawable ),
-            portfolioValue:   parseFloat( accountData.portfolio_value ),
-            patternDayTrader: accountData.pattern_day_trader,
-            tradingBlocked:   accountData.trading_blocked,
-            transfersBlocked: accountData.transfers_blocked,
-            accountBlocked:   accountData.account_blocked,
-            createdAt:        new Date( accountData.created_at )
+            id:                    accountData.id,
+            accountNumber:         accountData.account_number,
+            status:                accountData.status,
+            currency:              accountData.currency,
+            cash:                  parseFloat( accountData.cash ),
+            portfolioValue:        parseFloat( accountData.portfolio_value ),
+            patternDayTrader:      accountData.pattern_day_trader,
+            tradeSuspendedByUser:  accountData.trade_suspended_by_user,
+            tradingBlocked:        accountData.trading_blocked,
+            transfersBlocked:      accountData.transfers_blocked,
+            accountBlocked:        accountData.account_blocked,
+            createdAt:             new Date( accountData.created_at ),
+            shortingEnabled:       accountData.shorting_enabled,
+            longMarketVaue:        parseFloat( accountData.long_market_value ),
+            ShortMarketValue:      parseFloat( accountData.short_market_value ),
+            equity:                parseFloat( accountData.equity ),
+            lastEquity:            parseFloat( accountData.last_equity ),
+            multiplier:            parseFloat( accountData.multiplier ),
+            buyingPower:           parseFloat( accountData.buying_power ),
+            initialMargin:         parseFloat( accountData.initial_margin ),
+            maintenanceMargin:     parseFloat( accountData.maintenance_margin ),
+            sma:                   parseFloat( accountData.sma ),
+            daytradeCount:         parseFloat( accountData.daytrade_count ),
+            lastMaintenanceMargin: parseFloat( accountData.last_maintenance_margin ),
+            daytradingBuyingPower: parseFloat( accountData.daytrading_buying_power ),
+            regtBuyingPower:       parseFloat( accountData.regt_buying_power )
         };
     }
 

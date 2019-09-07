@@ -4,7 +4,7 @@
  * File Created: Monday, 25th March 2019 12:44:25 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 4th June 2019 12:35:29 am
+ * Last Modified: Saturday, 7th September 2019 12:41:27 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -39,12 +39,15 @@ import { Adapter } from './Adapter';
 
 export interface Asset {
 
-    id:         string;
-    assetClass: string;
-    exchange:   Exchange;
-    symbol:     string;
-    status:     AssetStatus;
-    tradable:   boolean;
+    id:           string;
+    assetClass:   string;
+    exchange:     Exchange;
+    symbol:       string;
+    status:       AssetStatus;
+    tradable:     boolean;
+    marginable:   boolean;
+    shortable:    boolean;
+    easyToBorrow: boolean;
 
 }
 
@@ -54,12 +57,15 @@ export class AssetAdapter implements Adapter<Asset> {
     public adapt( assetData: any ): Asset {
 
         return {
-            id:         assetData.asset_id,
-            assetClass: assetData.asset_class,
-            exchange:   assetData.exchange,
-            symbol:     assetData.symbol,
-            status:     assetData.status,
-            tradable:   assetData.tradable,
+            id:           assetData.asset_id,
+            assetClass:   assetData.asset_class,
+            exchange:     assetData.exchange,
+            symbol:       assetData.symbol,
+            status:       assetData.status,
+            tradable:     assetData.tradable,
+            marginable:   assetData.marginable,
+            shortable:    assetData.shortable,
+            easyToBorrow: assetData.easy_to_borrow,
         };
     }
 
