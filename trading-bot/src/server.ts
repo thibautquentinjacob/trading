@@ -4,7 +4,7 @@
  * File Created: Tuesday, 19th March 2019 12:21:16 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Friday, 6th September 2019 11:35:36 pm
+ * Last Modified: Tuesday, 10th September 2019 1:07:09 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -54,6 +54,9 @@ import { StockData } from './models/StockData';
 import { Helper } from './Helper';
 import { OperationState } from './models/OperationState';
 
+import { Interface } from './interface';
+import { Order } from './models/Order';
+
 console.log( yellow( `
 .▄▄ · ▄▄▄▄▄      ▐▄• ▄ 
 ▐█ ▀. •██  ▪      █▌█▌▪
@@ -62,10 +65,18 @@ console.log( yellow( `
  ▀▀▀▀  ▀▀▀  ▀█▄▀▪•▀▀ ▀▀
 `));
 
-const logger:            Logger   = new Logger( 'log.txt' );
-let   marketOpened:      boolean  = false;
-const quotes:            Quote[]  = [];
-const strategy:          Strategy = strategies[Constants.DEFAULT_STRATEGY];
+const logger:            Logger     = new Logger( 'log.txt' );
+let   marketOpened:      boolean    = false;
+const quotes:            Quote[]    = [];
+const strategy:          Strategy   = strategies[Constants.DEFAULT_STRATEGY];
+let   orders:            Order[]    = [];
+let   positions:         Position[] = [];
+let   account:           Account; 
+
+let initialTotal:        number     = 0;
+let initialAssets:       number     = 0;
+let initialCash:         number     = 0;
+
 if ( !strategy ) {
     console.log( Helper.formatLog(
         'init',
@@ -73,36 +84,30 @@ if ( !strategy ) {
         OperationState.FAILURE )
     );
     process.exit( -1 );
-} else {
-    console.log( Helper.formatLog(
-        'init',
-        `Using strategy ${Constants.DEFAULT_STRATEGY}`, 'Check',
-        OperationState.SUCCESS )
-    );
 }
 
-console.log( Helper.formatLog(
-    'init',
-    `Starting new trading session`, 'Bootstrap',
-    OperationState.SUCCESS )
-);
-logger.log( 'Starting new trading session' );
-
 /**
- * Display account state (cash and equities)
- * 
- * @param {Account} account - Account object
+ * Update interface
  */
-function displayAccount ( account: Account ): void {
-    console.log( Helper.formatLog(
-        'global',
-        `Portfolio status\n
-    Total:  $${account.portfolioValue}
-    Cash:   $${account.cash}
-    Stocks: $${account.portfolioValue - account.cash}
-    \n`, 'Check',
-        OperationState.SUCCESS )
-    );
+function updateInterface (): void {
+
+    if ( !account ) {
+        return;
+    }
+
+    Interface.update({
+        totalValue:      account.portfolioValue,
+        totalIncrement:  ( account.portfolioValue / initialTotal - 1) * 100,
+        assetsValue:     account.portfolioValue - account.cash,
+        assetsIncrement: (( account.portfolioValue - account.cash ) / initialAssets - 1) * 100,
+        cashValue:       account.cash,
+        cashIncrement:   ( account.cash / initialCash - 1) * 100,
+        successValue:    0,
+        strategy:        Constants.DEFAULT_STRATEGY,
+        marketStatus:    marketOpened ? 'OPENED' : 'CLOSED',
+        orders:          orders,
+        positions:       positions
+    });
 }
 
 /**
@@ -203,21 +208,6 @@ function sellLogic ( data: StockData ): void {
     }
 }
 
-
-// Use the clock controller to check for opening time
-// Check if the market is open or closed
-ClockController.get().then(( clock: Clock ) => {
-    marketOpened               = clock.isOpen
-    const marketStatus: string = marketOpened ? 'opened': 'closed';
-    console.log( Helper.formatLog(
-        'global',
-        `Market is ${marketStatus}`, 'Check',
-        OperationState.SUCCESS )
-    );
-}).catch(( err: any ) => {
-    console.log( `Error raised: ${err}` );
-});
-
 // Fetch latest symbol quote every minutes
 setInterval(() => {
     // If market is opened, fetch latest quotes
@@ -293,31 +283,110 @@ setInterval(() => {
     }
 }, Constants.STRATEGY_UPDATE_FREQ );
 
+// MARKET ==============================================
+
+// Use the clock controller to check for opening time
+// Check if the market is opened or closed
+async function isMarketOpened (): Promise<boolean> {
+    const clock: Clock = await ClockController.get();
+    return clock.isOpen;
+}
+
+function marketHandler (): void {
+    isMarketOpened().then(( status: boolean ) => {
+        marketOpened = status;
+        updateInterface();
+    }).catch(( err: any ) => {
+        console.log( `Error raised: ${err}` );
+        marketOpened = false;
+    });
+}
+
 // Refresh market status every minute
+marketHandler();
 setInterval(() => {
-    ClockController.get().then(( clock: Clock ) => {
-        marketOpened = clock.isOpen
-        const marketStatus: string = marketOpened ? 'opened': 'closed';
-        console.log( Helper.formatLog(
-            'global',
-            `Market is ${marketStatus}`, 'Check',
-            OperationState.SUCCESS )
-        );
+    marketHandler();
+}, Constants.MARKET_STATUS_UPDATE_FREQ );
+
+// ORDERS ==============================
+
+// Use the Order controller to fetch all of
+// today's orders.
+async function getOrders (): Promise<Order[]> {
+    const now:     Date = new Date();
+    const opening: Date = new Date( '2019/09/01' );
+    return await OrderController.get(
+        opening.toISOString(),
+        now.toISOString()
+    );
+}
+
+function OrdersHandler (): void {
+    getOrders().then(( newOrders: Order[] ) => {
+        orders = newOrders;
+        updateInterface();
     }).catch(( err: any ) => {
         console.log( `Error raised: ${err}` );
     });
-}, Constants.METRICS_UPDATE_FREQ );
+}
+
+// Refresh market status every minute
+OrdersHandler();
+setInterval(() => {
+    OrdersHandler();
+}, Constants.ORDER_UPDATE_FREQ );
+
+// POSITIONS ==============================
+
+// Use the Position controller to fetch all opened positions
+async function getPositions (): Promise<Position[]> {
+    return await PositionController.get();
+}
+
+function PositionsHandler (): void {
+    getPositions().then(( newPositions: Position[] ) => {
+        positions = newPositions;
+        updateInterface();
+    }).catch(( err: any ) => {
+        console.log( `Error raised: ${err}` );
+    });
+}
+
+// Refresh market status every minute
+PositionsHandler();
+setInterval(() => {
+    PositionsHandler();
+}, Constants.POSITION_UPDATE_FREQ );
 
 // Refresh account state every minute
-AccountController.get().then(( account: Account ) => {
-    displayAccount( account );
+AccountController.get().then(( newAccount: Account ) => {
+    account       = newAccount;
+
+    initialTotal  = account.portfolioValue;
+    initialAssets = account.portfolioValue - account.cash;
+    initialCash   = account.cash;
+
+    Interface.setup({
+        totalValue:      account.portfolioValue,
+        totalIncrement:  0,
+        assetsValue:     account.portfolioValue - account.cash,
+        assetsIncrement: 0,
+        cashValue:       account.cash,
+        cashIncrement:   0,
+        successValue:    50,
+        strategy:        Constants.DEFAULT_STRATEGY,
+        marketStatus:    marketOpened ? 'OPENED' : 'CLOSED',
+        orders:          orders,
+        positions:       positions
+    });
 }).catch(( err: any ) => {
     console.log( `Error raised: ${err}` );
 });
 setInterval(() => {
-    AccountController.get().then(( account: Account ) => {
-        displayAccount( account );
+    AccountController.get().then(( newAccount: Account ) => {
+        account = newAccount;
+        updateInterface();
     }).catch(( err: any ) => {
         console.log( `Error raised: ${err}` );
-    });
-}, Constants.METRICS_UPDATE_FREQ );
+    });    
+}, Constants.ACCOUNT_METRICS_UPDATE_FREQ );

@@ -4,7 +4,7 @@
  * File Created: Tuesday, 26th March 2019 12:31:58 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Saturday, 7th September 2019 12:38:21 pm
+ * Last Modified: Monday, 9th September 2019 11:10:38 pm
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -80,8 +80,8 @@ export class OrderController {
             }
             get( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/${Constants.ALPACA_SETTINGS.ALPACA_API_VERSION}/${route}?${params}`, {
                 headers: Constants.alpacaDefaultHeaders
-            }).then(( data: any ) => {
-                // const response:     any          = JSON.parse( data );
+            }).then(( rawData: any ) => {
+                const data:         any          = JSON.parse( rawData );
                 const orderAdapter: OrderAdapter = new OrderAdapter();
                 const output:       Order[]      = [];
                 
@@ -89,7 +89,7 @@ export class OrderController {
                     const orderData: any = data[i];
                     output.push( orderAdapter.adapt( JSON.stringify( orderData )));
                 }
-                console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
                 resolve( output );
             }).catch(( err: any ) => {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
