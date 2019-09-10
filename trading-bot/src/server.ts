@@ -154,7 +154,7 @@ function buyLogic ( data: StockData ): void {
                     OrderType.MARKET,
                     TimeInForce.IOC
                 );
-                console.log( `Buying ${amount} x ${Constants.TRADED_SYMBOL} for ${buyDecision.price * amount}` );
+                // console.log( `Buying ${amount} x ${Constants.TRADED_SYMBOL} for ${buyDecision.price * amount}` );
                 logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${amount} x ${buyDecision.price}\t${buyDecision.price * amount}` );
             } else if ( buyDecision.amount !== -1 ) {
                 OrderController.request(
@@ -164,7 +164,7 @@ function buyLogic ( data: StockData ): void {
                     OrderType.MARKET,
                     TimeInForce.IOC,
                 );
-                console.log( `Buying ${buyDecision.amount} x ${Constants.TRADED_SYMBOL} for ${buyDecision.price * buyDecision.amount}` );
+                // console.log( `Buying ${buyDecision.amount} x ${Constants.TRADED_SYMBOL} for ${buyDecision.price * buyDecision.amount}` );
                 logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${buyDecision.amount} x ${buyDecision.price}\t${buyDecision.price * buyDecision.amount}` );
             }
         });
@@ -191,7 +191,7 @@ function sellLogic ( data: StockData ): void {
                     OrderType.MARKET,
                     TimeInForce.IOC,
                 );
-                console.log( `Selling ${amount} x ${Constants.TRADED_SYMBOL} for ${sellDecision.price * amount}` );
+                // console.log( `Selling ${amount} x ${Constants.TRADED_SYMBOL} for ${sellDecision.price * amount}` );
                 logger.log( `SELL\t${Constants.TRADED_SYMBOL}\t${amount} x ${sellDecision.price}\t${sellDecision.price * amount}` );
             } else if ( sellDecision.amount !== -1 ) {
                 OrderController.request(
@@ -201,7 +201,7 @@ function sellLogic ( data: StockData ): void {
                     OrderType.MARKET,
                     TimeInForce.IOC,
                 );
-                console.log( `Selling ${sellDecision.amount} x ${Constants.TRADED_SYMBOL} for ${sellDecision.price * sellDecision.amount}` );
+                // console.log( `Selling ${sellDecision.amount} x ${Constants.TRADED_SYMBOL} for ${sellDecision.price * sellDecision.amount}` );
                 logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${sellDecision.amount} x ${sellDecision.price}\t${sellDecision.price * sellDecision.amount}` );
             }
         }).catch(() => {});
@@ -345,6 +345,7 @@ async function getPositions (): Promise<Position[]> {
 
 function PositionsHandler (): void {
     getPositions().then(( newPositions: Position[] ) => {
+        // console.log( newPositions );
         positions = newPositions;
         updateInterface();
     }).catch(( err: any ) => {
