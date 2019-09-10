@@ -60,7 +60,6 @@ export interface Position {
 export class PositionAdapter implements Adapter<Position> {
 
     public adapt( positionData: any ): Position {
-
         return {
             assetId:                 positionData.asset_id,
             symbol:                  positionData.symbol,
