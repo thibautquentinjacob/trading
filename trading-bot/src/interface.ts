@@ -4,7 +4,7 @@
  * File Created: Sunday, 8th September 2019 11:11:23 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 10th September 2019 1:07:55 am
+ * Last Modified: Wednesday, 11th September 2019 12:41:07 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -61,7 +61,9 @@ export class Interface {
         kpiValueFg:     '#919191',
         kpiIncrementFg: '#8EFFD7',
         border:         '#00403B',
-        warn:           '#FF3A00'
+        warn:           '#FF3A00',
+        selectedLogFg:  '#ffffff',
+        selectedLogBg:  '#333333'
     };
     // Defines all the methods used to display boxes content
     private static _contents: {[key: string]: ( arg1?: ( Order | Position ), arg2?: Order ) => string | string[] } = {
@@ -100,7 +102,8 @@ export class Interface {
                 `{${Interface._colors.kpiIncrementFg}-fg}${position.qty}{/}`,
                 `$ ${position.marketValue}`,
                 `$ ${position.currentPrice}`,
-                `${Math.round( position.changeToday * 1000 ) / 1000 } %`,
+                position.changeToday > 0 ?  `{${Interface._colors.kpiIncrementFg}-fg}${Math.round( position.changeToday * 1000 ) / 1000 } %{/}` :
+                                            `{${Interface._colors.warn}-fg}${Math.round( position.changeToday * 1000 ) / 1000 } %{/}`,
                 `$ ${position.unrealizedPl}`,
                 `$ ${position.unrealizedIntradayPl}`,
                 `$ ${position.costBasis}`
@@ -109,7 +112,7 @@ export class Interface {
     }
     // Define all the tables used in the interface
     private static _tables: {[key: string]: blessed.Widgets.TableElement } = {
-        // Orders header box
+        // Orders table
         orders: blessed.table({
             top:        3,
             left:       0,
@@ -133,12 +136,12 @@ export class Interface {
                 }
             }
         }),
-        // Positions box
+        // Positions table
         positions: blessed.table({
             top:        '50%',
             left:       0,
             width:      '100%',
-            height:     '25%',
+            height:     '5%',
             tags:       true,
             scrollable: true,
             noCellBorders: true,
@@ -282,6 +285,32 @@ export class Interface {
             }
         }),
     };
+    
+    // Define log list
+    private static _logList: blessed.Widgets.ListElement = blessed.list({
+        top:    '85%',
+        width:  '100%',
+        height: '15%',
+        items: [],
+        mouse: true,
+        keys:  true,
+        tags:    true,
+        padding: {
+            left: 1
+        },
+        border: {
+            type: 'line',
+        },
+        style: {
+            item: {
+                fg: Interface._colors.border,
+            },
+            selected: {
+                fg: Interface._colors.selectedLogFg,
+                bg: Interface._colors.selectedLogBg,
+            }
+        }
+    });
 
     /**
      * Update a set of boxes
@@ -334,11 +363,11 @@ export class Interface {
     }
 
     private static _recordState ( data: InterfacePayload ): void {
-        Interface._totalValue      = Math.ceil( data.totalValue );
+        Interface._totalValue      = Math.round( data.totalValue * 100 ) / 100;
         Interface._totalIncrement  = Math.round( data.totalIncrement * 100 ) / 100;
-        Interface._assetsValue     = Math.ceil( data.assetsValue );
+        Interface._assetsValue     = Math.round( data.assetsValue * 100 ) / 100;
         Interface._assetsIncrement = Math.round( data.assetsIncrement * 100 ) / 100;
-        Interface._cashValue       = Math.ceil( data.cashValue );
+        Interface._cashValue       = Math.round( data.cashValue * 100 ) / 100;
         Interface._cashIncrement   = data.cashIncrement;
         Interface._successValue    = data.successValue;
         Interface._strategy        = data.strategy;
@@ -366,6 +395,9 @@ export class Interface {
 
         // Update tables
         Interface._updateTables( ['orders', 'positions'] );
+
+        // Update log list
+        Interface._logList.setContent( data.logs.join( '\n' ) );
 
         // Re-render screen
         Interface._screen.render();
@@ -400,6 +432,9 @@ export class Interface {
             const table:    blessed.Widgets.BoxElement = Interface._tables[tableKey];
             Interface._screen.append( table );
         }
+
+        // Append logList
+        Interface._screen.append( Interface._logList );
         
         // Quit on Escape, q, or Control-C.
         Interface._screen.key(['escape', 'q', 'C-c'], function (ch, key) {
@@ -424,5 +459,6 @@ export interface InterfacePayload {
     marketStatus:    string;
     orders:          Order[];
     positions:       Position[];
+    logs:            string[];
 
 }

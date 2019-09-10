@@ -4,7 +4,7 @@
  * File Created: Tuesday, 19th March 2019 12:21:16 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Tuesday, 10th September 2019 1:07:09 am
+ * Last Modified: Wednesday, 11th September 2019 12:41:07 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -71,14 +71,15 @@ const quotes:            Quote[]    = [];
 const strategy:          Strategy   = strategies[Constants.DEFAULT_STRATEGY];
 let   orders:            Order[]    = [];
 let   positions:         Position[] = [];
-let   account:           Account; 
+let   account:           Account;
+const logs:              string[]   = [];
 
 let initialTotal:        number     = 0;
 let initialAssets:       number     = 0;
 let initialCash:         number     = 0;
 
 if ( !strategy ) {
-    console.log( Helper.formatLog(
+    logs.push( Helper.formatLog(
         'init',
         `Unknown strategy ${Constants.DEFAULT_STRATEGY}. Available strategies are ${Object.keys( strategies )}`, 'Check',
         OperationState.FAILURE )
@@ -106,7 +107,8 @@ function updateInterface (): void {
         strategy:        Constants.DEFAULT_STRATEGY,
         marketStatus:    marketOpened ? 'OPENED' : 'CLOSED',
         orders:          orders,
-        positions:       positions
+        positions:       positions,
+        logs:            logs
     });
 }
 
@@ -154,7 +156,7 @@ function buyLogic ( data: StockData ): void {
                     OrderType.MARKET,
                     TimeInForce.IOC
                 );
-                // console.log( `Buying ${amount} x ${Constants.TRADED_SYMBOL} for ${buyDecision.price * amount}` );
+                logs.push( `Buying ${amount} x ${Constants.TRADED_SYMBOL} for ${buyDecision.price * amount}` );
                 logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${amount} x ${buyDecision.price}\t${buyDecision.price * amount}` );
             } else if ( buyDecision.amount !== -1 ) {
                 OrderController.request(
@@ -164,7 +166,7 @@ function buyLogic ( data: StockData ): void {
                     OrderType.MARKET,
                     TimeInForce.IOC,
                 );
-                // console.log( `Buying ${buyDecision.amount} x ${Constants.TRADED_SYMBOL} for ${buyDecision.price * buyDecision.amount}` );
+                logs.push( `Buying ${buyDecision.amount} x ${Constants.TRADED_SYMBOL} for ${buyDecision.price * buyDecision.amount}` );
                 logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${buyDecision.amount} x ${buyDecision.price}\t${buyDecision.price * buyDecision.amount}` );
             }
         });
@@ -191,7 +193,7 @@ function sellLogic ( data: StockData ): void {
                     OrderType.MARKET,
                     TimeInForce.IOC,
                 );
-                // console.log( `Selling ${amount} x ${Constants.TRADED_SYMBOL} for ${sellDecision.price * amount}` );
+                logs.push( `Selling ${amount} x ${Constants.TRADED_SYMBOL} for ${sellDecision.price * amount}` );
                 logger.log( `SELL\t${Constants.TRADED_SYMBOL}\t${amount} x ${sellDecision.price}\t${sellDecision.price * amount}` );
             } else if ( sellDecision.amount !== -1 ) {
                 OrderController.request(
@@ -201,7 +203,7 @@ function sellLogic ( data: StockData ): void {
                     OrderType.MARKET,
                     TimeInForce.IOC,
                 );
-                // console.log( `Selling ${sellDecision.amount} x ${Constants.TRADED_SYMBOL} for ${sellDecision.price * sellDecision.amount}` );
+                logs.push( `Selling ${sellDecision.amount} x ${Constants.TRADED_SYMBOL} for ${sellDecision.price * sellDecision.amount}` );
                 logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${sellDecision.amount} x ${sellDecision.price}\t${sellDecision.price * sellDecision.amount}` );
             }
         }).catch(() => {});
@@ -247,7 +249,7 @@ setInterval(() => {
                 buyLogic( data );
                 sellLogic( data );
             }).catch(( err: any ) => {
-                console.log( err );
+                logs.push( `Error raised: ${err}` )
             });
         } else {
             QuoteController.getLastQuote( Constants.TRADED_SYMBOL ).then(( quote: Quote ) => {
@@ -277,7 +279,7 @@ setInterval(() => {
                 sellLogic( data );
 
             }).catch(( err: any ) => {
-                console.log( `Error raised: ${err}` );
+                logs.push( `Error raised: ${err}` )
             });
         }
     }
@@ -297,7 +299,7 @@ function marketHandler (): void {
         marketOpened = status;
         updateInterface();
     }).catch(( err: any ) => {
-        console.log( `Error raised: ${err}` );
+        logs.push( `Error raised: ${err}` )
         marketOpened = false;
     });
 }
@@ -326,7 +328,7 @@ function OrdersHandler (): void {
         orders = newOrders;
         updateInterface();
     }).catch(( err: any ) => {
-        console.log( `Error raised: ${err}` );
+        logs.push( `Error raised: ${err}` )
     });
 }
 
@@ -349,7 +351,7 @@ function PositionsHandler (): void {
         positions = newPositions;
         updateInterface();
     }).catch(( err: any ) => {
-        console.log( `Error raised: ${err}` );
+        logs.push( `Error raised: ${err}` )
     });
 }
 
@@ -378,16 +380,17 @@ AccountController.get().then(( newAccount: Account ) => {
         strategy:        Constants.DEFAULT_STRATEGY,
         marketStatus:    marketOpened ? 'OPENED' : 'CLOSED',
         orders:          orders,
-        positions:       positions
+        positions:       positions,
+        logs:            logs
     });
 }).catch(( err: any ) => {
-    console.log( `Error raised: ${err}` );
+    logs.push( `Error raised: ${err}` )
 });
 setInterval(() => {
     AccountController.get().then(( newAccount: Account ) => {
         account = newAccount;
         updateInterface();
     }).catch(( err: any ) => {
-        console.log( `Error raised: ${err}` );
+        logs.push( `Error raised: ${err}` )
     });    
 }, Constants.ACCOUNT_METRICS_UPDATE_FREQ );
