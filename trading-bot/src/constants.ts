@@ -74,15 +74,15 @@ export class Constants {
     public static STRATEGY_UPDATE_FREQ:        number = 1500;
 
     // Account Metrics update frequency
-    public static ACCOUNT_METRICS_UPDATE_FREQ: number = 1000;
+    public static ACCOUNT_METRICS_UPDATE_FREQ: number = 10000;
 
     // Order update frequency
-    public static ORDER_UPDATE_FREQ:           number = 1000;
+    public static ORDER_UPDATE_FREQ:           number = 10000;
 
     // Position update frequency
-    public static POSITION_UPDATE_FREQ:        number = 1000;
+    public static POSITION_UPDATE_FREQ:        number = 10000;
 
     // Market status update frequency
-    public static MARKET_STATUS_UPDATE_FREQ:   number = 100000000;
+    public static MARKET_STATUS_UPDATE_FREQ:   number = 60000;
 
 }
