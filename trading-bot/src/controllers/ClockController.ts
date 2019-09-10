@@ -34,10 +34,10 @@
 
 
 import { get } from 'request-promise-native';
-import { v4 } from 'uuid';
+// import { v4 } from 'uuid';
 
-import { Helper } from '../Helper';
-import { OperationState } from '../models/OperationState';
+// import { Helper } from '../Helper';
+// import { OperationState } from '../models/OperationState';
 import { Constants } from '../constants';
 import { ClockAdapter, Clock } from '../models/Clock';
 
@@ -51,19 +51,19 @@ export class ClockController {
      */
     public static get(): Promise<Clock> {
         return new Promise( async ( resolve, reject ) => {
-            const msg:   string = 'Fetching market clock';
-            const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
+            // const msg:   string = 'Fetching market clock';
+            // const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
             const route: string = `clock`;
-            console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
+            // console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
             get( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/${Constants.ALPACA_SETTINGS.ALPACA_API_VERSION}/${route}`, {
                 headers: Constants.alpacaDefaultHeaders
             }).then(( data: any ) => {
-                console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
                 const response:     any          = JSON.parse( data );
                 const clockAdapter: ClockAdapter = new ClockAdapter();
                 resolve( clockAdapter.adapt( response ));
             }).catch(( err: any ) => {
-                console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
                 reject( err );
             });
         });

@@ -56,12 +56,12 @@ export class QuoteController {
      */
     public static getQuotes( symbol: string ): Promise<Quote[]> {
         return new Promise( async ( resolve, reject ) => {
-            const msg:   string = `Fetching all quotes for symbol ${symbol}`;
-            const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
-            const route: string = `quote`;
-            console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
+            // const msg:   string = `Fetching all quotes for symbol ${symbol}`;
+            // const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
+            // const route: string = `quote`;
+            // console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
             get( `${QuoteController._url}/${QuoteController._version}/stock/${symbol}/intraday-prices?token=${QuoteController._token}`).then(( data: any ) => {
-                console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
                 const output:       Quote[]      = [];
                 const response:     any          = JSON.parse( data );
                 const quoteAdapter: QuoteAdapter = new QuoteAdapter();
@@ -78,7 +78,7 @@ export class QuoteController {
                 }
                 resolve( output );
             }).catch(( err: any ) => {
-                console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
                 reject( err );
             });
         });
@@ -103,7 +103,7 @@ export class QuoteController {
                 const quoteAdapter: QuoteAdapter = new QuoteAdapter();
                 resolve( quoteAdapter.adapt( response[0] ));
             }).catch(( err: any ) => {
-                console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
                 reject( err );
             });
         });

@@ -61,10 +61,10 @@ export class OrderController {
         limit:     number      = 50,
         direction: Direction   = Direction.DESC
     ): Promise<Order[]> {
-        const lowerDate: Date = new Date( after );
-        const upperDate: Date = new Date( until );
-        const msg:   string = `Fetching order between ${lowerDate} and ${upperDate} widh status ${status}`;
-        const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
+        // const lowerDate: Date = new Date( after );
+        // const upperDate: Date = new Date( until );
+        // const msg:   string = `Fetching order between ${lowerDate} and ${upperDate} widh status ${status}`;
+        // const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
         const route: string = `orders`;
         return new Promise( async ( resolve, reject ) => {
             // Max limit is 500
@@ -92,7 +92,7 @@ export class OrderController {
                 // console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
                 resolve( output );
             }).catch(( err: any ) => {
-                console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
                 reject( err );
             });
         });
@@ -115,13 +115,13 @@ export class OrderController {
         extendedHours?: number,
         clientOrderId?: string
     ): Promise<Order> {
-        const msg:   string = `
-            Requesting new order
-            ${side} ${symbol} x ${quantity} ${type}
-        `;
-        const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
+        // const msg:   string = `
+        //     Requesting new order
+        //     ${side} ${symbol} x ${quantity} ${type}
+        // `;
+        // const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
         const route: string = `orders`;
-        console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
+        // console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
         return new Promise( async ( resolve, reject ) => {
             // Reject order if type is LIMIT or STOP_LIMIT and missing limit price
             if (( type === OrderType.LIMIT || type === OrderType.STOP_LIMIT ) && !limitPrice ) {
@@ -149,10 +149,10 @@ export class OrderController {
                 json: true
             }).then(( data: any ) => {
                 const orderAdapter: OrderAdapter = new OrderAdapter();
-                console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
                 resolve( orderAdapter.adapt( JSON.stringify( data )));
             }).catch(( err: any ) => {
-                console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
                 reject( err );
             });
         });
@@ -180,7 +180,7 @@ export class OrderController {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
                 resolve( orderAdapter.adapt( response ));
             }).catch(( err: any ) => {
-                console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
                 reject( err );
             });
         });
@@ -208,7 +208,7 @@ export class OrderController {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
                 resolve( orderAdapter.adapt( response ));
             }).catch(( err: any ) => {
-                console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
                 reject( err );
             });
         });
@@ -232,7 +232,7 @@ export class OrderController {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
                 resolve();
             }).catch(( err ) => {
-                console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
                 reject( err );
             });
         });
@@ -259,7 +259,7 @@ export class OrderController {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
                 resolve();
             }).catch(( err ) => {
-                console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
                 reject( err );
             });
         });

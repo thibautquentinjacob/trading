@@ -83,7 +83,7 @@ export class CalendarController {
                 }
                 resolve( output );
             }).catch(( err: any ) => {
-                console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
                 reject( err );
             });
         });

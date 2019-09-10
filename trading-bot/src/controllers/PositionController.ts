@@ -51,25 +51,25 @@ export class PositionController {
      */
     public static get(): Promise<Position[]> {
         return new Promise( async ( resolve, reject ) => {
-            const msg:   string = 'Fetching all positions';
-            const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
+            // const msg:   string = 'Fetching all positions';
+            // const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
             const route: string = `positions`;
             // console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
             get( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/${Constants.ALPACA_SETTINGS.ALPACA_API_VERSION}/${route}`, {
                 headers: Constants.alpacaDefaultHeaders
-            }).then(( data: any ) => {
+            }).then(( rawData: any ) => {
                 // console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
-                const response:        any             = JSON.parse( data );
+                const data:            any             = JSON.parse( rawData );
                 const positionAdapter: PositionAdapter = new PositionAdapter();
                 const output:          Position[]      = [];
                 
-                for ( let i = 0 ; i < response.length; i++ ) {
-                    const positionData: any = response[i];
-                    output.push( positionAdapter.adapt( JSON.stringify( positionData )));
+                for ( let i = 0 ; i < data.length; i++ ) {
+                    const positionData: any = data[i];
+                    output.push( positionAdapter.adapt( positionData ));
                 }
                 resolve( output );
             }).catch(( err: any ) => {
-                console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
                 reject( err );
             });
         });
@@ -84,19 +84,19 @@ export class PositionController {
      */
     public static getBySymbol( symbol: string ): Promise<Position> {
         return new Promise( async ( resolve, reject ) => {
-            const msg:   string = `Fetching opened position by symbol ${symbol}`;
-            const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
+            // const msg:   string = `Fetching opened position by symbol ${symbol}`;
+            // const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
             const route: string = `positions/${symbol}`;
-            console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
+            // console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
             get( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/${Constants.ALPACA_SETTINGS.ALPACA_API_VERSION}/${route}`, {
                 headers: Constants.alpacaDefaultHeaders
             }).then(( data: any ) => {
-                console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
                 const response:        any             = JSON.parse( data );
                 const positionAdapter: PositionAdapter = new PositionAdapter();
                 resolve( positionAdapter.adapt( response ));
             }).catch(( err: any ) => {
-                console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
                 reject( err );
             });
         });
@@ -120,7 +120,7 @@ export class PositionController {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
                 resolve();
             }).catch(( err ) => {
-                console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
                 reject( err );
             });
         });
@@ -147,7 +147,7 @@ export class PositionController {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
                 resolve();
             }).catch(( err ) => {
-                console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
                 reject( err );
             });
         });
