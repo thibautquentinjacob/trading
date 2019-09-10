@@ -65,10 +65,10 @@ export class Interface {
     };
     // Defines all the methods used to display boxes content
     private static _contents: {[key: string]: ( arg1?: ( Order | Position ), arg2?: Order ) => string | string[] } = {
-        total: () => `{${Interface._colors.kpiTitleFg}-fg}Total: {${Interface._colors.kpiValueFg}-fg}$${Interface._totalValue}{${Interface._colors.kpiValueFg}-fg} ({${Interface._colors.kpiIncrementFg}-fg}${Interface._totalIncrement}%{${Interface._colors.kpiValueFg}-fg}){/}`,
-        assets: () => `{${Interface._colors.kpiTitleFg}-fg}Assets:{/} {${Interface._colors.kpiValueFg}-fg}$${Interface._assetsValue}{${Interface._colors.kpiValueFg}-fg} ({${Interface._colors.kpiIncrementFg}-fg}${Interface._assetsIncrement}%{${Interface._colors.kpiValueFg}-fg}){/}`,
-        cash: () => `{${Interface._colors.kpiTitleFg}-fg}Cash:{/} {${Interface._colors.kpiValueFg}-fg}$${Interface._cashValue}{${Interface._colors.kpiValueFg}-fg} ({${Interface._colors.kpiIncrementFg}-fg}${Interface._cashIncrement}%{${Interface._colors.kpiValueFg}-fg}){/}`,
-        success: () => `{${Interface._colors.kpiTitleFg}-fg}Success:{/} {${Interface._colors.kpiValueFg}-fg}({${ Interface._successValue >= 50 ? Interface._colors.kpiIncrementFg : Interface._colors.warn}-fg}${Interface._successValue}%{${Interface._colors.kpiValueFg}-fg}){/}`,
+        total: () => `{${Interface._colors.kpiTitleFg}-fg}Total: {${Interface._colors.kpiValueFg}-fg}$ ${Interface._totalValue}{${Interface._colors.kpiValueFg}-fg} ({${Interface._colors.kpiIncrementFg}-fg}${Interface._totalIncrement} %{${Interface._colors.kpiValueFg}-fg}){/}`,
+        assets: () => `{${Interface._colors.kpiTitleFg}-fg}Assets:{/} {${Interface._colors.kpiValueFg}-fg}$ ${Interface._assetsValue}{${Interface._colors.kpiValueFg}-fg} ({${Interface._colors.kpiIncrementFg}-fg}${Interface._assetsIncrement} %{${Interface._colors.kpiValueFg}-fg}){/}`,
+        cash: () => `{${Interface._colors.kpiTitleFg}-fg}Cash:{/} {${Interface._colors.kpiValueFg}-fg}$ ${Interface._cashValue}{${Interface._colors.kpiValueFg}-fg} ({${Interface._colors.kpiIncrementFg}-fg}${Interface._cashIncrement} %{${Interface._colors.kpiValueFg}-fg}){/}`,
+        success: () => `{${Interface._colors.kpiTitleFg}-fg}Success:{/} {${Interface._colors.kpiValueFg}-fg}({${ Interface._successValue >= 50 ? Interface._colors.kpiIncrementFg : Interface._colors.warn}-fg}${Interface._successValue} %{${Interface._colors.kpiValueFg}-fg}){/}`,
         strategy: () => `{${Interface._colors.kpiTitleFg}-fg}Strategy:{/} {${Interface._colors.kpiValueFg}-fg}${Interface._strategy}{/}`,
         market: () => {
             const date:          Date   = new Date();
@@ -83,10 +83,10 @@ export class Interface {
             const order2: Order = arg2 as Order;
             const diff:   number = Math.round(( order1.filledAvgPrice * order1.quantity - order2.filledAvgPrice * order2.quantity ) * 100 ) / 100;
             return [
-                `{${Interface._colors.kpiValueFg}-fg}${order1.createdAt.toISOString()}{/}`,
+                `{${Interface._colors.kpiValueFg}-fg}${order1.createdAt.toUTCString()}{/}`,
                 order1.side === 'buy' ? `{${Interface._colors.kpiIncrementFg}-fg}${order1.side.toUpperCase()}{/}` : `{${Interface._colors.warn}-fg}${order1.side.toUpperCase()}{/}`,
                 `${order1.quantity} (${order1.filledQuantity}) x ${order1.symbol}`,
-                `$${order1.filledAvgPrice} x ${order1.quantity} = ${Math.ceil( order1.filledAvgPrice * order1.quantity )}`,
+                `$ ${order1.filledAvgPrice} x ${order1.quantity} = $ ${Math.ceil( order1.filledAvgPrice * order1.quantity )}`,
                 `${order1.type.toUpperCase()}`,
                 `${order1.timeInForce.toUpperCase()}`,
                 `${order1.status}`,
@@ -96,14 +96,14 @@ export class Interface {
         positions: ( arg ) => {
             const position: Position = arg as Position;
             return [
-                `{${Interface._colors.kpiValueFg}-fg}${position.symbol}{/}`,
+                `{bold}{${Interface._colors.kpiIncrementFg}-fg}${position.symbol}{/}`,
                 `{${Interface._colors.kpiIncrementFg}-fg}${position.qty}{/}`,
-                `${position.marketValue}`,
-                `${position.currentPrice}`,
-                `${position.changeToday}`,
-                `${position.unrealizedPl}`,
-                `${position.unrealizedIntradayPl}`,
-                `${position.costBasis}`
+                `$ ${position.marketValue}`,
+                `$ ${position.currentPrice}`,
+                `${Math.round( position.changeToday * 1000 ) / 1000 } %`,
+                `$ ${position.unrealizedPl}`,
+                `$ ${position.unrealizedIntradayPl}`,
+                `$ ${position.costBasis}`
             ];
         }
     }
@@ -114,7 +114,7 @@ export class Interface {
             top:        3,
             left:       0,
             width:      '100%',
-            height:     '50%',
+            height:     '30%',
             tags:       true,
             scrollable: true,
             border: {
@@ -135,7 +135,7 @@ export class Interface {
         }),
         // Positions box
         positions: blessed.table({
-            top:        50,
+            top:        '50%',
             left:       0,
             width:      '100%',
             height:     '25%',
@@ -335,9 +335,9 @@ export class Interface {
 
     private static _recordState ( data: InterfacePayload ): void {
         Interface._totalValue      = Math.ceil( data.totalValue );
-        Interface._totalIncrement  = data.totalIncrement;
+        Interface._totalIncrement  = Math.round( data.totalIncrement * 100 ) / 100;
         Interface._assetsValue     = Math.ceil( data.assetsValue );
-        Interface._assetsIncrement = data.assetsIncrement;
+        Interface._assetsIncrement = Math.round( data.assetsIncrement * 100 ) / 100;
         Interface._cashValue       = Math.ceil( data.cashValue );
         Interface._cashIncrement   = data.cashIncrement;
         Interface._successValue    = data.successValue;
