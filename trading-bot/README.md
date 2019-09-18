@@ -1,5 +1,7 @@
 # Trading Bot
 
+![alt](./preview.png)
+
 This project is an effort to automatize day trading using specific strategies based on technical indicators.
 
 ## Requirements
@@ -23,9 +25,9 @@ You will then be able to build the project using `npm run build`. You will find 
 
 To run the project, type `npm start`.
 
-## Tests
+<!-- ## Tests
 
-To run tests, use `npm run test`.
+To run tests, use `npm run test`. -->
 
 ## License
 
