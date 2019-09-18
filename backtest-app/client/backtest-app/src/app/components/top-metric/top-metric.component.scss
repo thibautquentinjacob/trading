@@ -1,0 +1,30 @@
+:host {
+
+    color: #0e9862;
+
+    .metric-title {
+        font-family: 'Oswald', sans-serif;
+        font-weight: 500;
+        position: relative;
+        top: -2px;
+    }
+
+    .metric-value {
+        font-family: 'Oswald', sans-serif;
+        position: relative;
+        top: -2px;
+    }
+
+    .positive {
+        color: #30ffaf;
+    }
+
+    .negative {
+        color: #ea028d;
+    }
+
+    mat-icon {
+        color: #0e9862;
+    }
+
+}
