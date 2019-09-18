@@ -4,7 +4,7 @@
  * File Created: Tuesday, 26th March 2019 12:31:58 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Saturday, 7th September 2019 12:28:00 pm
+ * Last Modified: Tuesday, 10th September 2019 1:05:55 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -37,10 +37,10 @@ import { get } from 'request-promise-native';
 
 import { Constants } from '../constants';
 import { Account, AccountAdapter } from "../models/Account";
-import { v4 } from 'uuid';
+// import { v4 } from 'uuid';
 
-import { Helper } from '../Helper';
-import { OperationState } from '../models/OperationState';
+// import { Helper } from '../Helper';
+// import { OperationState } from '../models/OperationState';
 
 export class AccountController {
 
@@ -52,19 +52,19 @@ export class AccountController {
      */
     public static get(): Promise<Account> {
         return new Promise( async ( resolve, reject ) => {
-            const msg:   string = 'Fetching account state';
-            const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
+            // const msg:   string = 'Fetching account state';
+            // const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
             const route: string = `account`;
-            console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
+            // console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
             get( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/${Constants.ALPACA_SETTINGS.ALPACA_API_VERSION}/${route}`, {
                 headers: Constants.alpacaDefaultHeaders
             }).then(( data: any ) => {
-                console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
                 const response:       any            = JSON.parse( data );
                 const accountAdapter: AccountAdapter = new AccountAdapter();
                 resolve( accountAdapter.adapt( response ));
             }).catch(( err: any ) => {
-                console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
                 reject( err );
             });
         });

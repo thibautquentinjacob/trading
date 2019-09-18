@@ -4,7 +4,7 @@
  * File Created: Monday, 25th March 2019 12:44:10 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Saturday, 7th September 2019 12:23:56 pm
+ * Last Modified: Tuesday, 10th September 2019 12:47:21 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -59,6 +59,7 @@ export interface Order {
     timeInForce:    TimeInForce;
     limitPrice?:    number;
     stopPrice?:     number;
+    filledAvgPrice: number;
     status:         OrderStatus;
     extendedHours?: boolean;
 
@@ -73,12 +74,12 @@ export class OrderAdapter implements Adapter<Order> {
         return {
             id:             parsedOrderData.id,
             clientOrderId:  parsedOrderData.client_order_id,
-            createdAt:      parsedOrderData.created_at,
-            updatedAt:      parsedOrderData.updated_at,
-            submittedAt:    parsedOrderData.submitted_at,
-            filledAt:       parsedOrderData.filled_at,
-            expiredAt:      parsedOrderData.expired_at,
-            canceledAt:     parsedOrderData.canceled_at,
+            createdAt:      new Date( parsedOrderData.created_at ),
+            updatedAt:      new Date( parsedOrderData.updated_at ),
+            submittedAt:    new Date( parsedOrderData.submitted_at ),
+            filledAt:       new Date( parsedOrderData.filled_at ),
+            expiredAt:      new Date( parsedOrderData.expired_at ),
+            canceledAt:     new Date( parsedOrderData.canceled_at ),
             assetId:        parsedOrderData.asset_id,
             symbol:         parsedOrderData.symbol,
             assetClass:     parsedOrderData.asset_class,
@@ -89,6 +90,7 @@ export class OrderAdapter implements Adapter<Order> {
             timeInForce:    parsedOrderData.time_in_force,
             limitPrice:     parsedOrderData.limit_price,
             stopPrice:      parsedOrderData.stop_price,
+            filledAvgPrice: parsedOrderData.filled_avg_price,
             status:         parsedOrderData.status,
             extendedHours:  parsedOrderData.extended_hours ? parsedOrderData.extended_hours : false
         };

@@ -4,7 +4,7 @@
  * File Created: Tuesday, 26th March 2019 12:34:55 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
  * -----
- * Last Modified: Saturday, 7th September 2019 12:25:31 pm
+ * Last Modified: Tuesday, 10th September 2019 1:05:30 am
  * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
@@ -62,18 +62,27 @@ export class Constants {
     };
 
     // The symbol to trade
-    public static TRADED_SYMBOL:             string = 'AAPL';
+    public static TRADED_SYMBOL:               string = 'AAPL';
 
     // Default strategy
-    public static DEFAULT_STRATEGY:          string = 'CCI';
+    public static DEFAULT_STRATEGY:            string = 'CCI';
 
     // SEC min day trade security amount
-    public static MIN_DAY_TRADE_CASH_AMOUNT: number = 25000;
+    public static MIN_DAY_TRADE_CASH_AMOUNT:   number = 25000;
 
     // Market update frequency
-    public static STRATEGY_UPDATE_FREQ:      number = 1000;
+    public static STRATEGY_UPDATE_FREQ:        number = 1500;
 
-    // Metrics update frequency
-    public static METRICS_UPDATE_FREQ:       number = 1000;
+    // Account Metrics update frequency
+    public static ACCOUNT_METRICS_UPDATE_FREQ: number = 10000;
+
+    // Order update frequency
+    public static ORDER_UPDATE_FREQ:           number = 10000;
+
+    // Position update frequency
+    public static POSITION_UPDATE_FREQ:        number = 10000;
+
+    // Market status update frequency
+    public static MARKET_STATUS_UPDATE_FREQ:   number = 60000;
 
 }
