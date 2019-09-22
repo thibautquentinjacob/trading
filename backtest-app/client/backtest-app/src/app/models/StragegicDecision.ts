@@ -1,6 +1,6 @@
 export interface StrategicDecision {
 
-        amount:   number,
-        decision: boolean
+        amount:   number;
+        decision: boolean;
 
 }
