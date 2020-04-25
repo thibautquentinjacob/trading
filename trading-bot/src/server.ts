@@ -56,6 +56,7 @@ import { OperationState } from './models/OperationState';
 
 import { Interface } from './interface';
 import { Order } from './models/Order';
+import { OrderClass } from './models/OrderClass';
 
 console.log( yellow( `
 .▄▄ · ▄▄▄▄▄      ▐▄• ▄ 
@@ -149,25 +150,33 @@ function buyLogic ( data: StockData ): void {
             // Compute the volume we can buy
             const amount: number = Math.floor( cash / buyDecision.price );
             if ( buyDecision.amount === -1 && amount > 0 ) {
+                logs.push( `Buying ${amount} x ${Constants.TRADED_SYMBOL} for ${buyDecision.price * amount}` );
+                logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${amount} x ${buyDecision.price}\t${buyDecision.price * amount}` );
                 OrderController.request(
                     Constants.TRADED_SYMBOL,
                     amount,
                     Side.BUY,
                     OrderType.MARKET,
-                    TimeInForce.IOC
-                );
-                logs.push( `Buying ${amount} x ${Constants.TRADED_SYMBOL} for ${buyDecision.price * amount}` );
-                logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${amount} x ${buyDecision.price}\t${buyDecision.price * amount}` );
+                    TimeInForce.DAY,
+                    OrderClass.SIMPLE
+                ).catch((err) => {
+                    logs.push( err.message );
+                    logger.log( err.message );
+                });
             } else if ( buyDecision.amount !== -1 ) {
+                logs.push( `Buying ${buyDecision.amount} x ${Constants.TRADED_SYMBOL} for ${buyDecision.price * buyDecision.amount}` );
+                logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${buyDecision.amount} x ${buyDecision.price}\t${buyDecision.price * buyDecision.amount}` );
                 OrderController.request(
                     Constants.TRADED_SYMBOL,
                     buyDecision.amount,
                     Side.BUY,
                     OrderType.MARKET,
-                    TimeInForce.IOC,
-                );
-                logs.push( `Buying ${buyDecision.amount} x ${Constants.TRADED_SYMBOL} for ${buyDecision.price * buyDecision.amount}` );
-                logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${buyDecision.amount} x ${buyDecision.price}\t${buyDecision.price * buyDecision.amount}` );
+                    TimeInForce.DAY,
+                    OrderClass.SIMPLE
+                ).catch((err) => {
+                    logs.push( err.message );
+                    logger.log( err.message );
+                });
             }
         });
     }
@@ -186,25 +195,33 @@ function sellLogic ( data: StockData ): void {
         PositionController.getBySymbol( Constants.TRADED_SYMBOL ).then(( position: Position ) => {
             const amount: number = position.qty;
             if ( sellDecision.amount === -1 && amount > 0 ) {
+                logs.push( `Selling ${amount} x ${Constants.TRADED_SYMBOL} for ${sellDecision.price * amount}` );
+                logger.log( `SELL\t${Constants.TRADED_SYMBOL}\t${amount} x ${sellDecision.price}\t${sellDecision.price * amount}` );
                 OrderController.request(
                     Constants.TRADED_SYMBOL,
                     amount,
                     Side.SELL,
                     OrderType.MARKET,
-                    TimeInForce.IOC,
-                );
-                logs.push( `Selling ${amount} x ${Constants.TRADED_SYMBOL} for ${sellDecision.price * amount}` );
-                logger.log( `SELL\t${Constants.TRADED_SYMBOL}\t${amount} x ${sellDecision.price}\t${sellDecision.price * amount}` );
+                    TimeInForce.DAY,
+                    OrderClass.SIMPLE
+                ).catch((err) => {
+                    logs.push( err.message );
+                    logger.log( err.message );
+                });
             } else if ( sellDecision.amount !== -1 ) {
+                logs.push( `Selling ${sellDecision.amount} x ${Constants.TRADED_SYMBOL} for ${sellDecision.price * sellDecision.amount}` );
+                logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${sellDecision.amount} x ${sellDecision.price}\t${sellDecision.price * sellDecision.amount}` );
                 OrderController.request(
                     Constants.TRADED_SYMBOL,
                     sellDecision.amount,
                     Side.SELL,
                     OrderType.MARKET,
-                    TimeInForce.IOC,
-                );
-                logs.push( `Selling ${sellDecision.amount} x ${Constants.TRADED_SYMBOL} for ${sellDecision.price * sellDecision.amount}` );
-                logger.log( `BUY\t${Constants.TRADED_SYMBOL}\t${sellDecision.amount} x ${sellDecision.price}\t${sellDecision.price * sellDecision.amount}` );
+                    TimeInForce.DAY,
+                    OrderClass.SIMPLE
+                ).catch((err) => {
+                    logs.push( err.message );
+                    logger.log( err.message );
+                });
             }
         }).catch(() => {});
     }
@@ -319,7 +336,8 @@ async function getOrders (): Promise<Order[]> {
     const opening: Date = new Date( '2019/09/01' );
     return await OrderController.get(
         opening.toISOString(),
-        now.toISOString()
+        now.toISOString(),
+        false
     );
 }
 
