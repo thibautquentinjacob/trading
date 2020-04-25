@@ -1,16 +1,13 @@
 /*
- * File: constants.ts
+ * File: OrderStatus.ts
  * Project: server
- * File Created: Sunday, 14th April 2019 12:28:35 pm
+ * File Created: Tuesday, 13th April 2020 10:41:25 am
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
- * -----
- * Last Modified: Thursday, 6th June 2019 11:55:17 pm
- * Modified By: Thibaut Jacob (thibautquentinjacob@gmail.com>)
  * -----
  * License:
  * MIT License
  * 
- * Copyright (c) 2019 Thibaut Jacob
+ * Copyright (c) 2020 Thibaut Jacob
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -33,19 +30,11 @@
 
 
 
-export class Constants {
+export enum OrderClass {
 
-    // IEX Cloud API settings
-    public static IEX_CLOUD_DATA_URL:         string = 'https://cloud-sse.iexapis.com/';
-    public static IEX_CLOUD_VERSION:          string = 'stable';
-    public static IEX_CLOUD_STREAM_PRECISION: string = 'stocksUS1Minute';
-    public static IEX_CLOUD_PRIVATE_TOKEN:    string = 'sk_17df8f49db65407eb7aba757e1faeeae';
-
-    // Data API settings
-    public static IEX_API_URL:                string = 'https://api.iextrading.com';
-    public static IEX_API_VERSION:            string = '1.0';
-
-    // Server settings
-    public static WEBSERVER_PORT:             number = 8080;
+    SIMPLE  = 'simple',
+    BRACKET = 'bracket',
+    OCO     = 'oco',
+    OTO     = 'oto'
 
 }

@@ -38,32 +38,32 @@ import { AccountStatus } from './AccountStatus';
 
 export interface Account {
 
-    id:                    string;
+    accountBlocked:        boolean;
     accountNumber:         string;
-    status:                AccountStatus;
-    currency:              string;
+    buyingPower:           number;
     cash:                  number;
-    portfolioValue:        number;
+    createdAt:             Date;
+    currency:              string;
+    daytradeCount:         number;
+    daytradingBuyingPower: number;
+    equity:                number;
+    id:                    string;
+    initialMargin:         number;
+    lastEquity:            number;
+    lastMaintenanceMargin: number;
+    longMarketVaue:        number;
+    maintenanceMargin:     number;
+    multiplier:            number;
     patternDayTrader:      boolean;
+    portfolioValue:        number;
+    regtBuyingPower:       number;
+    ShortMarketValue:      number;
+    shortingEnabled:       boolean;
+    sma:                   number;
+    status:                AccountStatus;
     tradeSuspendedByUser:  boolean;
     tradingBlocked:        boolean;
     transfersBlocked:      boolean;
-    accountBlocked:        boolean;
-    createdAt:             Date;
-    shortingEnabled:       boolean;
-    longMarketVaue:        number;
-    ShortMarketValue:      number;
-    equity:                number;
-    lastEquity:            number;
-    multiplier:            number;
-    buyingPower:           number;
-    initialMargin:         number;
-    maintenanceMargin:     number;
-    sma:                   number;
-    daytradeCount:         number;
-    lastMaintenanceMargin: number;
-    daytradingBuyingPower: number;
-    regtBuyingPower:       number;
 
 }
 

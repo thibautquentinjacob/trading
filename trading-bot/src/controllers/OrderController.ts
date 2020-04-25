@@ -33,7 +33,7 @@
 
 
 
-import { get, del, post } from 'request-promise-native';
+import { get, del, post, patch } from 'request-promise-native';
 import { v4 } from 'uuid';
 
 import { Constants } from '../constants';
@@ -45,6 +45,7 @@ import { OperationState } from '../models/OperationState';
 import { Side } from '../models/Side';
 import { OrderType } from '../models/OrderType';
 import { TimeInForce } from '../models/TimeInForce';
+import { OrderClass } from '../models/OrderClass';
 
 export class OrderController {
 
@@ -57,6 +58,7 @@ export class OrderController {
     public static get(
         after:     string,
         until:     string,
+        nested:    boolean,
         status:    OrderStatus = OrderStatus.NEW,
         limit:     number      = 50,
         direction: Direction   = Direction.DESC
@@ -77,6 +79,9 @@ export class OrderController {
             }
             if ( until ) {
                 params += `&until=${until}`;
+            }
+            if ( nested ) {
+                params += `&nested=${nested}`;
             }
             get( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/${Constants.ALPACA_SETTINGS.ALPACA_API_VERSION}/${route}?${params}`, {
                 headers: Constants.alpacaDefaultHeaders
@@ -110,10 +115,13 @@ export class OrderController {
         side:           Side,
         type:           OrderType,
         timeInForce:    TimeInForce,
+        orderClass:     OrderClass,
         limitPrice?:    number,
         stopPrice?:     number,
-        extendedHours?: number,
-        clientOrderId?: string
+        extendedHours:  boolean = false,
+        clientOrderId?: string,
+        takeProfit?:    { limitPrice: number },
+        stopLoss?:      {stopPrice: number, limitPrice?: number}
     ): Promise<Order> {
         // const msg:   string = `
         //     Requesting new order
@@ -144,7 +152,10 @@ export class OrderController {
                     limit_price:      limitPrice,
                     stop_price:       stopPrice,
                     client_order_id:  clientOrderId,
-                    extended_hours:   extendedHours ? extendedHours : false
+                    extended_hours:   extendedHours ? extendedHours : false,
+                    order_class:      orderClass,
+                    take_profit:      takeProfit ? takeProfit : null,
+                    stop_loss:        stopLoss ? stopLoss : null
                 },
                 json: true
             }).then(( data: any ) => {
@@ -208,6 +219,53 @@ export class OrderController {
                 console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
                 resolve( orderAdapter.adapt( response ));
             }).catch(( err: any ) => {
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
+                reject( err );
+            });
+        });
+    }
+
+    /**
+     * Update an existing order
+     * 
+     * @public
+     * @param {string} orderId - Order id
+     * @returns {Promise<Order>} Order Object
+     */
+    public static update(
+        orderId:        string,
+        quantity:       number,
+        timeInForce:    TimeInForce,
+        limitPrice?:    number,
+        stopPrice?:     number,
+        clientOrderId?: string
+    ): Promise<Order> {
+        // const msg:   string = `
+        //     Requesting new order
+        //     ${side} ${symbol} x ${quantity} ${type}
+        // `;
+        // const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
+        const route: string = `orders/${orderId}`;
+        // console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
+        return new Promise( async ( resolve, reject ) => {
+
+            patch( `${Constants.ALPACA_SETTINGS.ALPACA_API_URL}/${Constants.ALPACA_SETTINGS.ALPACA_API_VERSION}/${route}`, {
+                headers: Constants.alpacaDefaultHeaders,
+                body: {
+                    qty:              quantity,
+                    time_in_force:    timeInForce,
+                    limit_price:      limitPrice,
+                    stop_price:       stopPrice,
+                    client_order_id:  clientOrderId
+                },
+                json: true
+            }).then(( data: any ) => {
+                console.log( data );
+                const orderAdapter: OrderAdapter = new OrderAdapter();
+                // console.log( Helper.formatLog( route, msg, uuid, OperationState.SUCCESS ));
+                resolve( orderAdapter.adapt( JSON.stringify( data )));
+            }).catch(( err: any ) => {
+                console.log( err );
                 // console.log( Helper.formatLog( route, msg, uuid, OperationState.FAILURE, { name: err.name, statusCode: err.statusCode }));
                 reject( err );
             });

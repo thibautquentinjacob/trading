@@ -56,7 +56,7 @@ export class SymbolController {
             const uuid:  string = v4().replace( /^([^\-]*)\-.*/, '$1' );
             const route: string = `ref-data/symbols`;
             console.log( Helper.formatLog( route, msg, uuid, OperationState.PENDING ));
-            get( `${Constants.ALPACA_API_URL}/${Constants.API_VERSION}/${route}` ).then(( data: any ) => {
+            get( `${Constants.IEX_API_URL}/${Constants.IEX_API_VERSION}/${route}` ).then(( data: any ) => {
                 const response:      any            = JSON.parse( data );
                 const output:        Symbol[]       = [];
                 const symbolAdapter: SymbolAdapter  = new SymbolAdapter();

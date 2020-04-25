@@ -49,6 +49,7 @@ export interface Order {
     filledAt?:      Date;
     expiredAt?:     Date;
     canceledAt?:    Date;
+    failedAt?:      Date;
     assetId:        string;
     symbol:         string;
     assetClass:     string;
@@ -62,6 +63,7 @@ export interface Order {
     filledAvgPrice: number;
     status:         OrderStatus;
     extendedHours?: boolean;
+    legs?:          Order[];
 
 }
 
@@ -80,6 +82,7 @@ export class OrderAdapter implements Adapter<Order> {
             filledAt:       new Date( parsedOrderData.filled_at ),
             expiredAt:      new Date( parsedOrderData.expired_at ),
             canceledAt:     new Date( parsedOrderData.canceled_at ),
+            failedAt:       new Date( parsedOrderData.failed_at ), 
             assetId:        parsedOrderData.asset_id,
             symbol:         parsedOrderData.symbol,
             assetClass:     parsedOrderData.asset_class,
@@ -92,7 +95,8 @@ export class OrderAdapter implements Adapter<Order> {
             stopPrice:      parsedOrderData.stop_price,
             filledAvgPrice: parsedOrderData.filled_avg_price,
             status:         parsedOrderData.status,
-            extendedHours:  parsedOrderData.extended_hours ? parsedOrderData.extended_hours : false
+            extendedHours:  parsedOrderData.extended_hours ? parsedOrderData.extended_hours : false,
+            legs:           parsedOrderData.legs
         };
     }
 
