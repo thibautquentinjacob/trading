@@ -67,9 +67,9 @@ export class Interface {
     };
     // Defines all the methods used to display boxes content
     private static _contents: {[key: string]: ( arg1?: ( Order | Position ), arg2?: Order ) => string | string[] } = {
-        total: () => `{${Interface._colors.kpiTitleFg}-fg}Total: {${Interface._colors.kpiValueFg}-fg}$ ${Interface._totalValue}{${Interface._colors.kpiValueFg}-fg} ({${Interface._colors.kpiIncrementFg}-fg}${Interface._totalIncrement} %{${Interface._colors.kpiValueFg}-fg}){/}`,
-        assets: () => `{${Interface._colors.kpiTitleFg}-fg}Assets:{/} {${Interface._colors.kpiValueFg}-fg}$ ${Interface._assetsValue}{${Interface._colors.kpiValueFg}-fg} ({${Interface._colors.kpiIncrementFg}-fg}${Interface._assetsIncrement} %{${Interface._colors.kpiValueFg}-fg}){/}`,
-        cash: () => `{${Interface._colors.kpiTitleFg}-fg}Cash:{/} {${Interface._colors.kpiValueFg}-fg}$ ${Interface._cashValue}{${Interface._colors.kpiValueFg}-fg} ({${Interface._colors.kpiIncrementFg}-fg}${Interface._cashIncrement} %{${Interface._colors.kpiValueFg}-fg}){/}`,
+        total: () => `{${Interface._colors.kpiTitleFg}-fg}Total: {${Interface._colors.kpiValueFg}-fg}$${Interface._totalValue}{${Interface._colors.kpiValueFg}-fg} ({${Interface._colors.kpiIncrementFg}-fg}${Interface._totalIncrement} %{${Interface._colors.kpiValueFg}-fg}){/}`,
+        assets: () => `{${Interface._colors.kpiTitleFg}-fg}Assets:{/} {${Interface._colors.kpiValueFg}-fg}$${Interface._assetsValue}{${Interface._colors.kpiValueFg}-fg} ({${Interface._colors.kpiIncrementFg}-fg}${Interface._assetsIncrement} %{${Interface._colors.kpiValueFg}-fg}){/}`,
+        cash: () => `{${Interface._colors.kpiTitleFg}-fg}Cash:{/} {${Interface._colors.kpiValueFg}-fg}$${Interface._cashValue}{${Interface._colors.kpiValueFg}-fg} ({${Interface._colors.kpiIncrementFg}-fg}${Interface._cashIncrement} %{${Interface._colors.kpiValueFg}-fg}){/}`,
         success: () => `{${Interface._colors.kpiTitleFg}-fg}Success:{/} {${Interface._colors.kpiValueFg}-fg}({${ Interface._successValue >= 50 ? Interface._colors.kpiIncrementFg : Interface._colors.warn}-fg}${Interface._successValue} %{${Interface._colors.kpiValueFg}-fg}){/}`,
         strategy: () => `{${Interface._colors.kpiTitleFg}-fg}Strategy:{/} {${Interface._colors.kpiValueFg}-fg}${Interface._strategy}{/}`,
         market: () => {
@@ -88,7 +88,7 @@ export class Interface {
                 `{${Interface._colors.kpiValueFg}-fg}${order1.createdAt.toUTCString()}{/}`,
                 order1.side === 'buy' ? `{${Interface._colors.kpiIncrementFg}-fg}${order1.side.toUpperCase()}{/}` : `{${Interface._colors.warn}-fg}${order1.side.toUpperCase()}{/}`,
                 `${order1.quantity} (${order1.filledQuantity}) x ${order1.symbol}`,
-                `$ ${order1.filledAvgPrice} x ${order1.quantity} = $ ${Math.ceil( order1.filledAvgPrice * order1.quantity )}`,
+                `$${order1.filledAvgPrice ? order1.filledAvgPrice : 0} x ${order1.filledQuantity} = $${Math.ceil( order1.filledAvgPrice * order1.filledQuantity )}`,
                 `${order1.type.toUpperCase()}`,
                 `${order1.timeInForce.toUpperCase()}`,
                 `${order1.status}`,
@@ -100,13 +100,13 @@ export class Interface {
             return [
                 `{bold}{${Interface._colors.kpiIncrementFg}-fg}${position.symbol}{/}`,
                 `{${Interface._colors.kpiIncrementFg}-fg}${position.qty}{/}`,
-                `$ ${position.marketValue}`,
-                `$ ${position.currentPrice}`,
+                `$${position.marketValue}`,
+                `$${position.currentPrice}`,
                 position.changeToday > 0 ?  `{${Interface._colors.kpiIncrementFg}-fg}${Math.round( position.changeToday * 1000 ) / 1000 } %{/}` :
                                             `{${Interface._colors.warn}-fg}${Math.round( position.changeToday * 1000 ) / 1000 } %{/}`,
-                `$ ${position.unrealizedPl}`,
-                `$ ${position.unrealizedIntradayPl}`,
-                `$ ${position.costBasis}`
+                `$${position.unrealizedPl}`,
+                `$${position.unrealizedIntradayPl}`,
+                `$${position.costBasis}`
             ];
         }
     }
@@ -353,7 +353,7 @@ export class Interface {
             positions.push( Interface._contents['positions']( position as Position ) as string[] );
         }
         orders.unshift(
-            [ 'Date',  'Operation', 'Vol x Symbol', 'Price', 'Order', 'Time in Force', 'Status', 'Profit/Loss' ]
+            [ 'Date',  'Operation', 'Vol (filled) x Symbol', 'Price', 'Order', 'Time in Force', 'Status', 'Profit/Loss' ]
         );
         positions.unshift(
             [ 'Symbol',  'Volume', 'Market Value', 'Price', 'Change', 'P&L', 'P&L Intraday', 'Cost' ]
@@ -366,10 +366,10 @@ export class Interface {
         Interface._totalValue      = Math.round( data.totalValue * 100 ) / 100;
         Interface._totalIncrement  = Math.round( data.totalIncrement * 100 ) / 100;
         Interface._assetsValue     = Math.round( data.assetsValue * 100 ) / 100;
-        Interface._assetsIncrement = Math.round( data.assetsIncrement * 100 ) / 100;
+        Interface._assetsIncrement = data.assetsValue ? Math.round( data.assetsIncrement * 100 ) / 100 : 0;
         Interface._cashValue       = Math.round( data.cashValue * 100 ) / 100;
-        Interface._cashIncrement   = data.cashIncrement;
-        Interface._successValue    = data.successValue;
+        Interface._cashIncrement   = Math.round( data.cashIncrement * 100 ) / 100;
+        Interface._successValue    = Math.round( data.successValue * 100 ) / 100;
         Interface._strategy        = data.strategy;
         Interface._marketStatus    = data.marketStatus;
         Interface._orders          = data.orders;
