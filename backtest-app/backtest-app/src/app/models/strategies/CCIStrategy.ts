@@ -31,70 +31,70 @@
  * SOFTWARE.
  */
 
-
-
-import { Strategy } from '../Strategy';
-import { StrategicDecision } from '../StragegicDecision';
-import { Indicator } from '../Indicator';
 import { EChartOption } from 'echarts';
-import { StockData } from '../StockData';
-import { EMA } from '../chart-descriptions/EMA';
 import { CCI } from '../chart-descriptions/CCI';
+import { EMA } from '../chart-descriptions/EMA';
 import { RSI } from '../chart-descriptions/RSI';
+import { Indicator } from '../Indicator';
+import { StockData } from '../StockData';
+import { StrategicDecision } from '../StragegicDecision';
+import { Strategy } from '../Strategy';
 
 export class CCIStrategy extends Strategy {
-
-    public title: string    = 'CCI';
+    public title: string = 'CCI';
     public indicators: {
-        [key: string]: Indicator
+        [key: string]: Indicator;
     } = {
         ema5: {
-            name:    'ema',
+            name: 'ema',
             options: [5],
-            metrics:  ['open'],
-            output:  ['output']
+            metrics: ['open'],
+            output: ['output'],
         },
         ema8: {
-            name:    'ema',
+            name: 'ema',
             options: [8],
-            metrics:  ['open'],
-            output:  ['output']
+            metrics: ['open'],
+            output: ['output'],
         },
         ema50: {
-            name:    'ema',
+            name: 'ema',
             options: [50],
-            metrics:  ['open'],
-            output:  ['output']
+            metrics: ['open'],
+            output: ['output'],
         },
         cci: {
-            name:    'cci',
+            name: 'cci',
             options: [10],
-            metrics:  ['high', 'low', 'close'],
-            output:  ['output']
+            metrics: ['high', 'low', 'close'],
+            output: ['output'],
         },
         rsi: {
-            name:    'rsi',
+            name: 'rsi',
             options: [7],
-            metrics:  ['open'],
-            output:  ['output']
-        }
+            metrics: ['open'],
+            output: ['output'],
+        },
     };
 
-
-    constructor () {
+    constructor() {
         super();
         // Build indicator full names
-        const indicatorKeys: string[] = Object.keys( this.indicators );
-        for ( let i = 0, size = indicatorKeys.length ; i < size ; i++ ) {
-            const indicatorKey:     string   = indicatorKeys[i];
-            const indicatorName:    string   = this.indicators[indicatorKey].name;
-            const indicatorOptions: number[] = this.indicators[indicatorKey].options;
-            this.indicators[indicatorKey].fullName = `${indicatorName}_${indicatorOptions.join( '_' )}`;
+        const indicatorKeys: string[] = Object.keys(this.indicators);
+        for (let i = 0, size = indicatorKeys.length; i < size; i++) {
+            const indicatorKey: string = indicatorKeys[i];
+            const indicatorName: string = this.indicators[indicatorKey].name;
+            const indicatorOptions: number[] = this.indicators[indicatorKey]
+                .options;
+            this.indicators[
+                indicatorKey
+            ].fullName = `${indicatorName}_${indicatorOptions.join('_')}`;
         }
     }
 
-
-    public generateChartDescriptions( data: StockData ): EChartOption.SeriesLine[] {
+    public generateChartDescriptions(
+        data: StockData
+    ): EChartOption.SeriesLine[] {
         let descriptions: EChartOption.SeriesLine[] = [];
         descriptions = descriptions.concat(
             new EMA(
@@ -134,29 +134,30 @@ export class CCIStrategy extends Strategy {
      * @param {StockData} data - Stock data + required indicators
      * @returns {StrategicDecision}
      */
-    public shouldBuy( data: StockData ): StrategicDecision {
-        const dates:           Date[] = data.dates as Date[];
-        const currentDate:     Date   = new Date( dates[dates.length - 1]);
-        const closingDate:     Date   = new Date( dates[dates.length - 1]);
-        closingDate.setHours( 22, 0, 0 );
-        const timeDiffMinutes: number = ( closingDate.getTime() - currentDate.getTime()) / ( 1000 * 60 );
-        const ema5Name                  = this.indicators.ema5.fullName;
-        const ema8Name                  = this.indicators.ema8.fullName;
-        const ema50Name                 = this.indicators.ema50.fullName;
-        const cciName                   = this.indicators.cci.fullName;
-        const currentCCI:        number = data[cciName]['output'][data[cciName]['output'].length - 1];
-        const previousCCI:       number = data[cciName]['output'][data[cciName]['output'].length - 2];
-        if (
-            currentCCI > 0 && previousCCI < 0 &&
-            timeDiffMinutes > 15 ) {
+    public shouldBuy(data: StockData): StrategicDecision {
+        const dates: Date[] = data.dates as Date[];
+        const currentDate: Date = new Date(dates[dates.length - 1]);
+        const closingDate: Date = new Date(dates[dates.length - 1]);
+        closingDate.setHours(22, 0, 0);
+        const timeDiffMinutes: number =
+            (closingDate.getTime() - currentDate.getTime()) / (1000 * 60);
+        const ema5Name = this.indicators.ema5.fullName;
+        const ema8Name = this.indicators.ema8.fullName;
+        const ema50Name = this.indicators.ema50.fullName;
+        const cciName = this.indicators.cci.fullName;
+        const currentCCI: number =
+            data[cciName]['output'][data[cciName]['output'].length - 1];
+        const previousCCI: number =
+            data[cciName]['output'][data[cciName]['output'].length - 2];
+        if (currentCCI > 0 && previousCCI < 0 && timeDiffMinutes > 15) {
             return {
-                amount:   -1,
-                decision: true
+                amount: -1,
+                decision: true,
             };
         } else {
             return {
-                amount:   0,
-                decision: false
+                amount: 0,
+                decision: false,
             };
         }
     }
@@ -169,32 +170,32 @@ export class CCIStrategy extends Strategy {
      * @param {StockData} data - Stock data + required indicators
      * @returns {StrategicDecision}
      */
-    public shouldSell( data: StockData ): StrategicDecision {
-        const dates:           Date[] = data.dates as Date[];
-        const currentDate:     Date   = new Date( dates[dates.length - 1]);
-        const closingDate:     Date   = new Date( dates[dates.length - 1]);
-        closingDate.setHours( 22, 0, 0 );
-        const timeDiffMinutes: number = ( closingDate.getTime() - currentDate.getTime()) / ( 1000 * 60 );
+    public shouldSell(data: StockData): StrategicDecision {
+        const dates: Date[] = data.dates as Date[];
+        const currentDate: Date = new Date(dates[dates.length - 1]);
+        const closingDate: Date = new Date(dates[dates.length - 1]);
+        closingDate.setHours(22, 0, 0);
+        const timeDiffMinutes: number =
+            (closingDate.getTime() - currentDate.getTime()) / (1000 * 60);
         // console.log( timeDiffMinutes );
-        const ema5Name                  = this.indicators.ema5.fullName;
-        const ema8Name                  = this.indicators.ema8.fullName;
-        const ema50Name                 = this.indicators.ema50.fullName;
-        const cciName                   = this.indicators.cci.fullName;
-        const currentCCI:        number = data[cciName]['output'][data[cciName]['output'].length - 1];
-        const previousCCI:       number = data[cciName]['output'][data[cciName]['output'].length - 2];
-        if (
-            timeDiffMinutes < 15 ||
-            ( currentCCI < 0 && previousCCI > 0 )) {
+        const ema5Name = this.indicators.ema5.fullName;
+        const ema8Name = this.indicators.ema8.fullName;
+        const ema50Name = this.indicators.ema50.fullName;
+        const cciName = this.indicators.cci.fullName;
+        const currentCCI: number =
+            data[cciName]['output'][data[cciName]['output'].length - 1];
+        const previousCCI: number =
+            data[cciName]['output'][data[cciName]['output'].length - 2];
+        if (timeDiffMinutes < 15 || (currentCCI < 0 && previousCCI > 0)) {
             return {
-                amount:   -1,
-                decision: true
+                amount: -1,
+                decision: true,
             };
         } else {
             return {
-                amount:   0,
-                decision: false
+                amount: 0,
+                decision: false,
             };
         }
     }
-
 }

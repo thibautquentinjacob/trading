@@ -33,7 +33,7 @@
 
 
 
-import { EChartOption, graphic } from 'echarts';
+import { EChartOption } from 'echarts';
 import { ChartDescription } from '../ChartDescription';
 
 export class BollingerBands extends ChartDescription {

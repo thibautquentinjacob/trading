@@ -1,11 +1,11 @@
-import { Strategy } from '../Strategy';
-import { StrategicDecision } from '../StragegicDecision';
-import { Indicator } from '../Indicator';
 import { EChartOption } from 'echarts';
-import { RSI } from '../chart-descriptions/RSI';
-import { StockData } from '../StockData';
 import { MACD } from '../chart-descriptions/MACD';
+import { RSI } from '../chart-descriptions/RSI';
 import { SMA } from '../chart-descriptions/SMA';
+import { Indicator } from '../Indicator';
+import { StockData } from '../StockData';
+import { StrategicDecision } from '../StragegicDecision';
+import { Strategy } from '../Strategy';
 
 export class RSIStrategy extends Strategy {
 
