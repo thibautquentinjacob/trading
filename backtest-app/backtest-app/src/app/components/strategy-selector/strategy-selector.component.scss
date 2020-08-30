@@ -2,7 +2,6 @@ $color: #0e9862;
 $accent_color: #30ffaf;
 
 :host {
-
     color: $accent_color;
 
     mat-icon {
@@ -18,25 +17,22 @@ $accent_color: #30ffaf;
     }
 
     ::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
-        color: $color!important;
+        color: $color !important;
     }
 
     ::ng-deep .mat-form-field.mat-focused .mat-form-field-ripple {
-        background-color: $color!important;
+        background-color: $color !important;
     }
 
     ::ng-deep .menu {
-        background-color: rgba( 0, 0, 0, 0.5 );
-        color: #30ffaf!important;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #30ffaf !important;
     }
 
     ::ng-deep .mat-form-field-infix {
-
         label {
-            color: $color!important;
+            color: $color !important;
             font-family: 'Oswald', sans-serif;
         }
-
     }
-
 }

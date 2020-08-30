@@ -31,19 +31,12 @@
  * SOFTWARE.
  */
 
-
-
 import { EChartOption, graphic } from 'echarts';
 import { ChartDescription } from '../ChartDescription';
 
 export class MACD extends ChartDescription {
-
-    constructor(
-        names:  string[],
-        data:   number[][],
-        colors: string[]
-    ) {
-        super( names, data, colors );
+    constructor(names: string[], data: number[][], colors: string[]) {
+        super(names, data, colors);
     }
 
     public generateDescription(): EChartOption.SeriesLine[] {
@@ -59,7 +52,7 @@ export class MACD extends ChartDescription {
                 lineStyle: {
                     width: 1,
                     color: this._colors[0],
-                }
+                },
             },
             {
                 name: this._names[1],
@@ -73,25 +66,19 @@ export class MACD extends ChartDescription {
                     normal: {
                         barBorderWidth: 0.5,
                         barBorderColor: '#777',
-                        color: ( params ) => {
-                            if ( this._data[1][params.dataIndex] < 0 ) {
-                                return new graphic.LinearGradient(
-                                    0, 0, 0, 1,
-                                    [
-                                        {offset: 0, color: this._colors[1]},
-                                        {offset: 1, color: this._colors[2]}
-                                    ]
-                                );
+                        color: (params) => {
+                            if (this._data[1][params.dataIndex] < 0) {
+                                return new graphic.LinearGradient(0, 0, 0, 1, [
+                                    { offset: 0, color: this._colors[1] },
+                                    { offset: 1, color: this._colors[2] },
+                                ]);
                             } else {
-                                return new graphic.LinearGradient(
-                                    0, 0, 0, 1,
-                                    [
-                                        {offset: 0, color: this._colors[3]},
-                                        {offset: 1, color: this._colors[4]}
-                                    ]
-                                );
+                                return new graphic.LinearGradient(0, 0, 0, 1, [
+                                    { offset: 0, color: this._colors[3] },
+                                    { offset: 1, color: this._colors[4] },
+                                ]);
                             }
-                        }
+                        },
                     },
                 },
             },
@@ -106,8 +93,8 @@ export class MACD extends ChartDescription {
                 lineStyle: {
                     width: 1,
                     color: this._colors[5],
-                }
-            }
+                },
+            },
         ];
     }
 }

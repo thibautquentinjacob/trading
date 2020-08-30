@@ -1,35 +1,24 @@
-<div
-    fxLayout="row"
-    fxLayoutAlign="start center"
-    fxLayoutGap="20px">
-
-    <mat-icon
-        svgIcon="coin"
-        class="logo">
-    </mat-icon>
+<div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+    <mat-icon svgIcon="coin" class="logo"> </mat-icon>
     <div
         class="current-symbol"
         matTooltip="{{ _currentSymbol.symbol }}"
-        [matTooltipClass]="{'tooltip': true}">
-        <span class="arrow">
-            #
-        </span>
+        [matTooltipClass]="{ tooltip: true }"
+    >
+        <span class="arrow"> # </span>
         <span>
             {{ _currentSymbol.name }}
         </span>
     </div>
 
-    <div
-        fxLayout="row"
-        fxLayoutAlign="start center"
-        fxLayoutGap="20px">
-
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
         <app-top-metric
             *ngFor="let metric of _metrics"
             [_metricType]="metric.type"
             [_currentTopMetric]="metric.current"
             [_previousTopMetric]="metric.previous"
-            [_increment]="metric.increment">
+            [_increment]="metric.increment"
+        >
         </app-top-metric>
     </div>
 
@@ -40,5 +29,4 @@
             </mat-option>
         </mat-select>
     </mat-form-field> -->
-
 </div>

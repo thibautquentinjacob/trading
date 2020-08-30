@@ -31,14 +31,10 @@
  * SOFTWARE.
  */
 
-
-
 export interface Indicator {
-
-    name:      string;   // Indicator name
-    fullName?: string;   // Indicator name with options
-    options:   number[]; // Indicator parameters
-    output:    string[]; // Output names
-    metrics:   string[]; // Open, High, Low, Close
-
+    name: string; // Indicator name
+    fullName?: string; // Indicator name with options
+    options: number[]; // Indicator parameters
+    output: string[]; // Output names
+    metrics: string[]; // Open, High, Low, Close
 }

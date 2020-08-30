@@ -31,11 +31,7 @@
  * SOFTWARE.
  */
 
-
-
 export enum TopMetricType {
-
     PERCENTAGE = 'PERCENTAGE',
-    CURRENCY   = 'CURRENCY'
-
+    CURRENCY = 'CURRENCY',
 }

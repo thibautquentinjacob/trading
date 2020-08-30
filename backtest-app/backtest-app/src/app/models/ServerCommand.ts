@@ -31,11 +31,7 @@
  * SOFTWARE.
  */
 
-
-
 export enum ServerCommand {
-
-    GET_QUOTE   = 'GET_QUOTE',
-    GET_SYMBOLS = 'GET_SYMBOLS'
-
+    GET_QUOTE = 'GET_QUOTE',
+    GET_SYMBOLS = 'GET_SYMBOLS',
 }

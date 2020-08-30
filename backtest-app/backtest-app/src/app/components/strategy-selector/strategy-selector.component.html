@@ -1,33 +1,30 @@
-<div
-    fxLayout="row"
-    fxLayoutAlign="space-around center"
-    fxLayoutGap="10px">
-
+<div fxLayout="row" fxLayoutAlign="space-around center" fxLayoutGap="10px">
     <form>
         <mat-form-field
             fxLayout="row"
             fxLayoutAlign="start center"
-            fxLayoutGap="10px">
+            fxLayoutGap="10px"
+        >
             <input
                 matInput
                 [formControl]="_strategyControl"
                 placeholder="Current strategy"
                 value="{{ _currentStrategy }}"
-                [matAutocomplete]="auto">
-                <mat-autocomplete
-                    [class]="{ 'menu' : true }"
-                    #auto="matAutocomplete"
-                    (optionSelected)="_optionSelected( $event )">
-                    <mat-option
-                        *ngFor="let strategy of _filteredStrategies | async"
-                        [value]="strategy">
-                        {{ strategy }}
-                    </mat-option>
-                </mat-autocomplete>
-            <mat-icon
-                matPrefix
-                svgIcon="account-tie"></mat-icon>
+                [matAutocomplete]="auto"
+            />
+            <mat-autocomplete
+                [class]="{ menu: true }"
+                #auto="matAutocomplete"
+                (optionSelected)="_optionSelected($event)"
+            >
+                <mat-option
+                    *ngFor="let strategy of _filteredStrategies | async"
+                    [value]="strategy"
+                >
+                    {{ strategy }}
+                </mat-option>
+            </mat-autocomplete>
+            <mat-icon matPrefix svgIcon="account-tie"></mat-icon>
         </mat-form-field>
     </form>
-
 </div>

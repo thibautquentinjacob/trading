@@ -31,23 +31,16 @@
  * SOFTWARE.
  */
 
-
-
 import { EChartOption } from 'echarts';
 import { ChartDescription } from '../ChartDescription';
 
 export class BollingerBands extends ChartDescription {
-
-    constructor(
-        names:  string[],
-        data:   number[][],
-        colors: string[]
-    ) {
-        super( names, data, colors );
+    constructor(names: string[], data: number[][], colors: string[]) {
+        super(names, data, colors);
     }
 
     public generateDescription(): EChartOption.SeriesLine[] {
-        console.log( this._data );
+        console.log(this._data);
         return [
             {
                 name: 'Bollinger Lower',
@@ -86,7 +79,7 @@ export class BollingerBands extends ChartDescription {
                 lineStyle: {
                     width: 1,
                     color: this._colors[1],
-                }
+                },
             },
         ];
     }

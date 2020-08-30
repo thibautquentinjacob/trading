@@ -1,19 +1,16 @@
-import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { NgxEchartsModule } from 'ngx-echarts';
-
-import { TopMetricBarModule } from '../../components/top-metric-bar/top-metric-bar.module';
-import { SymbolSelectorModule } from 'src/app/components/symbol-selector/symbol-selector.module';
-import { MainComponent } from './main.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { StrategySelectorModule } from 'src/app/components/strategy-selector/strategy-selector.module';
+import { FormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material';
+import { BrowserModule } from '@angular/platform-browser';
+import { NgxEchartsModule } from 'ngx-echarts';
+import { StrategySelectorModule } from 'src/app/components/strategy-selector/strategy-selector.module';
+import { SymbolSelectorModule } from 'src/app/components/symbol-selector/symbol-selector.module';
+import { TopMetricBarModule } from '../../components/top-metric-bar/top-metric-bar.module';
+import { MainComponent } from './main.component';
 
 @NgModule({
-    declarations: [
-        MainComponent,
-    ],
+    declarations: [MainComponent],
     imports: [
         BrowserModule,
         FormsModule,
@@ -22,11 +19,9 @@ import { MatProgressSpinnerModule } from '@angular/material';
         TopMetricBarModule,
         SymbolSelectorModule,
         StrategySelectorModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
     ],
-    exports: [
-        MainComponent
-    ],
-    providers: []
+    exports: [MainComponent],
+    providers: [],
 })
 export class MainModule {}

@@ -31,11 +31,7 @@
  * SOFTWARE.
  */
 
-
-
 export interface Symbol {
-
-    name:   string;
+    name: string;
     symbol: string;
-
 }

@@ -1,14 +1,13 @@
-import { StrategicDecision } from './StragegicDecision';
-import { Indicator } from './Indicator';
 import { EChartOption } from 'echarts';
+import { Indicator } from './Indicator';
 import { StockData } from './StockData';
+import { StrategicDecision } from './StrategicDecision';
 
 export class Strategy {
-
-    public title:       string;
+    public title: string;
     // Associated indicators
     public indicators: {
-        [key: string]: Indicator
+        [key: string]: Indicator;
     };
 
     constructor() {}
@@ -17,7 +16,9 @@ export class Strategy {
      *
      * @param data
      */
-    public generateChartDescriptions( data: StockData ): EChartOption.SeriesLine[] {
+    public generateChartDescriptions(
+        data: StockData
+    ): EChartOption.SeriesLine[] {
         return null;
     }
 
@@ -28,10 +29,10 @@ export class Strategy {
      * @param {StockData} data - Stock data + required indicators
      * @returns {StrategicDecision}
      */
-    public shouldBuy( data: StockData ): StrategicDecision {
+    public shouldBuy(data: StockData): StrategicDecision {
         return {
             amount: 0,
-            decision: false
+            decision: false,
         };
     }
 
@@ -42,11 +43,10 @@ export class Strategy {
      * @param {StockData} data - Stock data + required indicators
      * @returns {StrategicDecision}
      */
-    public shouldSell( data: StockData ): StrategicDecision {
+    public shouldSell(data: StockData): StrategicDecision {
         return {
             amount: 0,
-            decision: false
+            decision: false,
         };
     }
-
 }

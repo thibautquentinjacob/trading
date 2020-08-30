@@ -1,17 +1,17 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { MatIconModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule } from '@angular/material';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+    MatAutocompleteModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+} from '@angular/material';
 import { StrategySelectorComponent } from './strategy-selector.component';
 
-
-
 @NgModule({
-    declarations: [
-        StrategySelectorComponent
-    ],
+    declarations: [StrategySelectorComponent],
     imports: [
         FlexLayoutModule,
         CommonModule,
@@ -20,11 +20,9 @@ import { StrategySelectorComponent } from './strategy-selector.component';
         MatFormFieldModule,
         ReactiveFormsModule,
         MatInputModule,
-        MatAutocompleteModule
+        MatAutocompleteModule,
     ],
-    exports: [
-        StrategySelectorComponent
-    ],
-    providers: []
+    exports: [StrategySelectorComponent],
+    providers: [],
 })
 export class StrategySelectorModule {}

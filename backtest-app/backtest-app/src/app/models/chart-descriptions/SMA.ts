@@ -31,34 +31,29 @@
  * SOFTWARE.
  */
 
-
-
 import { EChartOption } from 'echarts';
 import { ChartDescription } from '../ChartDescription';
 
 export class SMA extends ChartDescription {
-
-    constructor(
-        names:  string[],
-        data:   number[][],
-        colors: string[]
-    ) {
-        super( names, data, colors );
+    constructor(names: string[], data: number[][], colors: string[]) {
+        super(names, data, colors);
     }
 
     public generateDescription(): EChartOption.SeriesLine[] {
-        return [{
-            name:       this._names[0],
-            data:       this._data[0],
-            type:       'line',
-            xAxisIndex: 0,
-            yAxisIndex: 0,
-            symbol:     'circle',
-            symbolSize: 0,
-            lineStyle: {
-                width: 1,
-                color: this._colors[0],
-            }
-        }];
+        return [
+            {
+                name: this._names[0],
+                data: this._data[0],
+                type: 'line',
+                xAxisIndex: 0,
+                yAxisIndex: 0,
+                symbol: 'circle',
+                symbolSize: 0,
+                lineStyle: {
+                    width: 1,
+                    color: this._colors[0],
+                },
+            },
+        ];
     }
 }
