@@ -1,18 +1,18 @@
 // import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { MatIconModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule } from '@angular/material';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+    MatAutocompleteModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+} from '@angular/material';
 import { SymbolSelectorComponent } from './symbol-selector.component';
 
-
-
 @NgModule({
-    declarations: [
-        SymbolSelectorComponent
-    ],
+    declarations: [SymbolSelectorComponent],
     imports: [
         FlexLayoutModule,
         CommonModule,
@@ -21,11 +21,9 @@ import { SymbolSelectorComponent } from './symbol-selector.component';
         MatFormFieldModule,
         ReactiveFormsModule,
         MatInputModule,
-        MatAutocompleteModule
+        MatAutocompleteModule,
     ],
-    exports: [
-        SymbolSelectorComponent
-    ],
-    providers: []
+    exports: [SymbolSelectorComponent],
+    providers: [],
 })
 export class SymbolSelectorModule {}

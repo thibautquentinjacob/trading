@@ -4,57 +4,59 @@ import { RSI } from '../chart-descriptions/RSI';
 import { SMA } from '../chart-descriptions/SMA';
 import { Indicator } from '../Indicator';
 import { StockData } from '../StockData';
-import { StrategicDecision } from '../StragegicDecision';
+import { StrategicDecision } from '../StrategicDecision';
 import { Strategy } from '../Strategy';
 
 export class RSIStrategy extends Strategy {
-
-    public title: string    = 'RSI';
+    public title = 'RSI';
     public indicators: {
-        [key: string]: Indicator
+        [key: string]: Indicator;
     } = {
         rsi: {
-            name:    'rsi',
+            name: 'rsi',
             options: [7],
-            metrics:  ['open'],
-            output:  ['output']
+            metrics: ['open'],
+            output: ['output'],
         },
         macd: {
-            name:    'macd',
+            name: 'macd',
             options: [1, 8, 6],
-            metrics:  ['open'],
-            output:  ['short', 'long', 'signal']
+            metrics: ['open'],
+            output: ['short', 'long', 'signal'],
         },
         sma12: {
-            name:    'sma',
+            name: 'sma',
             options: [12],
-            metrics:  ['open'],
-            output:  ['output']
+            metrics: ['open'],
+            output: ['output'],
         },
         sma26: {
-            name:    'sma',
+            name: 'sma',
             options: [26],
-            metrics:  ['open'],
-            output:  ['output']
-        }
+            metrics: ['open'],
+            output: ['output'],
+        },
     };
 
-
-    constructor () {
+    constructor() {
         super();
         // Build indicator full names
-        const indicatorKeys: string[] = Object.keys( this.indicators );
-        for ( let i = 0, size = indicatorKeys.length ; i < size ; i++ ) {
-            const indicatorKey:     string   = indicatorKeys[i];
-            const indicatorName:    string   = this.indicators[indicatorKey].name;
-            const indicatorOptions: number[] = this.indicators[indicatorKey].options;
-            this.indicators[indicatorKey].fullName = `${indicatorName}_${indicatorOptions.join( '_' )}`;
+        const indicatorKeys: string[] = Object.keys(this.indicators);
+        for (let i = 0, size = indicatorKeys.length; i < size; i++) {
+            const indicatorKey: string = indicatorKeys[i];
+            const indicatorName: string = this.indicators[indicatorKey].name;
+            const indicatorOptions: number[] = this.indicators[indicatorKey]
+                .options;
+            this.indicators[
+                indicatorKey
+            ].fullName = `${indicatorName}_${indicatorOptions.join('_')}`;
         }
-        console.log( this.indicators );
+        console.log(this.indicators);
     }
 
-
-    public generateChartDescriptions( data: StockData ): EChartOption.SeriesLine[] {
+    public generateChartDescriptions(
+        data: StockData
+    ): EChartOption.SeriesLine[] {
         let descriptions: EChartOption.SeriesLine[] = [];
         descriptions = descriptions.concat(
             new RSI(
@@ -67,9 +69,16 @@ export class RSIStrategy extends Strategy {
                 [
                     data[this.indicators.macd.fullName]['short'],
                     data[this.indicators.macd.fullName]['long'],
-                    data[this.indicators.macd.fullName]['signal']
+                    data[this.indicators.macd.fullName]['signal'],
                 ],
-                ['#0CFF9B', '#FF105033', '#FF1050', '#0CF49B', '#0CF49B33', '#FF1050']
+                [
+                    '#0CFF9B',
+                    '#FF105033',
+                    '#FF1050',
+                    '#0CF49B',
+                    '#0CF49B33',
+                    '#FF1050',
+                ]
             ).generateDescription(),
             new SMA(
                 ['SMA 26'],
@@ -93,25 +102,28 @@ export class RSIStrategy extends Strategy {
      * @param {StockData} data - Stock data + required indicators
      * @returns {StrategicDecision}
      */
-    public shouldBuy( data: StockData ): StrategicDecision {
-        const dates:           Date[] = data.dates as Date[];
-        const currentDate:     Date   = new Date( dates[dates.length - 1]);
-        const closingDate:     Date   = new Date( dates[dates.length - 1]);
-        closingDate.setHours( 22, 0, 0 );
-        const timeDiffMinutes: number = ( closingDate.getTime() - currentDate.getTime()) / ( 1000 * 60 );
-        const rsiName                 = this.indicators.rsi.fullName;
-        const macdName                = this.indicators.macd.fullName;
-        const rsi:             number = data[rsiName]['output'][data[rsiName]['output'].length - 1];
-        const macd:            number = data[macdName]['long'][data[macdName]['long'].length - 1];
-        if (( rsi <= 31 && macd < -0.3 ) && timeDiffMinutes > 15 ) {
+    public shouldBuy(data: StockData): StrategicDecision {
+        const dates: Date[] = data.dates as Date[];
+        const currentDate: Date = new Date(dates[dates.length - 1]);
+        const closingDate: Date = new Date(dates[dates.length - 1]);
+        closingDate.setHours(22, 0, 0);
+        const timeDiffMinutes: number =
+            (closingDate.getTime() - currentDate.getTime()) / (1000 * 60);
+        const rsiName = this.indicators.rsi.fullName;
+        const macdName = this.indicators.macd.fullName;
+        const rsi: number =
+            data[rsiName]['output'][data[rsiName]['output'].length - 1];
+        const macd: number =
+            data[macdName]['long'][data[macdName]['long'].length - 1];
+        if (rsi <= 31 && macd < -0.3 && timeDiffMinutes > 15) {
             return {
-                amount:   -1,
-                decision: true
+                amount: -1,
+                decision: true,
             };
         } else {
             return {
-                amount:   0,
-                decision: false
+                amount: 0,
+                decision: false,
             };
         }
     }
@@ -124,29 +136,31 @@ export class RSIStrategy extends Strategy {
      * @param {StockData} data - Stock data + required indicators
      * @returns {StrategicDecision}
      */
-    public shouldSell( data: StockData ): StrategicDecision {
-        const dates:           Date[] = data.dates as Date[];
-        const currentDate:     Date   = new Date( dates[dates.length - 1]);
-        const closingDate:     Date   = new Date( dates[dates.length - 1]);
-        closingDate.setHours( 22, 0, 0 );
-        const timeDiffMinutes: number = ( closingDate.getTime() - currentDate.getTime()) / ( 1000 * 60 );
-        const rsiName                 = this.indicators.rsi.fullName;
-        const macdName                = this.indicators.macd.fullName;
-        const rsi:             number = data[rsiName]['output'][data[rsiName]['output'].length - 1];
-        const macd:            number = data[macdName]['long'][data[macdName]['long'].length - 1];
+    public shouldSell(data: StockData): StrategicDecision {
+        const dates: Date[] = data.dates as Date[];
+        const currentDate: Date = new Date(dates[dates.length - 1]);
+        const closingDate: Date = new Date(dates[dates.length - 1]);
+        closingDate.setHours(22, 0, 0);
+        const timeDiffMinutes: number =
+            (closingDate.getTime() - currentDate.getTime()) / (1000 * 60);
+        const rsiName = this.indicators.rsi.fullName;
+        const macdName = this.indicators.macd.fullName;
+        const rsi: number =
+            data[rsiName]['output'][data[rsiName]['output'].length - 1];
+        const macd: number =
+            data[macdName]['long'][data[macdName]['long'].length - 1];
         // if ( data.rsi > 70 ) {
         // if ( data.macd > 0.01 || timeDiffMinutes < 15 ) {
-        if (( macd < 0 && rsi >= 60 ) || rsi >= 80 ) {
+        if ((macd < 0 && rsi >= 60) || rsi >= 80) {
             return {
-                amount:   -1,
-                decision: true
+                amount: -1,
+                decision: true,
             };
         } else {
             return {
-                amount:   0,
-                decision: false
+                amount: 0,
+                decision: false,
             };
         }
     }
-
 }

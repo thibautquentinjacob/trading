@@ -31,19 +31,12 @@
  * SOFTWARE.
  */
 
-
-
 import { EChartOption, graphic } from 'echarts';
 import { ChartDescription } from '../ChartDescription';
 
 export class CCI extends ChartDescription {
-
-    constructor(
-        names:  string[],
-        data:   number[][],
-        colors: string[]
-    ) {
-        super( names, data, colors );
+    constructor(names: string[], data: number[][], colors: string[]) {
+        super(names, data, colors);
     }
 
     public generateDescription(): EChartOption.SeriesLine[] {
@@ -58,55 +51,55 @@ export class CCI extends ChartDescription {
                 symbolSize: 0,
                 lineStyle: {
                     width: 1,
-                    color: this._colors[0]
+                    color: this._colors[0],
                 },
                 areaStyle: {
                     color: new graphic.LinearGradient(0, 0, 0, 1, [
                         {
                             offset: 0,
-                            color: 'rgba(0, 158, 68, 0.2)'
+                            color: 'rgba(0, 158, 68, 0.2)',
                         },
                         {
                             offset: 1,
-                            color: 'rgba(0, 158, 68, 0.5)'
-                        }
-                    ])
+                            color: 'rgba(0, 158, 68, 0.5)',
+                        },
+                    ]),
                 },
                 markLine: {
                     label: {
-                        show: false
+                        show: false,
                     },
                     data: [
                         {
                             symbol: 'none',
                             yAxis: 100,
                             lineStyle: {
-                                width:   1,
-                                color:   this._colors[1],
-                                opacity: 0.5
-                            }
+                                width: 1,
+                                color: this._colors[1],
+                                opacity: 0.5,
+                            },
                         },
                         {
                             symbol: 'none',
                             yAxis: -100,
                             lineStyle: {
-                                width:   1,
-                                color:   this._colors[2],
-                                opacity: 0.5
-                            }
+                                width: 1,
+                                color: this._colors[2],
+                                opacity: 0.5,
+                            },
                         },
                         {
                             symbol: 'none',
                             yAxis: 0,
                             lineStyle: {
-                                width:   1,
-                                color:   this._colors[3],
-                                opacity: 0.3
-                            }
-                        }
-                    ]
-                }
-            }
+                                width: 1,
+                                color: this._colors[3],
+                                opacity: 0.3,
+                            },
+                        },
+                    ],
+                },
+            },
         ];
     }
 }

@@ -9,19 +9,19 @@
  * -----
  * License:
  * MIT License
- * 
+ *
  * Copyright (c) 2019 Thibaut Jacob
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
  * of the Software, and to permit persons to whom the Software is furnished to do
  * so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -31,31 +31,50 @@
  * SOFTWARE.
  */
 
-
-
-import { OperationState } from "./models/OperationState";
-import { white, grey, magenta, yellow, blue, red, green } from "colors";
-import { ErrorMessage } from "./models/ErrorMessage";
+import { blue, green, grey, magenta, red, white, yellow } from 'colors';
+import { ErrorMessage } from './models/ErrorMessage';
+import { OperationState } from './models/OperationState';
 
 export class Helper {
-
     public static formatLog(
-        route:         string,
-        message:       string,
-        uuid:          string,
-        state:         OperationState,
+        route: string,
+        message: string,
+        uuid: string,
+        state: OperationState,
         errorMessage?: ErrorMessage
     ): string {
-
-        if ( state === OperationState.PENDING ) {
-            return white( `${grey('>>>')} ${magenta.bold( route )} :: ${message} (op. ${grey('#')}${yellow(uuid)}) | ${blue( state )}` );
-        } else if ( state === OperationState.FAILURE && errorMessage ) {
-            return red( `${grey('>>>')} ${magenta.bold( route )} :: ${message} (op. ${grey('#')}${yellow(uuid)}) | ${red( state )}: ${errorMessage.name} [${errorMessage.statusCode}]` );
-        } else if ( state === OperationState.SUCCESS ) {
-            return green( `${grey('>>>')} ${magenta.bold( route )} :: ${message} (op. ${grey('#')}${yellow(uuid)}) | ${green( state )}` );
+        if (state === OperationState.PENDING) {
+            return white(
+                `${grey('>>>')} ${magenta.bold(
+                    route
+                )} :: ${message} (op. ${grey('#')}${yellow(uuid)}) | ${blue(
+                    state
+                )}`
+            );
+        } else if (state === OperationState.FAILURE && errorMessage) {
+            return red(
+                `${grey('>>>')} ${magenta.bold(
+                    route
+                )} :: ${message} (op. ${grey('#')}${yellow(uuid)}) | ${red(
+                    state
+                )}: ${errorMessage.name} [${errorMessage.statusCode}]`
+            );
+        } else if (state === OperationState.SUCCESS) {
+            return green(
+                `${grey('>>>')} ${magenta.bold(
+                    route
+                )} :: ${message} (op. ${grey('#')}${yellow(uuid)}) | ${green(
+                    state
+                )}`
+            );
         } else {
-            return grey( `${grey('>>>')} ${magenta.bold( route )} :: ${message} (op. ${grey('#')}${yellow(uuid)}) | ${blue( state )}` );
+            return grey(
+                `${grey('>>>')} ${magenta.bold(
+                    route
+                )} :: ${message} (op. ${grey('#')}${yellow(uuid)}) | ${blue(
+                    state
+                )}`
+            );
         }
     }
-
 }

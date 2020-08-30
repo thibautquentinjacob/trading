@@ -31,28 +31,24 @@
  * SOFTWARE.
  */
 
-
-
 export interface Quote {
-
-    date:                 Date;
-    high:                 number;
-    low:                  number;
-    average:              number;
-    volume:               number;
-    notional:             number;
-    numberOfTrades:       number;
-    marketHigh:           number;
-    marketLow:            number;
-    marketAverage:        number;
-    marketVolume:         number;
-    marketNotional:       number;
+    date: Date;
+    high: number;
+    low: number;
+    average: number;
+    volume: number;
+    notional: number;
+    numberOfTrades: number;
+    marketHigh: number;
+    marketLow: number;
+    marketAverage: number;
+    marketVolume: number;
+    marketNotional: number;
     marketNumberOfTrades: number;
-    open:                 number;
-    close:                number;
-    marketOpen:           number;
-    marketClose:          number;
-    changeOverTime:       number;
+    open: number;
+    close: number;
+    marketOpen: number;
+    marketClose: number;
+    changeOverTime: number;
     marketChangeOverTime: number;
-
 }

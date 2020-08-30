@@ -1,6 +1,5 @@
-
 /*
-* File: ChartDescription.ts
+ * File: ChartDescription.ts
  * Project: backtest-app
  * File Created: Wednesday, 12th June 2019 9:18:15 pm
  * Author: Thibaut Jacob (thibautquentinjacob@gmail.com)
@@ -32,24 +31,16 @@
  * SOFTWARE.
  */
 
-
-
-
 import { EChartOption } from 'echarts';
 
 export class ChartDescription {
-
-    protected _names:  string[];
-    protected _data:   number[][];
+    protected _names: string[];
+    protected _data: number[][];
     protected _colors: string[];
 
-    constructor(
-        names:  string[],
-        data:   number[][],
-        colors: string[]
-    ) {
-        this._names  = names;
-        this._data   = data;
+    constructor(names: string[], data: number[][], colors: string[]) {
+        this._names = names;
+        this._data = data;
         this._colors = colors;
     }
 

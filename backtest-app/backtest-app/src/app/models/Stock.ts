@@ -1,30 +1,28 @@
 export class Stock {
+    private _symbol: string;
+    private _amount: number;
 
-    private _symbol:       string;
-    private _amount:       number;
-
-    get symbol (): string {
+    get symbol(): string {
         return this._symbol;
     }
 
-    set symbol ( symbol: string ) {
+    set symbol(symbol: string) {
         this._symbol = symbol;
     }
 
-    get amount (): number {
+    get amount(): number {
         return this._amount;
     }
 
-    set amount ( amount: number ) {
-        if ( amount < 0 ) {
-            throw new Error( `Amount can't be inferior to 0: ${amount}` );
+    set amount(amount: number) {
+        if (amount < 0) {
+            throw new Error(`Amount can't be inferior to 0: ${amount}`);
         }
         this._amount = amount;
     }
 
-    constructor ( symbol: string, amount: number ) {
-        this.symbol       = symbol;
-        this.amount       = amount;
+    constructor(symbol: string, amount: number) {
+        this.symbol = symbol;
+        this.amount = amount;
     }
-
 }

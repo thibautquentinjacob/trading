@@ -37,7 +37,7 @@ import { EMA } from '../chart-descriptions/EMA';
 import { RSI } from '../chart-descriptions/RSI';
 import { Indicator } from '../Indicator';
 import { StockData } from '../StockData';
-import { StrategicDecision } from '../StragegicDecision';
+import { StrategicDecision } from '../StrategicDecision';
 import { Strategy } from '../Strategy';
 
 export class CCIStrategy extends Strategy {

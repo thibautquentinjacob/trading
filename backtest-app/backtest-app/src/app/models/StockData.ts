@@ -31,13 +31,12 @@
  * SOFTWARE.
  */
 
-
-
 export interface StockData {
-    [key: string]: {
-        [key: string]: number[]
-    }        |
-    Date[]   |
-    string[] |
-    number[]
+    [key: string]:
+        | {
+              [key: string]: number[];
+          }
+        | Date[]
+        | string[]
+        | number[];
 }
