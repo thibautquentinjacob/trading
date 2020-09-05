@@ -31,7 +31,7 @@
  * SOFTWARE.
  */
 
-export interface Symbol {
+export interface StockSymbol {
     name: string;
     symbol: string;
 }

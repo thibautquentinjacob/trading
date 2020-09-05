@@ -1,11 +1,9 @@
 import {
+    ChangeDetectionStrategy,
     Component,
     EventEmitter,
     Input,
-    OnChanges,
-    OnInit,
     Output,
-    SimpleChanges,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material';
@@ -16,48 +14,38 @@ import { map, startWith } from 'rxjs/operators';
     selector: 'app-strategy-selector',
     templateUrl: './strategy-selector.component.html',
     styleUrls: ['./strategy-selector.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StrategySelectorComponent implements OnInit, OnChanges {
-    @Input() _strategies: string[];
-    @Input() _currentStrategy: string;
-    @Output() strategySelected: EventEmitter<string> = new EventEmitter<
-        string
-    >();
-    public _filteredStrategies: Observable<string[]>;
-    public _strategyControl: FormControl = new FormControl();
-
-    constructor() {}
-
-    ngOnInit() {
-        console.log(this._strategies);
-        this._filteredStrategies = this._strategyControl.valueChanges.pipe(
+export class StrategySelectorComponent {
+    @Input('strategies') public set _strategies(strategies: string[]) {
+        this.strategies = strategies;
+        this.filteredStrategies = this.strategyControl.valueChanges.pipe(
             startWith(''),
             map((value) => this._filter(value))
         );
-        this._strategyControl.patchValue(this._currentStrategy);
     }
-
-    ngOnChanges(changes: SimpleChanges): void {
-        console.log(changes);
-        if (changes._strategies) {
-            this._strategies = changes._strategies.currentValue;
-        }
-        if (changes._currentStrategy) {
-            this._currentStrategy = changes._currentStrategy.currentValue;
-            this._strategyControl.patchValue(
-                changes._currentStrategy.currentValue
-            );
-        }
+    @Input('currentStrategy') public set _currentStrategy(strategy: string) {
+        this.currentStrategy = strategy;
+        this.strategyControl.patchValue(this.currentStrategy);
     }
+    @Output() strategySelected: EventEmitter<string> = new EventEmitter<
+        string
+    >();
+    public strategies: string[];
+    public currentStrategy: string;
+    public filteredStrategies: Observable<string[]>;
+    public strategyControl: FormControl = new FormControl();
 
-    private _optionSelected(event: MatAutocompleteSelectedEvent) {
+    constructor() {}
+
+    public optionSelected(event: MatAutocompleteSelectedEvent): void {
         this.strategySelected.emit(event.option.value);
     }
 
     private _filter(value: string): string[] {
         const filterValue = value.toLowerCase();
 
-        const filtered: string[] = this._strategies.filter(
+        const filtered: string[] = this.strategies.filter(
             (strategy: string) => {
                 return strategy.toLowerCase().includes(filterValue);
             }

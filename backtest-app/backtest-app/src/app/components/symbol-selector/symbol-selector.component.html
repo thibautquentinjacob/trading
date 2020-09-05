@@ -1,4 +1,9 @@
-<div fxLayout="row" fxLayoutAlign="space-around center" fxLayoutGap="10px">
+<div
+    *ngIf="currentSymbol"
+    fxLayout="row"
+    fxLayoutAlign="space-around center"
+    fxLayoutGap="10px"
+>
     <form>
         <mat-form-field
             fxLayout="row"
@@ -7,19 +12,19 @@
         >
             <input
                 matInput
-                [formControl]="_symbolControl"
+                [formControl]="symbolControl"
                 placeholder="Current symbol"
-                value="{{ _currentSymbol.symbol }}"
+                value="{{ currentSymbol.symbol }}"
                 [matAutocomplete]="auto"
             />
             <mat-autocomplete
                 autoActiveFirstOption
                 [class]="{ menu: true }"
                 #auto="matAutocomplete"
-                (optionSelected)="_optionSelected($event)"
+                (optionSelected)="optionSelected($event)"
             >
                 <mat-option
-                    *ngFor="let symbol of _filteredSymbols | async"
+                    *ngFor="let symbol of filteredSymbols | async"
                     [value]="symbol.symbol"
                 >
                     {{ symbol.name }}

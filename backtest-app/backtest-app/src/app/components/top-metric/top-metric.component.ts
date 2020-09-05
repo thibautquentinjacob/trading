@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { TopMetric } from 'src/app/models/TopMetric';
 import { TopMetricType } from 'src/app/models/TopMetricType';
 
@@ -6,14 +6,11 @@ import { TopMetricType } from 'src/app/models/TopMetricType';
     selector: 'app-top-metric',
     templateUrl: './top-metric.component.html',
     styleUrls: ['./top-metric.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TopMetricComponent implements OnInit {
-    @Input() _metricType: TopMetricType;
-    @Input() _currentTopMetric: TopMetric;
-    @Input() _previousTopMetric: TopMetric;
-    @Input() _increment: number;
-
-    constructor() {}
-
-    ngOnInit() {}
+export class TopMetricComponent {
+    @Input() public readonly metricType: TopMetricType;
+    @Input() public readonly currentTopMetric: TopMetric;
+    @Input() public readonly previousTopMetric: TopMetric;
+    @Input() public readonly increment: number;
 }

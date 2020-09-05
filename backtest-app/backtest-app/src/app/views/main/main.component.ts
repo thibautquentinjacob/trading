@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { EChartOption, graphic } from 'echarts';
+import { Observable, Subject } from 'rxjs';
 import { WebSocketSubject } from 'rxjs/observable/dom/WebSocketSubject';
+import { takeUntil } from 'rxjs/operators';
 import { webSocket } from 'rxjs/webSocket';
 import { Indicator } from 'src/app/models/Indicator';
 import { ServerCommand } from 'src/app/models/ServerCommand';
@@ -13,7 +15,7 @@ import { Marker } from '../../models/Marker';
 import { Stock } from '../../models/Stock';
 import { StrategicDecision } from '../../models/StrategicDecision';
 import { Strategy } from '../../models/Strategy';
-import { Symbol } from '../../models/Symbol';
+import { StockSymbol } from '../../models/Symbol';
 import { PortfolioService } from '../../services/portfolio.service';
 // Services
 import { SymbolsService } from '../../services/symbols.service';
@@ -23,7 +25,7 @@ import { SymbolsService } from '../../services/symbols.service';
     templateUrl: './main.component.html',
     styleUrls: ['./main.component.scss'],
 })
-export class MainComponent {
+export class MainComponent implements OnDestroy {
     title = 'backtest-app';
     socket: WebSocketSubject<{}> = webSocket(
         `ws://${environment.SERVER_HOSTNAME}:${environment.SERVER_PORT}`
@@ -35,12 +37,15 @@ export class MainComponent {
 
     private _cash: number;
     private _stocks: { [key: string]: Stock };
-    public _currentStockSymbol: Symbol;
-    public _symbols: Symbol[];
-    public _currentStrategyName: string;
-    public _currentStrategy: Strategy;
-    public _strategies: string[];
-    public _loading: boolean;
+    private _destroy$: Subject<void> = new Subject();
+
+    public currentStockSymbol: StockSymbol;
+    public symbols$: Observable<StockSymbol[]>;
+    public strategies$: Observable<string[]>;
+    public currentStrategy$: Observable<Strategy>;
+    public currentStrategy: Strategy;
+    public currentStrategyName$: Observable<string>;
+    public loading: boolean;
 
     constructor(
         private _portfolioService: PortfolioService,
@@ -48,7 +53,7 @@ export class MainComponent {
         private _strategiesService: StrategiesService,
         private _activatedRoute: ActivatedRoute
     ) {
-        this._loading = true;
+        this.loading = true;
         // Check activated route params. If a symbol has been passed,
         // use as current symbol. Otherwise, use default defined in
         // environment file.
@@ -56,7 +61,11 @@ export class MainComponent {
             // If symbol was passed
             if (params.symbol) {
                 console.log(`Setting symbol to ${params.symbol}`);
-                this._currentStockSymbol = params.symbol;
+                this.currentStockSymbol = params.symbol;
+                this.currentStockSymbol = {
+                    name: params.symbol,
+                    symbol: params.symbol,
+                };
                 this._symbolsService.setCurrentSymbol({
                     name: '',
                     symbol: params.symbol,
@@ -66,7 +75,10 @@ export class MainComponent {
                 console.log(
                     `No symbol passed, setting symbol to ${environment.DEFAULT_SYMBOL}`
                 );
-                this._currentStockSymbol = params.symbol;
+                this.currentStockSymbol = {
+                    name: environment.DEFAULT_SYMBOL,
+                    symbol: environment.DEFAULT_SYMBOL,
+                };
                 this._symbolsService.setCurrentSymbol({
                     name: '',
                     symbol: environment.DEFAULT_SYMBOL,
@@ -74,39 +86,26 @@ export class MainComponent {
             }
         });
 
-        // On strategy name change, update local variable
-        this._strategiesService.currentStrategyName.subscribe(
-            (strategyName: string) => {
-                this._currentStrategyName = strategyName;
-            }
-        );
+        this.symbols$ = this._symbolsService.symbols$;
+        this.currentStrategyName$ = this._strategiesService.currentStrategyName$;
+        this.currentStrategy$ = this._strategiesService.currentStrategy$;
+        this.strategies$ = this._strategiesService.strategies$;
 
-        // On strategy change, update local variable
-        this._strategiesService.currentStrategy.subscribe(
-            (strategy: Strategy) => {
-                this._currentStrategy = strategy;
-            }
-        );
-
-        // On strategy list update, update local variable
-        this._strategiesService.strategies.subscribe((strategies: string[]) => {
-            this._strategies = strategies;
-        });
-
-        // On symbol list update, update local variable
-        this._symbolsService.symbols.subscribe((symbols: Symbol[]) => {
-            this._symbols = symbols;
-        });
+        this._strategiesService.currentStrategy$
+            .pipe(takeUntil(this._destroy$))
+            .subscribe((strategy: Strategy) => {
+                this.currentStrategy = strategy;
+            });
 
         // On current symbol change, send 'GET_QUOTE' command to server
-        this._symbolsService.currentSymbol.subscribe((symbol: Symbol) => {
+        this._symbolsService.currentSymbol$.subscribe((symbol: StockSymbol) => {
             console.log(`Got update ${symbol.symbol}`);
-            this._currentStockSymbol = symbol;
+            this.currentStockSymbol = symbol;
             this.socket.next({
                 command: ServerCommand.GET_QUOTE,
                 options: {
-                    quote: this._currentStockSymbol.symbol,
-                    strategy: this._currentStrategy,
+                    quote: this.currentStockSymbol.symbol,
+                    strategy: this.currentStrategy,
                 },
             });
         });
@@ -125,7 +124,7 @@ export class MainComponent {
         // On server message
         this.socket.subscribe(
             (msg: any) => {
-                this._loading = true;
+                this.loading = true;
                 console.log('message received', msg);
                 // Initialize data structure to hold OHLC, time and TI data
                 const data: StockData = {
@@ -141,11 +140,11 @@ export class MainComponent {
                 // For each indicators in the current strategy
                 // create a new entry in the structure.
                 const indicatorKeys: string[] = Object.keys(
-                    this._currentStrategy.indicators
+                    this.currentStrategy.indicators
                 );
                 for (let i = 0, size = indicatorKeys.length; i < size; i++) {
                     const indicatorName: string = indicatorKeys[i];
-                    const indicator: Indicator = this._currentStrategy
+                    const indicator: Indicator = this.currentStrategy
                         .indicators[indicatorName];
                     // indicatorName_option1_option_2...
                     const fieldName = `${
@@ -175,7 +174,7 @@ export class MainComponent {
                         i++
                     ) {
                         const indicatorName: string = indicatorKeys[i];
-                        const indicator: Indicator = this._currentStrategy
+                        const indicator: Indicator = this.currentStrategy
                             .indicators[indicatorName];
                         // indicatorName_option1_option_2...
                         const fieldName = `${
@@ -220,10 +219,10 @@ export class MainComponent {
                     ]);
 
                     // Try strategies
-                    const buyDecision: StrategicDecision = this._currentStrategy.shouldBuy(
+                    const buyDecision: StrategicDecision = this.currentStrategy.shouldBuy(
                         data
                     );
-                    const sellDecision: StrategicDecision = this._currentStrategy.shouldSell(
+                    const sellDecision: StrategicDecision = this.currentStrategy.shouldSell(
                         data
                     );
 
@@ -237,7 +236,7 @@ export class MainComponent {
                         if (buyDecision.amount === -1 && amount > 0) {
                             this._portfolioService.buy(
                                 new Stock(
-                                    this._currentStockSymbol.symbol,
+                                    this.currentStockSymbol.symbol,
                                     amount
                                 ),
                                 element.open
@@ -251,7 +250,7 @@ export class MainComponent {
                         } else if (buyDecision.amount !== -1) {
                             this._portfolioService.buy(
                                 new Stock(
-                                    this._currentStockSymbol.symbol,
+                                    this.currentStockSymbol.symbol,
                                     buyDecision.amount
                                 ),
                                 element.close
@@ -270,15 +269,15 @@ export class MainComponent {
                         (sellDecision.amount > 0 || sellDecision.amount === -1)
                     ) {
                         const amount: number = this._stocks[
-                            this._currentStockSymbol.symbol
+                            this.currentStockSymbol.symbol
                         ]
-                            ? this._stocks[this._currentStockSymbol.symbol]
+                            ? this._stocks[this.currentStockSymbol.symbol]
                                   .amount
                             : 0;
                         if (sellDecision.amount === -1 && amount > 0) {
                             this._portfolioService.sell(
                                 new Stock(
-                                    this._currentStockSymbol.symbol,
+                                    this.currentStockSymbol.symbol,
                                     amount
                                 ),
                                 element.open
@@ -292,7 +291,7 @@ export class MainComponent {
                         } else if (sellDecision.amount !== -1) {
                             this._portfolioService.sell(
                                 new Stock(
-                                    this._currentStockSymbol.symbol,
+                                    this.currentStockSymbol.symbol,
                                     sellDecision.amount
                                 ),
                                 element.open
@@ -562,7 +561,7 @@ export class MainComponent {
                     ],
                     series: [
                         {
-                            name: `${this._currentStockSymbol.symbol} day evolution`,
+                            name: `${this.currentStockSymbol.symbol} day evolution`,
                             type: 'candlestick',
                             xAxisIndex: 0,
                             yAxisIndex: 0,
@@ -732,9 +731,9 @@ export class MainComponent {
                 };
 
                 this.chartOption.series = this.chartOption.series.concat(
-                    this._currentStrategy.generateChartDescriptions(data)
+                    this.currentStrategy.generateChartDescriptions(data)
                 );
-                this._loading = false;
+                this.loading = false;
             }, // Called whenever there is a message from the server.
             (err) => console.log(err), // Called if at any point WebSocket API signals some kind of error.
             () => console.log('complete') // Called when connection is closed (for whatever reason).
@@ -746,8 +745,8 @@ export class MainComponent {
      *
      * @param event
      */
-    private _symbolSelected(event) {
-        this._loading = true;
+    public symbolSelected(event) {
+        this.loading = true;
         this._portfolioService.resetPortfolio();
         this._symbolsService.setCurrentSymbol(event);
     }
@@ -772,17 +771,22 @@ export class MainComponent {
         return `${parsedHours}:${parsedMinutes}`;
     }
 
-    private _strategySelected(event) {
-        this._loading = true;
+    public strategySelected(event) {
+        this.loading = true;
         console.log(`New strategy selected: ${event}`);
         this._portfolioService.resetPortfolio();
         this._strategiesService.setCurrentStrategy(event);
         this.socket.next({
             command: ServerCommand.GET_QUOTE,
             options: {
-                quote: this._currentStockSymbol.symbol,
-                strategy: this._currentStrategy,
+                quote: this.currentStockSymbol.symbol,
+                strategy: this.currentStrategy,
             },
         });
+    }
+
+    public ngOnDestroy(): void {
+        this._destroy$.next();
+        this._destroy$.complete();
     }
 }

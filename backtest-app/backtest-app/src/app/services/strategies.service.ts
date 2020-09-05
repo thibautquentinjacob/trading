@@ -32,44 +32,52 @@
  */
 
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { CCIStrategy } from '../models/strategies/CCIStrategy';
-import { EMACCIStrategy } from '../models/strategies/EMACCIStrategy';
-import { RSIStrategy } from '../models/strategies/RSIStrategy';
-import { SMAStrategy } from '../models/strategies/SMAStrategy';
+import { BehaviorSubject, Observable } from 'rxjs';
+import * as Strategies from '../models/strategies';
 import { Strategy } from '../models/Strategy';
 
 @Injectable({
     providedIn: 'root',
 })
 export class StrategiesService {
-    public currentStrategy: BehaviorSubject<Strategy> = new BehaviorSubject(
-        new CCIStrategy()
+    private _currentStrategy: Strategy = new Strategies.CCIStrategy();
+    private _currentStrategy$: BehaviorSubject<Strategy> = new BehaviorSubject(
+        this._currentStrategy
     );
-    public currentStrategyName: BehaviorSubject<string> = new BehaviorSubject(
-        this.currentStrategy.value.title
-    );
-    public strategies: BehaviorSubject<string[]> = new BehaviorSubject([]);
-    private _loadedStrategies: { [key: string]: Strategy } = {
-        RSI: new RSIStrategy(),
-        CCI: new CCIStrategy(),
-        SMA: new SMAStrategy(),
-        'EMA + CCI': new EMACCIStrategy(),
-    };
+    private _currentStrategyName$: BehaviorSubject<
+        string
+    > = new BehaviorSubject(this._currentStrategy.title);
+    private _strategies$: BehaviorSubject<string[]> = new BehaviorSubject([]);
+    private _loadedStrategies: { [key: string]: Strategy };
+
+    public readonly currentStrategy$: Observable<
+        Strategy
+    > = this._currentStrategy$.asObservable();
+    public readonly currentStrategyName$: Observable<
+        string
+    > = this._currentStrategyName$.asObservable();
+    public readonly strategies$: Observable<
+        string[]
+    > = this._strategies$.asObservable();
 
     constructor() {
+        // Load strategies dynamically
+        this._loadedStrategies = {};
+        Object.keys(Strategies).forEach((strategy: string) => {
+            const strategyInstance: Strategy = new Strategies[strategy]();
+            this._loadedStrategies[strategyInstance.title] = strategyInstance;
+        });
+
         const strategyNames: string[] = [];
         const keys: string[] = Object.keys(this._loadedStrategies);
         for (let i = 0, size = keys.length; i < size; i++) {
             strategyNames.push(this._loadedStrategies[keys[i]].title);
         }
-        this.strategies.next(strategyNames);
+        this._strategies$.next(strategyNames);
     }
 
     public setCurrentStrategy(strategyName: string) {
-        console.log(this._loadedStrategies);
-        console.log(`Setting current strategy to ${strategyName}`);
-        this.currentStrategyName.next(strategyName);
-        this.currentStrategy.next(this._loadedStrategies[strategyName]);
+        this._currentStrategyName$.next(strategyName);
+        this._currentStrategy$.next(this._loadedStrategies[strategyName]);
     }
 }

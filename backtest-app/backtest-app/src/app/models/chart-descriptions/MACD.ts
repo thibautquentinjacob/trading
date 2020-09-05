@@ -42,8 +42,8 @@ export class MACD extends ChartDescription {
     public generateDescription(): EChartOption.SeriesLine[] {
         return [
             {
-                name: this._names[0],
-                data: this._data[0],
+                name: this.names[0],
+                data: this.data[0],
                 type: 'line',
                 xAxisIndex: 3,
                 yAxisIndex: 3,
@@ -51,12 +51,12 @@ export class MACD extends ChartDescription {
                 symbolSize: 0,
                 lineStyle: {
                     width: 1,
-                    color: this._colors[0],
+                    color: this.colors[0],
                 },
             },
             {
-                name: this._names[1],
-                data: this._data[1],
+                name: this.names[1],
+                data: this.data[1],
                 type: 'bar',
                 xAxisIndex: 3,
                 yAxisIndex: 3,
@@ -67,15 +67,15 @@ export class MACD extends ChartDescription {
                         barBorderWidth: 0.5,
                         barBorderColor: '#777',
                         color: (params) => {
-                            if (this._data[1][params.dataIndex] < 0) {
+                            if (this.data[1][params.dataIndex] < 0) {
                                 return new graphic.LinearGradient(0, 0, 0, 1, [
-                                    { offset: 0, color: this._colors[1] },
-                                    { offset: 1, color: this._colors[2] },
+                                    { offset: 0, color: this.colors[1] },
+                                    { offset: 1, color: this.colors[2] },
                                 ]);
                             } else {
                                 return new graphic.LinearGradient(0, 0, 0, 1, [
-                                    { offset: 0, color: this._colors[3] },
-                                    { offset: 1, color: this._colors[4] },
+                                    { offset: 0, color: this.colors[3] },
+                                    { offset: 1, color: this.colors[4] },
                                 ]);
                             }
                         },
@@ -83,8 +83,8 @@ export class MACD extends ChartDescription {
                 },
             },
             {
-                name: this._names[2],
-                data: this._data[2],
+                name: this.names[2],
+                data: this.data[2],
                 type: 'line',
                 xAxisIndex: 3,
                 yAxisIndex: 3,
@@ -92,7 +92,7 @@ export class MACD extends ChartDescription {
                 symbolSize: 0,
                 lineStyle: {
                     width: 1,
-                    color: this._colors[5],
+                    color: this.colors[5],
                 },
             },
         ];

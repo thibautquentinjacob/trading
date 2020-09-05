@@ -35,56 +35,53 @@ import { EChartOption } from 'echarts';
 import { CCI } from '../chart-descriptions/CCI';
 import { EMA } from '../chart-descriptions/EMA';
 import { RSI } from '../chart-descriptions/RSI';
-import { Indicator } from '../Indicator';
 import { StockData } from '../StockData';
 import { StrategicDecision } from '../StrategicDecision';
 import { Strategy } from '../Strategy';
 
 export class EMACCIStrategy extends Strategy {
-    public title = 'EMA + CCI';
-    public indicators: {
-        [key: string]: Indicator;
-    } = {
-        ema5: {
-            name: 'ema',
-            options: [5],
-            metrics: ['open'],
-            output: ['output'],
-        },
-        ema8: {
-            name: 'ema',
-            options: [8],
-            metrics: ['open'],
-            output: ['output'],
-        },
-        ema50: {
-            name: 'ema',
-            options: [50],
-            metrics: ['open'],
-            output: ['output'],
-        },
-        cci: {
-            name: 'cci',
-            options: [10],
-            metrics: ['high', 'low', 'close'],
-            output: ['output'],
-        },
-        rsi: {
-            name: 'rsi',
-            options: [20],
-            metrics: ['open'],
-            output: ['output'],
-        },
-        bollingerBands: {
-            name: 'bbands',
-            options: [5, 2],
-            metrics: ['open'],
-            output: ['lower', 'middle', 'upper'],
-        },
-    };
-
     constructor() {
-        super();
+        super({
+            title: 'EMA + CCI',
+            indicators: {
+                ema5: {
+                    name: 'ema',
+                    options: [5],
+                    metrics: ['open'],
+                    output: ['output'],
+                },
+                ema8: {
+                    name: 'ema',
+                    options: [8],
+                    metrics: ['open'],
+                    output: ['output'],
+                },
+                ema50: {
+                    name: 'ema',
+                    options: [50],
+                    metrics: ['open'],
+                    output: ['output'],
+                },
+                cci: {
+                    name: 'cci',
+                    options: [10],
+                    metrics: ['high', 'low', 'close'],
+                    output: ['output'],
+                },
+                rsi: {
+                    name: 'rsi',
+                    options: [20],
+                    metrics: ['open'],
+                    output: ['output'],
+                },
+                bollingerBands: {
+                    name: 'bbands',
+                    options: [5, 2],
+                    metrics: ['open'],
+                    output: ['lower', 'middle', 'upper'],
+                },
+            },
+        });
         // Build indicator full names
         const indicatorKeys: string[] = Object.keys(this.indicators);
         for (let i = 0, size = indicatorKeys.length; i < size; i++) {

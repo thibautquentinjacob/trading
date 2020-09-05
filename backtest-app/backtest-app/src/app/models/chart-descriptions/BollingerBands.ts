@@ -40,11 +40,10 @@ export class BollingerBands extends ChartDescription {
     }
 
     public generateDescription(): EChartOption.SeriesLine[] {
-        console.log(this._data);
         return [
             {
                 name: 'Bollinger Lower',
-                data: this._data[0],
+                data: this.data[0],
                 type: 'line',
                 xAxisIndex: 0,
                 yAxisIndex: 0,
@@ -52,12 +51,12 @@ export class BollingerBands extends ChartDescription {
                 symbolSize: 0,
                 lineStyle: {
                     width: 1,
-                    color: this._colors[0],
+                    color: this.colors[0],
                 },
             },
             {
                 name: 'Bollinger Upper',
-                data: this._data[2],
+                data: this.data[2],
                 type: 'line',
                 xAxisIndex: 0,
                 yAxisIndex: 0,
@@ -65,12 +64,12 @@ export class BollingerBands extends ChartDescription {
                 symbolSize: 0,
                 lineStyle: {
                     width: 1,
-                    color: this._colors[2],
+                    color: this.colors[2],
                 },
             },
             {
                 name: 'Bollinger Middle',
-                data: this._data[1],
+                data: this.data[1],
                 type: 'line',
                 xAxisIndex: 0,
                 yAxisIndex: 0,
@@ -78,7 +77,7 @@ export class BollingerBands extends ChartDescription {
                 symbolSize: 0,
                 lineStyle: {
                     width: 1,
-                    color: this._colors[1],
+                    color: this.colors[1],
                 },
             },
         ];

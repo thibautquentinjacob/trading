@@ -42,8 +42,8 @@ export class SMA extends ChartDescription {
     public generateDescription(): EChartOption.SeriesLine[] {
         return [
             {
-                name: this._names[0],
-                data: this._data[0],
+                name: this.names[0],
+                data: this.data[0],
                 type: 'line',
                 xAxisIndex: 0,
                 yAxisIndex: 0,
@@ -51,7 +51,7 @@ export class SMA extends ChartDescription {
                 symbolSize: 0,
                 lineStyle: {
                     width: 1,
-                    color: this._colors[0],
+                    color: this.colors[0],
                 },
             },
         ];

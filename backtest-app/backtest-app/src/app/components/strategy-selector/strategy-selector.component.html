@@ -7,18 +7,18 @@
         >
             <input
                 matInput
-                [formControl]="_strategyControl"
+                [formControl]="strategyControl"
                 placeholder="Current strategy"
-                value="{{ _currentStrategy }}"
+                value="{{ currentStrategy }}"
                 [matAutocomplete]="auto"
             />
             <mat-autocomplete
                 [class]="{ menu: true }"
                 #auto="matAutocomplete"
-                (optionSelected)="_optionSelected($event)"
+                (optionSelected)="optionSelected($event)"
             >
                 <mat-option
-                    *ngFor="let strategy of _filteredStrategies | async"
+                    *ngFor="let strategy of filteredStrategies | async"
                     [value]="strategy"
                 >
                     {{ strategy }}

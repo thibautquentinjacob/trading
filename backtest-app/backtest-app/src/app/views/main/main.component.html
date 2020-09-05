@@ -1,19 +1,19 @@
 <div fxLayout="row" fxLayoutAlign="space-between center">
-    <app-top-metric-bar [_currentSymbol]="_currentStockSymbol" [_symbols]="">
+    <app-top-metric-bar [currentSymbol]="currentStockSymbol" [symbols]="">
     </app-top-metric-bar>
 
     <div fxLayout="row" fxLayoutAlign="space-between center">
         <app-strategy-selector
-            [_strategies]="_strategies"
-            [_currentStrategy]="_currentStrategyName"
-            (strategySelected)="_strategySelected($event)"
+            [strategies]="strategies$ | async"
+            [currentStrategy]="currentStrategyName$ | async"
+            (strategySelected)="strategySelected($event)"
         >
         </app-strategy-selector>
 
         <app-symbol-selector
-            [_symbols]="_symbols"
-            [_currentSymbol]="_currentStockSymbol"
-            (symbolSelected)="_symbolSelected($event)"
+            [symbols]="symbols$ | async"
+            [currentSymbol]="currentStockSymbol"
+            (symbolSelected)="symbolSelected($event)"
         >
         </app-symbol-selector>
     </div>

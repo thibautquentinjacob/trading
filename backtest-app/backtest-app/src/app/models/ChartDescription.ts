@@ -33,15 +33,15 @@
 
 import { EChartOption } from 'echarts';
 
-export class ChartDescription {
-    protected _names: string[];
-    protected _data: number[][];
-    protected _colors: string[];
+export abstract class ChartDescription {
+    public names: string[];
+    public data: number[][];
+    public colors: string[];
 
     constructor(names: string[], data: number[][], colors: string[]) {
-        this._names = names;
-        this._data = data;
-        this._colors = colors;
+        this.names = names;
+        this.data = data;
+        this.colors = colors;
     }
 
     public generateDescription(): EChartOption.SeriesLine[] {

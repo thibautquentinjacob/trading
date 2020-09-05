@@ -42,8 +42,8 @@ export class CCI extends ChartDescription {
     public generateDescription(): EChartOption.SeriesLine[] {
         return [
             {
-                name: this._names[0],
-                data: this._data[0],
+                name: this.names[0],
+                data: this.data[0],
                 type: 'line',
                 xAxisIndex: 3,
                 yAxisIndex: 3,
@@ -51,7 +51,7 @@ export class CCI extends ChartDescription {
                 symbolSize: 0,
                 lineStyle: {
                     width: 1,
-                    color: this._colors[0],
+                    color: this.colors[0],
                 },
                 areaStyle: {
                     color: new graphic.LinearGradient(0, 0, 0, 1, [
@@ -75,7 +75,7 @@ export class CCI extends ChartDescription {
                             yAxis: 100,
                             lineStyle: {
                                 width: 1,
-                                color: this._colors[1],
+                                color: this.colors[1],
                                 opacity: 0.5,
                             },
                         },
@@ -84,7 +84,7 @@ export class CCI extends ChartDescription {
                             yAxis: -100,
                             lineStyle: {
                                 width: 1,
-                                color: this._colors[2],
+                                color: this.colors[2],
                                 opacity: 0.5,
                             },
                         },
@@ -93,7 +93,7 @@ export class CCI extends ChartDescription {
                             yAxis: 0,
                             lineStyle: {
                                 width: 1,
-                                color: this._colors[3],
+                                color: this.colors[3],
                                 opacity: 0.3,
                             },
                         },

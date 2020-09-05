@@ -42,15 +42,15 @@ export class RSI extends ChartDescription {
     public generateDescription(): EChartOption.SeriesLine[] {
         return [
             {
-                name: this._names[0],
-                data: this._data[0],
+                name: this.names[0],
+                data: this.data[0],
                 type: 'line',
                 xAxisIndex: 2,
                 yAxisIndex: 2,
                 symbol: 'circle',
                 symbolSize: 0,
                 lineStyle: {
-                    color: this._colors[0],
+                    color: this.colors[0],
                     width: 1,
                 },
                 markLine: {
@@ -63,7 +63,7 @@ export class RSI extends ChartDescription {
                             yAxis: 70,
                             lineStyle: {
                                 width: 1,
-                                color: this._colors[1],
+                                color: this.colors[1],
                                 opacity: 0.5,
                             },
                         },
@@ -72,7 +72,7 @@ export class RSI extends ChartDescription {
                             yAxis: 30,
                             lineStyle: {
                                 width: 1,
-                                color: this._colors[2],
+                                color: this.colors[2],
                                 opacity: 0.5,
                             },
                         },
@@ -81,7 +81,7 @@ export class RSI extends ChartDescription {
                             yAxis: 50,
                             lineStyle: {
                                 width: 1,
-                                color: this._colors[3],
+                                color: this.colors[3],
                                 opacity: 0.3,
                             },
                         },

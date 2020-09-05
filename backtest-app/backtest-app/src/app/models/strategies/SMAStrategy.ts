@@ -33,32 +33,29 @@
 
 import { EChartOption } from 'echarts';
 import { SMA } from '../chart-descriptions/SMA';
-import { Indicator } from '../Indicator';
 import { StockData } from '../StockData';
 import { StrategicDecision } from '../StrategicDecision';
 import { Strategy } from '../Strategy';
 
 export class SMAStrategy extends Strategy {
-    public title = 'SMA';
-    public indicators: {
-        [key: string]: Indicator;
-    } = {
-        sma12: {
-            name: 'sma',
-            options: [12],
-            metrics: ['open'],
-            output: ['output'],
-        },
-        sma26: {
-            name: 'sma',
-            options: [26],
-            metrics: ['open'],
-            output: ['output'],
-        },
-    };
-
     constructor() {
-        super();
+        super({
+            title: 'SMA',
+            indicators: {
+                sma12: {
+                    name: 'sma',
+                    options: [12],
+                    metrics: ['open'],
+                    output: ['output'],
+                },
+                sma26: {
+                    name: 'sma',
+                    options: [26],
+                    metrics: ['open'],
+                    output: ['output'],
+                },
+            },
+        });
         // Build indicator full names
         const indicatorKeys: string[] = Object.keys(this.indicators);
         for (let i = 0, size = indicatorKeys.length; i < size; i++) {

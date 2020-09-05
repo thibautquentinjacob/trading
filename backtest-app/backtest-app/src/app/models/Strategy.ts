@@ -3,14 +3,23 @@ import { Indicator } from './Indicator';
 import { StockData } from './StockData';
 import { StrategicDecision } from './StrategicDecision';
 
-export class Strategy {
-    public title: string;
+export abstract class Strategy {
+    public readonly title: string;
     // Associated indicators
-    public indicators: {
+    public readonly indicators: {
         [key: string]: Indicator;
     };
 
-    constructor() {}
+    constructor({
+        title,
+        indicators,
+    }: {
+        title: string;
+        indicators: { [key: string]: Indicator };
+    }) {
+        this.title = title;
+        this.indicators = indicators;
+    }
 
     /**
      *

@@ -2,44 +2,41 @@ import { EChartOption } from 'echarts';
 import { MACD } from '../chart-descriptions/MACD';
 import { RSI } from '../chart-descriptions/RSI';
 import { SMA } from '../chart-descriptions/SMA';
-import { Indicator } from '../Indicator';
 import { StockData } from '../StockData';
 import { StrategicDecision } from '../StrategicDecision';
 import { Strategy } from '../Strategy';
 
 export class RSIStrategy extends Strategy {
-    public title = 'RSI';
-    public indicators: {
-        [key: string]: Indicator;
-    } = {
-        rsi: {
-            name: 'rsi',
-            options: [7],
-            metrics: ['open'],
-            output: ['output'],
-        },
-        macd: {
-            name: 'macd',
-            options: [1, 8, 6],
-            metrics: ['open'],
-            output: ['short', 'long', 'signal'],
-        },
-        sma12: {
-            name: 'sma',
-            options: [12],
-            metrics: ['open'],
-            output: ['output'],
-        },
-        sma26: {
-            name: 'sma',
-            options: [26],
-            metrics: ['open'],
-            output: ['output'],
-        },
-    };
-
     constructor() {
-        super();
+        super({
+            title: 'RSI',
+            indicators: {
+                rsi: {
+                    name: 'rsi',
+                    options: [7],
+                    metrics: ['open'],
+                    output: ['output'],
+                },
+                macd: {
+                    name: 'macd',
+                    options: [1, 8, 6],
+                    metrics: ['open'],
+                    output: ['short', 'long', 'signal'],
+                },
+                sma12: {
+                    name: 'sma',
+                    options: [12],
+                    metrics: ['open'],
+                    output: ['output'],
+                },
+                sma26: {
+                    name: 'sma',
+                    options: [26],
+                    metrics: ['open'],
+                    output: ['output'],
+                },
+            },
+        });
         // Build indicator full names
         const indicatorKeys: string[] = Object.keys(this.indicators);
         for (let i = 0, size = indicatorKeys.length; i < size; i++) {
