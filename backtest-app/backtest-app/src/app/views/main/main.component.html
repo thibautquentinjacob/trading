@@ -20,13 +20,13 @@
 </div>
 
 <div>
-    <mat-spinner *ngIf="_loading" class="loader"> </mat-spinner>
+    <mat-spinner *ngIf="loading" class="loader"> </mat-spinner>
     <div
         echarts
         [initOpts]="initOpts"
         [options]="chartOption"
         [autoResize]="true"
         class="chart"
-        [ngClass]="{ loading: _loading }"
+        [ngClass]="{ loading: loading }"
     ></div>
 </div>
