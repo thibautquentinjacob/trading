@@ -2,9 +2,9 @@
     "name": "server",
     "version": "1.0.0",
     "description": "",
-    "main": "server.js",
+    "main": "index.js",
     "scripts": {
-        "start": "node dist/server.js",
+        "start": "node dist/index.js",
         "watch": "tsc --watch",
         "build:docker": "docker build -t backtest-app-backend:latest .",
         "build": "tsc",
@@ -24,8 +24,10 @@
     },
     "devDependencies": {
         "@types/colors": "^1.2.1",
+        "@types/mongoose": "^5.7.36",
         "@types/request-promise-native": "^1.0.15",
         "@types/uuid": "^3.4.4",
-        "@types/ws": "^6.0.1"
+        "@types/ws": "^6.0.1",
+        "mongoose": "^5.10.3"
     }
 }
