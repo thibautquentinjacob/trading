@@ -115,7 +115,7 @@ export class App {
                             )
                         );
                     }
-                    this._messageHandlers[parsedMessage.command].processMessage(
+                    messageHandlers[parsedMessage.command].processMessage(
                         ws,
                         message
                     );
