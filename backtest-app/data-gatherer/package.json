@@ -1,0 +1,70 @@
+{
+    "name": "data-gatherer",
+    "version": "0.0.1",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "node dist/index.js",
+        "watch": "tsc --watch",
+        "build:docker": "rm -Rf dist && docker build -t backtest-app-gatherer:latest . && cd .. && docker-compose down && docker-compose up && cd data-gatherer",
+        "build": "tsc",
+        "test": "ts-node ./spec/support/jasmine.js",
+        "lint": "eslint src --fix",
+        "coverage": "nyc npm run test"
+    },
+    "author": "Thibaut Jacob",
+    "license": "ISC",
+    "dependencies": {
+        "colors": "^1.3.3",
+        "request": "^2.88.0",
+        "request-promise": "^4.2.4",
+        "request-promise-native": "^1.0.7",
+        "rxjs": "^6.4.0",
+        "uuid": "^3.3.2"
+    },
+    "devDependencies": {
+        "@typegoose/typegoose": "^7.3.5",
+        "@types/colors": "^1.2.1",
+        "@types/faker": "^5.1.0",
+        "@types/jasmine": "^3.5.14",
+        "@types/mongoose": "^5.7.36",
+        "@types/request-promise-native": "^1.0.15",
+        "@types/uuid": "^3.4.4",
+        "@typescript-eslint/eslint-plugin": "^4.1.0",
+        "@typescript-eslint/parser": "^4.1.0",
+        "eslint": "^7.9.0",
+        "faker": "^5.1.0",
+        "husky": "^4.3.0",
+        "jasmine": "^3.6.1",
+        "jasmine-console-reporter": "^3.1.0",
+        "mongoose": "^5.10.3",
+        "nyc": "^15.1.0",
+        "ts-node": "^9.0.0",
+        "typescript": "^4.0.2"
+    },
+    "nyc": {
+        "check-coverage": true,
+        "all": true,
+        "cache": false,
+        "exclude": [
+            "src/**/[EI][A-Z]*.ts",
+            "dist",
+            "spec/**/*",
+            "src/**/index.ts",
+            "src/**/*.spec.ts",
+            "src/**/*.builder.ts",
+            "src/controllers",
+            "src/Helper.ts",
+            "coverage"
+        ],
+        "reporter": [
+            "text",
+            "lcov"
+        ]
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "npm run lint && npm test && npm run coverage"
+        }
+    }
+}

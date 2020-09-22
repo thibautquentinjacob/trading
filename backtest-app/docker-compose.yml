@@ -1,9 +1,15 @@
 version: '3.3'
 services:
     mongodb:
+        hostname: mongodb
         image: mongo:4.4.0-bionic
+        # environment:
+        #     MONGO_INITDB_ROOT_USERNAME: root
+        #     MONGO_INITDB_ROOT_PASSWORD: toor
+        ports:
+            - '27017:27017'
         volumes:
-            - db-data:/usr/local/var/mongodb
+            - db-data:/data/db
         networks:
             - backend
 
@@ -12,6 +18,19 @@ services:
         image: backtest-app-backend:latest
         ports:
             - '8080:8080'
+        networks:
+            - backend
+
+    gatherer:
+        build: ./server
+        image: backtest-app-gatherer:latest
+        environment:
+            GATHERED_SYMBOLS_REFRESH_RATE_IN_MS: ${GATHERED_SYMBOLS_REFRESH_RATE_IN_MS}
+            IEX_CLOUD_DATA_URL: ${IEX_CLOUD_DATA_URL}
+            IEX_CLOUD_VERSION: ${IEX_CLOUD_VERSION}
+            IEX_CLOUD_PRIVATE_TOKEN: ${IEX_CLOUD_PRIVATE_TOKEN}
+            DB_HOST: ${DB_HOST}
+            DB_PORT: ${DB_PORT}
         networks:
             - backend
 
