@@ -6,6 +6,7 @@
     "scripts": {
         "start": "node dist/index.js",
         "watch": "tsc --watch",
+        "build:documentation": "typedoc --out docs src",
         "build:docker": "rm -Rf dist && docker build -t backtest-app-gatherer:latest . && cd .. && docker-compose down && docker-compose up && cd data-gatherer",
         "build": "tsc",
         "test": "ts-node ./spec/support/jasmine.js",
@@ -40,6 +41,7 @@
         "mongoose": "^5.10.3",
         "nyc": "^15.1.0",
         "ts-node": "^9.0.0",
+        "typedoc": "^0.19.2",
         "typescript": "^4.0.2"
     },
     "nyc": {
@@ -55,7 +57,8 @@
             "src/**/*.builder.ts",
             "src/controllers",
             "src/Helper.ts",
-            "coverage"
+            "coverage",
+            "docs"
         ],
         "reporter": [
             "text",
@@ -64,7 +67,7 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "npm run lint && npm test && npm run coverage"
+            "pre-commit": "npm run lint && npm test && npm run coverage && npm run build:documentation"
         }
     }
 }
